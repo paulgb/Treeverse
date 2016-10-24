@@ -1,0 +1,7 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es6",
+        "outDir": "build"
+    }
+}
