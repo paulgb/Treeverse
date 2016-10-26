@@ -1,6 +1,9 @@
-chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-    console.log('load for:', msg);
-    response('ok');
+/// <reference path="twitter_api.ts"/>
 
+chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+    let [username, tweetId] = msg;
+    
+    let tl = new TweetLoader();
+
+    response(true);
 });
-console.log('ko');
