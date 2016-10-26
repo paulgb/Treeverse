@@ -1,14 +1,29 @@
 
+// High level: given a tweet ID, return a tree-like data structure
 
 class Tweet {
     username: string;
-    children: string[];
+    //children: string[];
     //bodyElement: HTMLElement;
     body: string;
     // date
+    id: string;
 }
 
-class TweetLoader {
+class TweetContext {
+    ancestors: Tweet[] = [];
+    tweet: Tweet;
+    descentants: Tweet[][] = [];
+}
+
+class TweetServer {
+    static async fetchTweetContext(handle: string, tweetId: string) {
+        let url = TweetServer.getUrlForTweet(handle, tweetId);
+        let tweetsHtml = await TweetServer.requestTweets(url);
+        let doc = TweetServer.extractDocFromResponse(tweetsHtml);
+        return TweetServer.parseTweetsFromHtml(doc);
+    }
+
     static async requestTweets(url: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             let xhr = new XMLHttpRequest();
@@ -19,18 +34,16 @@ class TweetLoader {
         });
     }
 
-    static extractDocHtmlFromResponse(response: string): string {
+    static extractDocFromResponse(response: string): Document {
         let obj = JSON.parse(response);
         let responseHtml = obj.page;
-
-        return responseHtml;
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(responseHtml, 'text/html');
+        return doc;
     }
 
-    static parseTweetsFromHtml(html: string): Tweet[] {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(html, 'text/html');
-
-        let tweets = [];
+    static parseTweetsFromHtml(doc: Document): TweetContext {
+        let tweetContext = new TweetContext();
 
         let ancestorContainer = <HTMLElement>doc.getElementsByClassName('in-reply-to')[0];
         let mainTweetContainer = <HTMLElement>doc
@@ -39,35 +52,38 @@ class TweetLoader {
             .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
 
         if (ancestorContainer) {
-            tweets.push(...this.parseTweetsFromStream(ancestorContainer));
-        }
-        if (mainTweetContainer) {
-            tweets.push(...this.parseTweetsFromStream(mainTweetContainer));
-        }
-        for (let i = 0; i < descendentsContainer.length; i++) {
-            let child = <HTMLElement>descendentsContainer[i];
-            tweets.push(...this.parseTweetsFromStream(child));
+            tweetContext.ancestors = this.parseTweetsFromStream(ancestorContainer); 
         }
 
-        return tweets;
+        if (mainTweetContainer) {
+            tweetContext.tweet = this.parseTweetsFromStream(mainTweetContainer)[0];
+        }
+
+        for (let i = 0; i < descendentsContainer.length; i++) {          
+            let child = <HTMLElement>descendentsContainer[i];  
+            tweetContext.descentants.push(this.parseTweetsFromStream(child));            
+        }
+        
+        return tweetContext;
     }
 
-    static parseTweetsFromStream(streamContainer: HTMLElement,
-        parent?: string, child?: string): Tweet[] {
+    static parseTweetsFromStream(streamContainer: HTMLElement): Tweet[] {
         let tweets = [];
         let tweetElements = streamContainer.getElementsByClassName('tweet');
 
+        let nextChildren = [];
         for (let i = 0; i < tweetElements.length; i++) {
-            let tweetElement = tweetElements[i];
-            let handle = (<HTMLElement>tweetElement
-                .getElementsByClassName('fullname')[0]).firstChild.textContent;
-            let tweetText = (<HTMLElement>tweetElement
-                .getElementsByClassName('tweet-text')[0]).textContent;
-
+            let tweetElement = <HTMLElement>tweetElements[i];
             let tweet = new Tweet();
-            tweet.username = handle;
-            tweet.body = tweetText;
+
+            tweet.username = tweetElement
+                .getElementsByClassName('fullname')[0].firstChild.textContent;
+            tweet.body = tweetElement
+                .getElementsByClassName('tweet-text')[0].textContent;
+            tweet.id = tweetElement.getAttribute('data-tweet-id');
+            
             tweets.push(tweet);
+            nextChildren = [tweet.id];
         }
         return tweets;
     }
@@ -75,5 +91,4 @@ class TweetLoader {
     static getUrlForTweet(handle: string, tweetId: string): string {
         return `https://twitter.com/${handle}/status/${tweetId}`;
     }
-
 }
