@@ -9,9 +9,7 @@ class Tweet {
 }
 
 class TweetLoader {
-    tweets: Map<string, Tweet> = new Map<string, Tweet>();
-
-    async requestTweets(url: string): Promise<string> {
+    static async requestTweets(url: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.onload = () => resolve(xhr.response);
@@ -21,26 +19,17 @@ class TweetLoader {
         });
     }
 
-    async requestAndParseTweets(url: string): Promise<Tweet[]> {
-        let tweetJson = await this.requestTweets(url);
-
-        //return tweets;
-        return undefined;
-    }
-
-    processTweetResponse(response: string) {
+    static extractDocHtmlFromResponse(response: string): string {
         let obj = JSON.parse(response);
         let responseHtml = obj.page;
-        //document.documentElement.innerHTML = responseHtml;
 
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(responseHtml, 'text/html');
-
-        let tweets = this.parseTweetsFromDocument(doc);
-        console.log(tweets);
+        return responseHtml;
     }
 
-    parseTweetsFromDocument(doc: Document): Tweet[] {
+    static parseTweetsFromHtml(html: string): Tweet[] {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, 'text/html');
+
         let tweets = [];
 
         let ancestorContainer = <HTMLElement>doc.getElementsByClassName('in-reply-to')[0];
@@ -57,14 +46,13 @@ class TweetLoader {
         }
         for (let i = 0; i < descendentsContainer.length; i++) {
             let child = <HTMLElement>descendentsContainer[i];
-            console.log('child: ', child);
             tweets.push(...this.parseTweetsFromStream(child));
         }
 
         return tweets;
     }
 
-    parseTweetsFromStream(streamContainer: HTMLElement,
+    static parseTweetsFromStream(streamContainer: HTMLElement,
         parent?: string, child?: string): Tweet[] {
         let tweets = [];
         let tweetElements = streamContainer.getElementsByClassName('tweet');
@@ -84,10 +72,8 @@ class TweetLoader {
         return tweets;
     }
 
-    public loadTweets(handle: string, tweetId: string) {
-        let url = `https://twitter.com/${handle}/status/${tweetId}`;
-        console.log('tweet url:', url);
-        this.requestTweets(url);
+    static getUrlForTweet(handle: string, tweetId: string): string {
+        return `https://twitter.com/${handle}/status/${tweetId}`;
     }
 
 }

@@ -5,17 +5,16 @@
   "version": "0.1",
   "background": {
     "scripts": [
-      "build/button/browser_action.js"
+      "build/button.js"
     ],
     "persistent": false
   },
   "browser_action": {},
   "permissions": [
     "activeTab"
-    //"tabs"
   ],
   "web_accessible_resources": [
     "resources/*",
-    "build/viewer/*"
+    "build/viewer.js"
   ]
 }
