@@ -2,6 +2,6 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es6",
-        "outFile": "../build/button.js"
+        "outFile": "../../extension/script/viewer.js"
     }
 }

@@ -16,7 +16,7 @@ class TweetTree {
         }
         this.tweetIdToChildren.get(parent.id).add(child.id);
     }
-
+    
     addTweetsFromContext(tweetContext: TweetContext) {
         let parent = null;
         for (let ancestor of tweetContext.ancestors) {
