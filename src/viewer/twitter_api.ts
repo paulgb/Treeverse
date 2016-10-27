@@ -3,7 +3,7 @@
 
 class Tweet {
     username: string;
-    //children: string[];
+    children: Tweet[] = [];
     //bodyElement: HTMLElement;
     body: string;
     // date

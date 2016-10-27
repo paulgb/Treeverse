@@ -11,6 +11,7 @@ class TweetTree {
         if (!parent || !child) {
             return;
         }
+        parent.children.push(child);
         if (!this.tweetIdToChildren.has(parent.id)) {
             this.tweetIdToChildren.set(parent.id, new Set([child.id]));
         }
@@ -31,6 +32,7 @@ class TweetTree {
             for (let descendent of descentantGroup) {
                 this.addTweet(descendent);
                 this.addParent(parent, descendent);
+                parent = descendent;
             }
         }
     } 
