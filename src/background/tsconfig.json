@@ -2,6 +2,6 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es6",
-        "outFile": "../../extension/script/button.js"
+        "module": "commonjs"
     }
 }

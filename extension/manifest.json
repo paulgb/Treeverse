@@ -5,7 +5,7 @@
   "version": "0.1",
   "background": {
     "scripts": [
-      "script/button.js"
+      "script/background.js"
     ],
     "persistent": false
   },
@@ -15,6 +15,6 @@
   ],
   "web_accessible_resources": [
     "resources/*",
-    "script/viewer.js"
+    "script/*.js"
   ]
 }
