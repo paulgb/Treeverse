@@ -2,6 +2,7 @@
 class TweetTree {
     idToTweet: Map<string, Tweet> = new Map<string, Tweet>();
     tweetIdToChildren: Map<string, Set<string>> = new Map<string, Set<string>>();
+    root: Tweet;
 
     addTweet(tweet: Tweet) {
         this.idToTweet.set(tweet.id, tweet);
@@ -17,8 +18,18 @@ class TweetTree {
         }
         this.tweetIdToChildren.get(parent.id).add(child.id);
     }
+
+    setRootFromContext(tweetContext: TweetContext) {
+        if (tweetContext.ancestors.length > 0) {
+            this.root = tweetContext.ancestors[0];
+        } else {
+            this.root = tweetContext.tweet;
+        }
+    }
     
     addTweetsFromContext(tweetContext: TweetContext) {
+        // TODO: reconsider once multiple tweet contexts can be loaded
+        this.setRootFromContext(tweetContext);
         let parent = null;
         for (let ancestor of tweetContext.ancestors) {
             this.addTweet(ancestor);

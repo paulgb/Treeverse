@@ -1,0 +1,7 @@
+{
+  "name": "tweettree",
+  "dependencies": {
+    "@types/chrome": "0.0.35",
+    "@types/d3": "^4.2.37"
+  }
+}

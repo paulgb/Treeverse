@@ -52,18 +52,18 @@ class TweetServer {
             .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
 
         if (ancestorContainer) {
-            tweetContext.ancestors = this.parseTweetsFromStream(ancestorContainer); 
+            tweetContext.ancestors = this.parseTweetsFromStream(ancestorContainer);
         }
 
         if (mainTweetContainer) {
             tweetContext.tweet = this.parseTweetsFromStream(mainTweetContainer)[0];
         }
 
-        for (let i = 0; i < descendentsContainer.length; i++) {          
-            let child = <HTMLElement>descendentsContainer[i];  
-            tweetContext.descentants.push(this.parseTweetsFromStream(child));            
+        for (let i = 0; i < descendentsContainer.length; i++) {
+            let child = <HTMLElement>descendentsContainer[i];
+            tweetContext.descentants.push(this.parseTweetsFromStream(child));
         }
-        
+
         return tweetContext;
     }
 
@@ -81,7 +81,7 @@ class TweetServer {
             tweet.body = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
-            
+
             tweets.push(tweet);
             nextChildren = [tweet.id];
         }
