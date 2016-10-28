@@ -5,16 +5,15 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
     let url = TweetServer.getUrlForTweet(username, tweetId);
     TweetServer.requestTweets(url).then((result) => {
         let doc = TweetServer.extractDocFromResponse(result);
-        document.getElementById('inner').innerHTML = doc.documentElement.innerHTML;
+        document.getElementById('stream').innerHTML = doc.documentElement.innerHTML;
         let context = TweetServer.parseTweetsFromHtml(doc);
         console.log(context);
 
         let tweetTree = new TweetTree();
         tweetTree.addTweetsFromContext(context);
 
-        let layout = d3.tree()(d3.hierarchy(tweetTree.root));
+        let vis = new TweetVisualization(tweetTree);
 
-        console.log(layout);
     });
 
     response(true);
