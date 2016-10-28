@@ -5,7 +5,7 @@ var newer = require("gulp-newer");
 var download = require("gulp-download");
 var fs = require('fs');
 
-gulp.task("deps", function () {
+gulp.task("deps", () => {
     if (!fs.existsSync("src/lib/d3.v4.min.js")) {
         download("https://d3js.org/d3.v4.min.js")
             .pipe(gulp.dest("src/lib/"));
@@ -24,7 +24,7 @@ gulp.task("deps", function () {
 
 var backgroundProject = ts.createProject("src/background/tsconfig.json");
 
-gulp.task("background", function () {
+gulp.task("background", () => {
     return backgroundProject.src()
         .pipe(newer('extension/script/background.js'))
         .pipe(backgroundProject())
@@ -34,7 +34,7 @@ gulp.task("background", function () {
 
 var viewerProject = ts.createProject("src/viewer/tsconfig.json");
 
-gulp.task("viewer", function () {
+gulp.task("viewer", () => {
     return viewerProject.src()
         .pipe(newer('extension/script/viewer.js'))
         .pipe(viewerProject())
@@ -44,7 +44,7 @@ gulp.task("viewer", function () {
 
 gulp.task("scripts", ["viewer", "background"]);
 
-gulp.task("watch", ["scripts"], function () {
+gulp.task("watch", ["scripts"], () => {
     gulp.watch('src/viewer/*.ts', ["viewer"]);
     gulp.watch('src/background/*.ts', ["background"]);
 });
