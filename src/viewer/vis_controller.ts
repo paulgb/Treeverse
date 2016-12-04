@@ -29,7 +29,7 @@ class TweetVisualization {
             .attr("x2", d => xscale(d.x))
             .attr("y2", d => yscale(d.y))
             .attr('stroke-width', 2)
-            .attr('stroke', 'black')
+            .attr('stroke', '#aaa')
 
         let nodes = enter.append('g')
             .attr('transform', d => `translate(${xscale(d.x) - 20} ${yscale(d.y) - 20})`)
@@ -43,13 +43,11 @@ class TweetVisualization {
         nodes.append('rect')
             .attr('height', 40)
             .attr('width', 40)
-            .attr('stroke', 'black')
+            .attr('stroke', '#ddd')
             .attr('stroke-width', '2px')
             .attr('rx', "4px")
             .attr('fill', 'none')
             .attr('opacity', 1);
-
-        nodes.append('title').text(d => (<Tweet>d.data).body);
 
         treeContainer.call(d3.zoom().on("zoom", () => {
             nodes.attr('transform', d => `translate(${d3.event.transform.applyX(xscale(d.x)) - 20}
@@ -74,10 +72,15 @@ class TweetVisualization {
 
         comments.classed('comment', true);
         comments.append('a').classed('avatar', true).append('img').attr('src', (d) => d.data.avatar)
-            .style('height', 35).style('width', 35);
+            .style('height', 'auto')
+            .style('max-width', 35)
+            .style('width', 'auto')
+            .style('max-height', 35);
+
         let content = comments.append('div').classed('content', true);
         content.append('span').classed('author', true).text((d) => d.data.username);
-        content.append('div').classed('text', true).text((d) => d.data.body);
+        //content.append('div').classed('text', true).text((d) => d.data.body);
+        content.append('div').classed('text', true).html((d) => d.data.bodyElement.innerHTML);
 
         /*
         let tweet = node.data;

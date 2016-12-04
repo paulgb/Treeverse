@@ -4,7 +4,7 @@
 class Tweet {
     username: string;
     children: Tweet[] = [];
-    //bodyElement: HTMLElement;
+    bodyElement: HTMLElement;
     body: string;
     // date
     id: string;
@@ -79,6 +79,8 @@ class TweetServer {
 
             tweet.username = tweetElement
                 .getElementsByClassName('fullname')[0].firstChild.textContent;
+            tweet.bodyElement = <HTMLElement>tweetElement
+                .getElementsByClassName('tweet-text')[0];
             tweet.body = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
