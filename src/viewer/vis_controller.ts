@@ -17,14 +17,10 @@ class TweetVisualization {
             .data(layout.descendants())
             .enter();
 
-        enter.append('rect')
-            .attr('height', 10)
-            .attr('width', 10)
-            .attr('x', d => xscale(d.x))
-            .attr('y', d => yscale(d.y))
-            .append('title').text(d => (<Tweet>d.data).body);
+        console.log('x2', layout.descendants());
+        console.log('x3', layout.descendants().slice(1));
 
-        let pathEnter = treeContainer.selectAll('path')
+        let paths = treeContainer.selectAll('path')
             .data(layout.descendants().slice(1))
             .enter()
             .append("line")
@@ -34,20 +30,63 @@ class TweetVisualization {
             .attr("y2", d => yscale(d.y))
             .attr('stroke-width', 2)
             .attr('stroke', 'black')
+
+        let nodes = enter.append('g')
+            .attr('transform', d => `translate(${xscale(d.x) - 20} ${yscale(d.y) - 20})`)
+            .on('mouseover', this.selectTweet.bind(this));
+
+        nodes.append('image')
+            .attr('xlink:href', d => (<Tweet>d.data).avatar)
+            .attr('height', 40)
+            .attr('width', 40)
+
+        nodes.append('rect')
+            .attr('height', 40)
+            .attr('width', 40)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '2px')
+            .attr('rx', "4px")
+            .attr('fill', 'none')
+            .attr('opacity', 1);
+
+        nodes.append('title').text(d => (<Tweet>d.data).body);
+
+        treeContainer.call(d3.zoom().on("zoom", () => {
+            nodes.attr('transform', d => `translate(${d3.event.transform.applyX(xscale(d.x)) - 20}
+            ${d3.event.transform.applyY(yscale(d.y)) - 20})`);
+
+            paths.attr('x1', d => d3.event.transform.applyX(xscale(d.parent.x)));
+            paths.attr('y1', d => d3.event.transform.applyY(yscale(d.parent.y)));
+            paths.attr('x2', d => d3.event.transform.applyX(xscale(d.x)));
+            paths.attr('y2', d => d3.event.transform.applyY(yscale(d.y)));
+        }));
+    }
+
+    selectTweet(node: d3.HierarchyNode<Tweet>) {
+        let ancestors = node.ancestors();
+        ancestors.reverse();
+
+        d3.select('#stream').selectAll('div').remove();
+
+        let comments = d3.select('#stream').selectAll('div')
+            .data(ancestors)
+            .enter().append('div');
+
+        comments.classed('comment', true);
+        comments.append('a').classed('avatar', true).append('img').attr('src', (d) => d.data.avatar)
+            .style('height', 35).style('width', 35);
+        let content = comments.append('div').classed('content', true);
+        content.append('span').classed('author', true).text((d) => d.data.username);
+        content.append('div').classed('text', true).text((d) => d.data.body);
+
         /*
-                    .append('path')
-                    .attr('d', (d) =>
-                        `M ${xscale(d.parent.x)} ${yscale(d.parent.y)} L ${xscale(d.x)} ${yscale(d.y)}`);*/
-        /*
-        `M${yscale(d.y)},${xscale(d.x)}C${(yscale(d.y + d.parent.y) / 2)},${xscale(d.x)}
-        ${(yscale(d.y + d.parent.y) / 2)},${xscale(d.parent.x)}
-        ${yscale(d.parent.y)},${xscale(d.parent.x)}`);
-            */
-        /*
-        enter.append('text')
-            .text(d => (<Tweet>d.data).body)
-            .attr('x', d => d.x * 1000)
-            .attr('y', d => d.y * 500);
-            */
+        let tweet = node.data;
+        console.log(node);
+
+        let ancestors = node.ancestors();
+        console.log(ancestors);
+
+        d3.select('#stream').text(tweet.body);
+        */
     }
 }

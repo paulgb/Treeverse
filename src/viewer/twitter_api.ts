@@ -8,6 +8,7 @@ class Tweet {
     body: string;
     // date
     id: string;
+    avatar: string;
 }
 
 class TweetContext {
@@ -81,6 +82,7 @@ class TweetServer {
             tweet.body = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
+            tweet.avatar = tweetElement.getElementsByClassName('avatar')[0].getAttribute('src');
 
             tweets.push(tweet);
             nextChildren = [tweet.id];
