@@ -1,6 +1,6 @@
 
-chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-    let [username, tweetId] = msg;
+document.addEventListener("DOMContentLoaded", () => {
+    let [_, username, tweetId] = document.location.hash.match(/#(.+),(.+)/);
 
     let controller = new VisualizationController(document.getElementById('container'));
 
@@ -9,6 +9,4 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
     rootTweet.id = tweetId;
 
     controller.fetchTweets(rootTweet);
-
-    response(true);
 });

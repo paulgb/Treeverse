@@ -19,17 +19,18 @@ class VisualizationController {
         let context = TweetServer.parseTweetsFromHtml(result);
 
         this.tweetTree.addTweetsFromContext(context);
-        //this.vis.setTreeData(this.tweetTree);
 
-        if (!this.tmp) {
+        if (context.has_more) {
             this.fetchTweets(context.tweet, context.continuation);
-            this.tmp = true;
+        } else {
+            this.vis.setTreeData(this.tweetTree);
         }
     }
 
     loadConversation(result) {
         let context = TweetServer.parseTweetsFromConversationHTML(result);
         this.tweetTree.addTweetsFromContext(context);
+
         if (context.has_more) {
             this.fetchTweets(this.tweetTree.root, context.continuation);
         } else {

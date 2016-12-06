@@ -32,7 +32,7 @@ class TweetVisualization {
 
         // Set up zoom functionality.
         this.zoom = d3.zoom()
-            .scaleExtent([0.1, 2])
+            .scaleExtent([0, 2])
             .on("zoom", () => {
                 let x = d3.event.transform.x;
                 let y = d3.event.transform.y;

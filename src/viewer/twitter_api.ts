@@ -78,6 +78,9 @@ class TweetServer {
         let tweetContext = new TweetContext();
 
         tweetContext.continuation = doc.querySelector('.replies-to .stream-container').getAttribute('data-min-position');
+        if (tweetContext.continuation) {
+            tweetContext.has_more = true;
+        }
 
         let ancestorContainer = <HTMLElement>doc.getElementsByClassName('in-reply-to')[0];
         let mainTweetContainer = <HTMLElement>doc

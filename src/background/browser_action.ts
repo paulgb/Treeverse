@@ -11,14 +11,6 @@ function getUserAndTweetFromUrl(url: string): [string, string] {
     }
 }
 
-function sendMessageUntilReceived(tabId: number, message: any) {
-    chrome.tabs.sendMessage(tabId, message, (response) => {
-        if (!response) {
-            sendMessageUntilReceived(tabId, message);
-        }
-    })
-}
-
 chrome.browserAction.onClicked.addListener(
     function (tab: chrome.tabs.Tab) {
         let userTweetPair = getUserAndTweetFromUrl(tab.url);
@@ -27,7 +19,6 @@ chrome.browserAction.onClicked.addListener(
         }
         let [username, tweetId] = userTweetPair;
 
-        chrome.tabs.create({ 'url': chrome.extension.getURL('resources/view.html') }, (tab1: chrome.tabs.Tab) => {
-            sendMessageUntilReceived(tab1.id, userTweetPair);
-        });
+        let url = `resources/view.html#${username},${tweetId}`;
+        chrome.tabs.create({ 'url': chrome.extension.getURL(url) });
     });
