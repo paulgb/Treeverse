@@ -4,6 +4,8 @@ type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 class TweetVisualization {
     container: D3Selector;
     treeGroup: D3Selector;
+    nodes: D3Selector;
+    edges: D3Selector;
     feed: FeedController;
     zoom: d3.ZoomBehavior<Element, {}>;
 
@@ -25,9 +27,12 @@ class TweetVisualization {
         this.container = d3.select(container);
         this.treeGroup = <D3Selector>this.container.append('g');
 
+        this.edges = <D3Selector>this.treeGroup.append('g');
+        this.nodes = <D3Selector>this.treeGroup.append('g');
+
         // Set up zoom functionality.
         this.zoom = d3.zoom()
-            .scaleExtent([0.5, 2])
+            .scaleExtent([0.1, 2])
             .on("zoom", () => {
                 let x = d3.event.transform.x;
                 let y = d3.event.transform.y;
@@ -42,11 +47,7 @@ class TweetVisualization {
         let bbox = (<SVGSVGElement><any>this.container.node()).getBBox();
         let clientRect = this.container.node().getBoundingClientRect();
         let zoomLevel = Math.min(clientRect.height / (bbox.height + 40), clientRect.width / (bbox.width + 40));
-        //this.container.call(this.zoom.transform, d3.zoomIdentity.translate(20, 20).scale(zoomLevel));
-        console.log('k',
-            (clientRect.width - bbox.width) / 2,
-            (clientRect.height - bbox.height) / 2
-        );
+
         this.container.call(this.zoom.transform, d3.zoomIdentity.translate(
             Math.max(0, (clientRect.width - bbox.width) / 2),
             Math.max(20, (clientRect.height - bbox.height) / 2)
@@ -62,8 +63,11 @@ class TweetVisualization {
         let xscale = maxWidth * 120;
         let yscale = hierarchy.height * 120;
 
-        let paths = this.treeGroup.selectAll('path')
-            .data(layout.descendants().slice(1))
+        // todo: transitions
+        this.nodes.selectAll().remove();
+        this.edges.selectAll().remove();
+
+        let paths = this.edges.selectAll('path').data(layout.descendants().slice(1))
             .enter()
             .append("line")
             .attr("x1", d => xscale * d.parent.x)
@@ -71,14 +75,14 @@ class TweetVisualization {
             .attr("x2", d => xscale * d.x)
             .attr("y2", d => yscale * d.y)
             .attr('stroke-width', 2)
-            .attr('stroke', '#555')
+            .attr('stroke', '#555');
 
-        let enter = this.treeGroup.selectAll('g')
+        let enter = this.nodes.selectAll('g')
             .data(layout.descendants())
             .enter()
             .append('g')
-            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`)
-            .on('mouseover', (e: d3.HierarchyPointNode<Tweet>) => this.feed.setFeed(e));
+            .on('mouseover', (e: d3.HierarchyPointNode<Tweet>) => this.feed.setFeed(e))
+            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
 
         enter.append('image')
             .attr('xlink:href', d => (<Tweet>d.data).avatar)

@@ -3,19 +3,38 @@ class VisualizationController {
     tweetTree: TweetTree;
     vis: TweetVisualization;
     feed: FeedController;
+    tmp: boolean;
 
-    fetchTweets(tweet: Tweet) {
-        let url = TweetServer.getUrlForTweet(tweet.username, tweet.id);
-
-        TweetServer.requestTweets(url).then(this.loadTweets.bind(this));
+    fetchTweets(tweet: Tweet, continuation?: string) {
+        if (!continuation) {
+            let url = TweetServer.getUrlForTweet(tweet.username, tweet.id);
+            TweetServer.requestTweets(url).then(this.loadTweets.bind(this));
+        } else {
+            let url = TweetServer.getUrlForConversation(tweet.username, tweet.id, continuation);
+            TweetServer.requestTweets(url).then(this.loadConversation.bind(this));
+        }
     }
 
     loadTweets(result) {
-        let doc = TweetServer.extractDocFromResponse(result);
-        let context = TweetServer.parseTweetsFromHtml(doc);
+        let context = TweetServer.parseTweetsFromHtml(result);
 
         this.tweetTree.addTweetsFromContext(context);
-        this.vis.setTreeData(this.tweetTree);
+        //this.vis.setTreeData(this.tweetTree);
+
+        if (!this.tmp) {
+            this.fetchTweets(context.tweet, context.continuation);
+            this.tmp = true;
+        }
+    }
+
+    loadConversation(result) {
+        let context = TweetServer.parseTweetsFromConversationHTML(result);
+        this.tweetTree.addTweetsFromContext(context);
+        if (context.has_more) {
+            this.fetchTweets(this.tweetTree.root, context.continuation);
+        } else {
+            this.vis.setTreeData(this.tweetTree);
+        }
     }
 
     constructor(container: HTMLElement) {

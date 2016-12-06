@@ -26,10 +26,13 @@ class TweetTree {
             this.root = tweetContext.tweet;
         }
     }
-    
+
     addTweetsFromContext(tweetContext: TweetContext) {
-        // TODO: reconsider once multiple tweet contexts can be loaded
-        this.setRootFromContext(tweetContext);
+        if (tweetContext.tweet) {
+            this.setRootFromContext(tweetContext);
+        } else {
+            tweetContext.tweet = this.root;
+        }
         let parent = null;
         for (let ancestor of tweetContext.ancestors) {
             this.addTweet(ancestor);
@@ -46,5 +49,5 @@ class TweetTree {
                 parent = descendent;
             }
         }
-    } 
+    }
 }
