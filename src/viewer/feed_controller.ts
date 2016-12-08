@@ -53,10 +53,6 @@ class FeedController {
                     .classed('text', true)
                     .html(tweet.bodyElement.innerHTML);
             }
-
         });
-
-
-
     }
 }

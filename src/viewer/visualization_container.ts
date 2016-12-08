@@ -22,27 +22,12 @@ class VisualizationController {
 
         this.tweetTree.addTweetsFromContext(context);
 
-        /*
-        if (context.has_more) {
-            this.fetchTweets(context.tweet, context.continuation);
-        } else {
-            this.vis.setTreeData(this.tweetTree);
-        }
-        */
         this.vis.setTreeData(this.tweetTree);
     }
 
     loadConversation(result) {
         let context = TweetServer.parseTweetsFromConversationHTML(result);
         this.tweetTree.addTweetsFromContext(context);
-
-        /*
-        if (context.has_more) {
-            this.fetchTweets(this.tweetTree.root.tweet, context.continuation);
-        } else {
-            this.vis.setTreeData(this.tweetTree);
-        }
-        */
     }
 
     constructor(container: HTMLElement) {
