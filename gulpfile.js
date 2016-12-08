@@ -10,17 +10,18 @@ gulp.task("deps", () => {
         download("https://d3js.org/d3.v4.min.js")
             .pipe(gulp.dest("src/lib/"));
     }
+    /*
     if (!fs.existsSync("src/lib/d3-hierarchy.v1.min.js")) {
         download("https://d3js.org/d3-hierarchy.v1.min.js")
             .pipe(gulp.dest("src/lib/"));
     }
+    */
 
     gulp.src("src/lib/*.js")
         .pipe(newer("extension/script/lib.js"))
         .pipe(concat("lib.js"))
         .pipe(gulp.dest("extension/script/"));
 });
-
 
 var backgroundProject = ts.createProject("src/background/tsconfig.json");
 
