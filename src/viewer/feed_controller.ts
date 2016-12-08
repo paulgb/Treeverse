@@ -1,10 +1,8 @@
-
 class FeedController {
-    container: HTMLElement;
+    private container: HTMLElement;
 
     constructor(container: HTMLElement) {
         this.container = container;
-
     }
 
     setFeed(node: PointNode) {

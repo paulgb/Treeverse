@@ -1,25 +1,24 @@
-
 type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 
 class TweetVisualization {
-    container: D3Selector;
-    treeGroup: D3Selector;
-    nodes: D3Selector;
-    edges: D3Selector;
-    feed: FeedController;
-    zoom: d3.ZoomBehavior<Element, {}>;
-    listeners: d3.Dispatch<EventTarget>;
+    private container: D3Selector;
+    private treeGroup: D3Selector;
+    private nodes: D3Selector;
+    private edges: D3Selector;
+    private feed: FeedController;
+    private zoom: d3.ZoomBehavior<Element, {}>;
+    private listeners: d3.Dispatch<EventTarget>;
 
     constructor(svgElement: HTMLElement, feed: FeedController) {
         this.buildTree(svgElement);
-        this.listeners = d3.dispatch('hover', 'click', 'doubleclick');
+        this.listeners = d3.dispatch('hover', 'click', 'dblclick');
     }
 
     on(eventType, callback) {
         this.listeners.on(eventType, callback);
     };
 
-    static treeWidth<T>(hierarchy: d3.HierarchyNode<T>) {
+    private static treeWidth<T>(hierarchy: d3.HierarchyNode<T>) {
         let widths = new Map<number, number>();
         hierarchy.each((node) => {
             widths.set(node.depth, (widths.get(node.depth) || 0) + 1);
@@ -29,7 +28,7 @@ class TweetVisualization {
     }
 
 
-    buildTree(container: HTMLElement) {
+    private buildTree(container: HTMLElement) {
         this.container = d3.select(container);
         this.treeGroup = <D3Selector>this.container.append('g');
 
@@ -49,7 +48,7 @@ class TweetVisualization {
         this.container.call(this.zoom);
     }
 
-    zoomToFit() {
+    private zoomToFit() {
         let bbox = (<SVGSVGElement><any>this.container.node()).getBBox();
         let clientRect = this.container.node().getBoundingClientRect();
         let zoomLevel = Math.min(clientRect.height / (bbox.height + 40), clientRect.width / (bbox.width + 40));
@@ -60,7 +59,8 @@ class TweetVisualization {
         ).scale(zoomLevel));
     }
 
-    setTreeData(tree: TweetTree) {
+    setTreeData(tree: TweetNode) {
+        console.log('here1', tree);
         let hierarchy = tree.toHierarchy();
         let layout = d3.tree()(hierarchy);
 
@@ -70,8 +70,8 @@ class TweetVisualization {
         let yscale = hierarchy.height * 120;
 
         // todo: transitions
-        this.nodes.selectAll().remove();
-        this.edges.selectAll().remove();
+        this.nodes.selectAll('*').remove();
+        this.edges.selectAll('*').remove();
 
         let paths = this.edges.selectAll('path').data(layout.descendants().slice(1))
             .enter()
@@ -87,7 +87,12 @@ class TweetVisualization {
             .data(layout.descendants())
             .enter()
             .append('g')
+            .style('cursor', 'pointer')
             .on('mouseover', (e: PointNode) => this.listeners.call('hover', null, e))
+            .on('dblclick', (e: PointNode) => {
+                this.listeners.call('dblclick', null, e.data);
+                d3.event.stopPropagation();
+            })
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
 
         enter.each(function (this: Element, datum: PointNode) {
@@ -124,13 +129,7 @@ class TweetVisualization {
                     .attr('alignment-baseline', 'baseline')
                     .attr('fill', '#fff');
             }
-
         });
 
-
-        this.zoomToFit();
     }
-
-
 }
-
