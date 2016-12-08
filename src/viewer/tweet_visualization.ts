@@ -8,6 +8,16 @@ class TweetVisualization {
     edges: D3Selector;
     feed: FeedController;
     zoom: d3.ZoomBehavior<Element, {}>;
+    listeners: d3.Dispatch<EventTarget>;
+
+    constructor(svgElement: HTMLElement, feed: FeedController) {
+        this.buildTree(svgElement);
+        this.listeners = d3.dispatch('hover', 'click', 'doubleclick');
+    }
+
+    on(eventType, callback) {
+        this.listeners.on(eventType, callback);
+    };
 
     static treeWidth<T>(hierarchy: d3.HierarchyNode<T>) {
         let widths = new Map<number, number>();
@@ -18,10 +28,6 @@ class TweetVisualization {
         return Math.max.apply(null, Array.from(widths.values()));
     }
 
-    constructor(svgElement: HTMLElement, feed: FeedController) {
-        this.buildTree(svgElement);
-        this.feed = feed;
-    }
 
     buildTree(container: HTMLElement) {
         this.container = d3.select(container);
@@ -55,7 +61,7 @@ class TweetVisualization {
     }
 
     setTreeData(tree: TweetTree) {
-        let hierarchy = d3.hierarchy(tree.root);
+        let hierarchy = tree.toHierarchy();
         let layout = d3.tree()(hierarchy);
 
         let maxWidth = TweetVisualization.treeWidth(hierarchy);
@@ -81,21 +87,46 @@ class TweetVisualization {
             .data(layout.descendants())
             .enter()
             .append('g')
-            .on('mouseover', (e: d3.HierarchyPointNode<Tweet>) => this.feed.setFeed(e))
+            .on('mouseover', (e: PointNode) => this.listeners.call('hover', null, e))
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
 
-        enter.append('image')
-            .attr('xlink:href', d => (<Tweet>d.data).avatar)
-            .attr('height', 40)
-            .attr('width', 40)
+        enter.each(function (this: Element, datum: PointNode) {
+            let group = d3.select(this);
 
-        enter.append('rect')
-            .attr('height', 40)
-            .attr('width', 40)
-            .attr('stroke', '#222')
-            .attr('stroke-width', '2px')
-            .attr('rx', "4px")
-            .attr('fill', 'none');
+            if (datum.data instanceof TweetNode) {
+                let tweet = datum.data.tweet;
+                group.append('image')
+                    .attr('xlink:href', tweet.avatar)
+                    .attr('height', 40)
+                    .attr('width', 40)
+
+                group.append('rect')
+                    .attr('height', 40)
+                    .attr('width', 40)
+                    .attr('stroke', '#222')
+                    .attr('stroke-width', '2px')
+                    .attr('rx', "4px")
+                    .attr('fill', 'none');
+
+            } else if (datum.data instanceof HasMoreNode) {
+                group.append('circle')
+                    .attr('fill', '#800')
+                    .attr('cx', 20)
+                    .attr('cy', 20)
+                    .attr('r', 20);
+
+                group.append('text')
+                    .text('...')
+                    .attr('x', 20)
+                    .attr('y', 22)
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', '32pt')
+                    .attr('alignment-baseline', 'baseline')
+                    .attr('fill', '#fff');
+            }
+
+        });
+
 
         this.zoomToFit();
     }

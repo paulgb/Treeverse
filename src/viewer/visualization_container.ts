@@ -1,4 +1,6 @@
 
+type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
+
 class VisualizationController {
     tweetTree: TweetTree;
     vis: TweetVisualization;
@@ -20,27 +22,33 @@ class VisualizationController {
 
         this.tweetTree.addTweetsFromContext(context);
 
+        /*
         if (context.has_more) {
             this.fetchTweets(context.tweet, context.continuation);
         } else {
             this.vis.setTreeData(this.tweetTree);
         }
+        */
+        this.vis.setTreeData(this.tweetTree);
     }
 
     loadConversation(result) {
         let context = TweetServer.parseTweetsFromConversationHTML(result);
         this.tweetTree.addTweetsFromContext(context);
 
+        /*
         if (context.has_more) {
-            this.fetchTweets(this.tweetTree.root, context.continuation);
+            this.fetchTweets(this.tweetTree.root.tweet, context.continuation);
         } else {
             this.vis.setTreeData(this.tweetTree);
         }
+        */
     }
 
     constructor(container: HTMLElement) {
         this.feed = new FeedController(document.getElementById('feed'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
+        this.vis.on('hover', (e: PointNode) => this.feed.setFeed(e));
         this.tweetTree = new TweetTree();
     }
 }

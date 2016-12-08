@@ -1,10 +1,7 @@
 
-// High level: given a tweet ID, return a tree-like data structure
-
 class Tweet {
     username: string;
     name: string;
-    children: Tweet[] = [];
     bodyElement: HTMLElement;
     body: string;
     // date
