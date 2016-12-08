@@ -1,18 +1,27 @@
 class AbstractTreeNode {
-    children: AbstractTreeNode[];
+    children: Map<String, AbstractTreeNode>;
 
     constructor() {
-        this.children = [];
+        this.children = new Map<String, AbstractTreeNode>();
+    }
+
+    getId(): string {
+        throw new Error('Not implemented');
     }
 
     toHierarchy() {
-        return d3.hierarchy(this);
+        return d3.hierarchy(this, (d: AbstractTreeNode) => Array.from(d.children.values()));
     }
 }
 
 class HasMoreNode extends AbstractTreeNode {
     parent: TweetNode;
     continuation: string;
+    static ID = 'has_more';
+
+    getId() {
+        return HasMoreNode.ID;
+    }
 
     constructor(parent: TweetNode, continuation: string) {
         super();
@@ -24,6 +33,10 @@ class HasMoreNode extends AbstractTreeNode {
 class TweetNode extends AbstractTreeNode {
     tweet: Tweet;
 
+    getId() {
+        return this.tweet.id;
+    }
+
     constructor(tweet: Tweet) {
         super();
         this.tweet = tweet;
@@ -33,7 +46,7 @@ class TweetNode extends AbstractTreeNode {
         if (!parent || !child) {
             return;
         }
-        parent.children.push(child);
+        parent.children.set(child.getId(), child);
     }
 
     addChildrenFromContext(tweetContext: TweetContext) {
@@ -46,6 +59,7 @@ class TweetNode extends AbstractTreeNode {
             }
         }
 
+        this.children.delete(HasMoreNode.ID);
         if (tweetContext.has_more) {
             TweetNode.addParent(this, new HasMoreNode(this, tweetContext.continuation));
         }
