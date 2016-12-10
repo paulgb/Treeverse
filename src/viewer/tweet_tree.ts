@@ -42,11 +42,15 @@ class TweetNode extends AbstractTreeNode {
         this.tweet = tweet;
     }
 
-    private static addParent(parent: AbstractTreeNode, child: AbstractTreeNode) {
+    private static addParent(parent: AbstractTreeNode, child: AbstractTreeNode): TweetNode {
         if (!parent || !child) {
-            return;
+            return <TweetNode>child;
+        }
+        if (parent.children.has(child.getId())) {
+            return <TweetNode>parent.children.get(child.getId());
         }
         parent.children.set(child.getId(), child);
+        return <TweetNode>child;
     }
 
     addChildrenFromContext(tweetContext: TweetContext) {
@@ -75,12 +79,12 @@ class TweetNode extends AbstractTreeNode {
             if (!root) {
                 root = ancestorNode;
             }
-            this.addParent(parent, ancestorNode);
-            parent = ancestor;
+            ancestorNode = this.addParent(parent, ancestorNode);
+            parent = ancestorNode;
         }
 
         var contextTweetNode = new TweetNode(tweetContext.tweet);
-        this.addParent(parent, contextTweetNode);
+        contextTweetNode = this.addParent(parent, contextTweetNode);
         contextTweetNode.addChildrenFromContext(tweetContext);
 
         if (!root) {

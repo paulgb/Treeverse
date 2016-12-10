@@ -22,7 +22,8 @@ class TweetParser {
         let doc = TweetParser.extractDocFromConversationResponse(response);
 
         let context = new TweetContext();
-        context.descentants = this.parseDescendants(doc.getElementsByTagName('body')[0]);
+        context.descentants = this
+            .parseDescendants(doc.getElementsByTagName('body')[0]);
         context.continuation = obj.descendants.min_position;
         context.has_more = obj.descendants.has_more_items;
 
@@ -30,7 +31,8 @@ class TweetParser {
     }
 
     private static parseDescendants(container: HTMLElement): Tweet[][] {
-        let descendants = container.querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
+        let descendants = container
+            .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
         let result = <Tweet[][]>[];
 
         for (let i = 0; i < descendants.length; i++) {
@@ -45,15 +47,19 @@ class TweetParser {
         let doc = TweetParser.extractDocFromResponse(response);
         let tweetContext = new TweetContext();
 
-        tweetContext.continuation = doc.querySelector('.replies-to .stream-container').getAttribute('data-min-position');
+        tweetContext.continuation = doc
+            .querySelector('.replies-to .stream-container')
+            .getAttribute('data-min-position');
         if (tweetContext.continuation) {
             tweetContext.has_more = true;
         }
 
-        let ancestorContainer = <HTMLElement>doc.getElementsByClassName('in-reply-to')[0];
+        let ancestorContainer = <HTMLElement>doc
+            .getElementsByClassName('in-reply-to')[0];
         let mainTweetContainer = <HTMLElement>doc
             .getElementsByClassName('permalink-tweet-container')[0];
-        let descendentsContainer = <HTMLElement>doc.getElementsByClassName('replies-to')[0];
+        let descendentsContainer = <HTMLElement>doc
+            .getElementsByClassName('replies-to')[0];
 
         if (ancestorContainer) {
             tweetContext.ancestors = this.parseTweetsFromStream(ancestorContainer);
@@ -85,7 +91,11 @@ class TweetParser {
             tweet.body = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
-            tweet.avatar = tweetElement.getElementsByClassName('avatar')[0].getAttribute('src');
+            tweet.avatar = tweetElement
+                .getElementsByClassName('avatar')[0].getAttribute('src');
+            tweet.time = Number(tweetElement
+                .getElementsByClassName('_timestamp')[0]
+                .getAttribute('data-time-ms'));
 
             tweets.push(tweet);
             nextChildren = [tweet.id];

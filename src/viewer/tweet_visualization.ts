@@ -8,15 +8,44 @@ class TweetVisualization {
     private feed: FeedController;
     private zoom: d3.ZoomBehavior<Element, {}>;
     private listeners: d3.Dispatch<EventTarget>;
+    private colorScale: d3.ScalePower<string, number>;
 
     constructor(svgElement: HTMLElement, feed: FeedController) {
         this.buildTree(svgElement);
         this.listeners = d3.dispatch('hover', 'click', 'dblclick');
+
+        let timeIntervals = [
+            300,
+            600,
+            3600,
+            10800
+        ];
+        let timeColors = [
+            '#FA5050',
+            '#E9FA50',
+            '#F5F1D3',
+            '#47D8F5'
+        ];
+
+        this.colorScale = d3.scaleSqrt<string, number>()
+            .domain(timeIntervals)
+            .range(timeColors);
     }
 
     on(eventType, callback) {
         this.listeners.on(eventType, callback);
     };
+
+    private colorEdge(edgeTarget: d3.HierarchyNode<AbstractTreeNode>) {
+        let data = edgeTarget.data;
+        if (data instanceof TweetNode) {
+            let timeDelta = (data.tweet.time - (<TweetNode>edgeTarget.parent.data).tweet.time) / 1000;
+            console.log(timeDelta);
+            return this.colorScale(timeDelta).toString();
+        } else {
+            return '#fff';
+        }
+    }
 
     private static treeWidth<T>(hierarchy: d3.HierarchyNode<T>) {
         let widths = new Map<number, number>();
@@ -26,7 +55,6 @@ class TweetVisualization {
 
         return Math.max.apply(null, Array.from(widths.values()));
     }
-
 
     private buildTree(container: HTMLElement) {
         this.container = d3.select(container);
@@ -62,7 +90,7 @@ class TweetVisualization {
     setTreeData(tree: TweetNode) {
         console.log('here1', tree);
         let hierarchy = tree.toHierarchy();
-        let layout = d3.tree()(hierarchy);
+        let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy);
 
         let maxWidth = TweetVisualization.treeWidth(hierarchy);
 
@@ -72,9 +100,13 @@ class TweetVisualization {
         let edgeToPath = (d: d3.HierarchyPointNode<Tweet>) => {
             let startX = xscale * d.parent.x;
             let startY = yscale * d.parent.y;
-            let endX = xscale * d.x;
             let endY = yscale * d.y;
-            return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
+            if (d.parent.x == d.x) {
+                return `M${startX},${startY} ${startX},${endY}`;
+            } else {
+                let endX = xscale * d.x;
+                return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
+            }
         }
 
         let duration = 1000;
@@ -93,7 +125,7 @@ class TweetVisualization {
             .attr('d', edgeToPath)
             .attr('fill', 'none')
             .attr('stroke-width', 2)
-            .attr('stroke', '#888')
+            .attr('stroke', this.colorEdge.bind(this))
             .attr('opacity', 0)
             .transition().delay(duration)
             .attr('opacity', 1);
@@ -130,7 +162,7 @@ class TweetVisualization {
                         .attr('y', -1)
                         .attr('height', 42)
                         .attr('width', 42)
-                        .attr('stroke', '#222')
+                        .attr('stroke', '#ddd')
                         .attr('stroke-width', '3px')
                         .attr('rx', "4px")
                         .attr('fill', 'none');
@@ -140,7 +172,9 @@ class TweetVisualization {
                         .attr('fill', '#800')
                         .attr('cx', 20)
                         .attr('cy', 20)
-                        .attr('r', 20);
+                        .attr('r', 20)
+                        .attr('stroke-width', '2px')
+                        .attr('stroke', 'white');
 
                     group.append('text')
                         .text('...')

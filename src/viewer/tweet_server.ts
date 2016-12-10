@@ -3,9 +3,9 @@ class Tweet {
     name: string;
     bodyElement: HTMLElement;
     body: string;
-    // date
     id: string;
     avatar: string;
+    time: number;
 }
 
 class TweetContext {
