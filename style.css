@@ -25,6 +25,10 @@
     min-height: 600px;
 }
 
+.text {
+    white-space: pre-wrap;
+}
+
 .text a.twitter-atreply s {
     text-decoration: none;
 }
