@@ -73,15 +73,21 @@ class TweetVisualization {
         this.nodes.selectAll('*').remove();
         this.edges.selectAll('*').remove();
 
+        let edgeToPath = (d: d3.HierarchyPointNode<Tweet>) => {
+            let startX = xscale * d.parent.x;
+            let startY = yscale * d.parent.y;
+            let endX = xscale * d.x;
+            let endY = yscale * d.y;
+            return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
+        }
+
         let paths = this.edges.selectAll('path').data(layout.descendants().slice(1))
             .enter()
-            .append("line")
-            .attr("x1", d => xscale * d.parent.x)
-            .attr("y1", d => yscale * d.parent.y)
-            .attr("x2", d => xscale * d.x)
-            .attr("y2", d => yscale * d.y)
+            .append("path")
+            .attr('d', edgeToPath)
+            .attr('fill', 'none')
             .attr('stroke-width', 2)
-            .attr('stroke', '#555');
+            .attr('stroke', '#888');
 
         let enter = this.nodes.selectAll('g')
             .data(layout.descendants())
@@ -106,10 +112,12 @@ class TweetVisualization {
                     .attr('width', 40)
 
                 group.append('rect')
-                    .attr('height', 40)
-                    .attr('width', 40)
+                    .attr('x', -1)
+                    .attr('y', -1)
+                    .attr('height', 42)
+                    .attr('width', 42)
                     .attr('stroke', '#222')
-                    .attr('stroke-width', '2px')
+                    .attr('stroke-width', '3px')
                     .attr('rx', "4px")
                     .attr('fill', 'none');
 
