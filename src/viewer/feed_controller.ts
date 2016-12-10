@@ -9,48 +9,56 @@ class FeedController {
         let ancestors = node.ancestors();
         ancestors.reverse();
 
-        d3
-            .select(this.container)
-            .selectAll('div')
-            .remove();
+        let duration = 100;
 
         let comments = d3
             .select(this.container)
-            .selectAll('div')
-            .data(ancestors)
+            .selectAll('div.comment')
+            .data(ancestors, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+
+        comments.exit().style('opacity', 1)
+            .transition().duration(duration)
+            .style('opacity', 0).remove();
+
+        comments
             .enter()
             .append('div')
-            .classed('comment', true);
+            .classed('comment', true)
+            .each(function (this: Element, datum: PointNode) {
+                if (datum.data instanceof TweetNode) {
+                    let tweet = datum.data.tweet;
+                    let div = d3.select(this);
 
-        comments.each(function (this: Element, datum: PointNode) {
-            if (datum.data instanceof TweetNode) {
-                let tweet = datum.data.tweet;
-                let div = d3.select(this);
+                    div
+                        .append('a')
+                        .classed('avatar', true)
+                        .append('img')
+                        .attr('src', tweet.avatar)
+                        .style('height', 'auto')
+                        .style('max-width', 35)
+                        .style('width', 'auto')
+                        .style('max-height', 35);
 
-                div
-                    .append('a')
-                    .classed('avatar', true)
-                    .append('img')
-                    .attr('src', tweet.avatar)
-                    .style('height', 'auto')
-                    .style('max-width', 35)
-                    .style('width', 'auto')
-                    .style('max-height', 35);
+                    let content = div
+                        .append('div')
+                        .classed('content', true);
 
-                let content = div
-                    .append('div')
-                    .classed('content', true);
+                    content
+                        .append('span')
+                        .classed('author', true)
+                        .text(tweet.username);
 
-                content
-                    .append('span')
-                    .classed('author', true)
-                    .text(tweet.username);
-
-                content
-                    .append('div')
-                    .classed('text', true)
-                    .html(tweet.bodyElement.innerHTML);
-            }
-        });
+                    content
+                        .append('div')
+                        .classed('text', true)
+                        .html(tweet.bodyElement.innerHTML);
+                }
+            })
+            .style('opacity', 0)
+            .style('display', 'none')
+            .transition().delay(duration + 100)
+            .style('display', 'block')
+            .style('opacity', 1);
+        ;
     }
 }

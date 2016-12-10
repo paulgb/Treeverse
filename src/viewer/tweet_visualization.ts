@@ -69,10 +69,6 @@ class TweetVisualization {
         let xscale = maxWidth * 120;
         let yscale = hierarchy.height * 120;
 
-        // todo: transitions
-        this.nodes.selectAll('*').remove();
-        this.edges.selectAll('*').remove();
-
         let edgeToPath = (d: d3.HierarchyPointNode<Tweet>) => {
             let startX = xscale * d.parent.x;
             let startY = yscale * d.parent.y;
@@ -81,17 +77,37 @@ class TweetVisualization {
             return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
         }
 
-        let paths = this.edges.selectAll('path').data(layout.descendants().slice(1))
+        let duration = 1000;
+
+        let paths = this.edges
+            .selectAll('path')
+            .data(layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+
+        paths.exit().remove();
+        console.log(paths);
+        paths.transition().duration(duration).attr('d', edgeToPath);
+
+        paths
             .enter()
             .append("path")
             .attr('d', edgeToPath)
             .attr('fill', 'none')
             .attr('stroke-width', 2)
-            .attr('stroke', '#888');
+            .attr('stroke', '#888')
+            .attr('opacity', 0)
+            .transition().delay(duration)
+            .attr('opacity', 1);
 
-        let enter = this.nodes.selectAll('g')
-            .data(layout.descendants())
-            .enter()
+        let nodes = this.nodes.selectAll('g')
+            .data(layout.descendants(), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+
+        nodes.exit().remove();
+
+        nodes.transition()
+            .duration(duration)
+            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
+
+        nodes.enter()
             .append('g')
             .style('cursor', 'pointer')
             .on('mouseover', (e: PointNode) => this.listeners.call('hover', null, e))
@@ -99,45 +115,46 @@ class TweetVisualization {
                 this.listeners.call('dblclick', null, e.data);
                 d3.event.stopPropagation();
             })
-            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
+            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`)
+            .each(function (this: Element, datum: PointNode) {
+                let group = d3.select(this);
+                if (datum.data instanceof TweetNode) {
+                    let tweet = datum.data.tweet;
+                    group.append('image')
+                        .attr('xlink:href', tweet.avatar)
+                        .attr('height', 40)
+                        .attr('width', 40)
 
-        enter.each(function (this: Element, datum: PointNode) {
-            let group = d3.select(this);
+                    group.append('rect')
+                        .attr('x', -1)
+                        .attr('y', -1)
+                        .attr('height', 42)
+                        .attr('width', 42)
+                        .attr('stroke', '#222')
+                        .attr('stroke-width', '3px')
+                        .attr('rx', "4px")
+                        .attr('fill', 'none');
 
-            if (datum.data instanceof TweetNode) {
-                let tweet = datum.data.tweet;
-                group.append('image')
-                    .attr('xlink:href', tweet.avatar)
-                    .attr('height', 40)
-                    .attr('width', 40)
+                } else if (datum.data instanceof HasMoreNode) {
+                    group.append('circle')
+                        .attr('fill', '#800')
+                        .attr('cx', 20)
+                        .attr('cy', 20)
+                        .attr('r', 20);
 
-                group.append('rect')
-                    .attr('x', -1)
-                    .attr('y', -1)
-                    .attr('height', 42)
-                    .attr('width', 42)
-                    .attr('stroke', '#222')
-                    .attr('stroke-width', '3px')
-                    .attr('rx', "4px")
-                    .attr('fill', 'none');
-
-            } else if (datum.data instanceof HasMoreNode) {
-                group.append('circle')
-                    .attr('fill', '#800')
-                    .attr('cx', 20)
-                    .attr('cy', 20)
-                    .attr('r', 20);
-
-                group.append('text')
-                    .text('...')
-                    .attr('x', 20)
-                    .attr('y', 22)
-                    .attr('text-anchor', 'middle')
-                    .attr('font-size', '32pt')
-                    .attr('alignment-baseline', 'baseline')
-                    .attr('fill', '#fff');
-            }
-        });
+                    group.append('text')
+                        .text('...')
+                        .attr('x', 20)
+                        .attr('y', 22)
+                        .attr('text-anchor', 'middle')
+                        .attr('font-size', '32pt')
+                        .attr('alignment-baseline', 'baseline')
+                        .attr('fill', '#fff');
+                }
+            })
+            .attr('opacity', 0)
+            .transition().delay(duration)
+            .attr('opacity', 1);;
 
     }
 }
