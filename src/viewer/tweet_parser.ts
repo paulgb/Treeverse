@@ -7,6 +7,14 @@ class Tweet {
     avatar: string;
     time: number;
     replies: number;
+
+    getUrl() {
+        return `https://twitter.com/${this.username}/status/${this.id}`;
+    }
+
+    getUserUrl() {
+        return `https://twitter.com/${this.username}`;
+    }
 }
 
 class TweetContext {

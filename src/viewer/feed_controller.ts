@@ -46,12 +46,16 @@ class FeedController {
                     content
                         .append('span')
                         .classed('author', true)
-                        .text(tweet.username);
+                        .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
 
-                    content
+                    let body = content
                         .append('div')
                         .classed('text', true)
                         .html(tweet.bodyElement.innerHTML);
+
+                    body.append('a')
+                        .html(' &rarr;')
+                        .attr('href', tweet.getUrl());
                 }
             })
             .style('opacity', 0)

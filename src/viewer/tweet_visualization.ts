@@ -9,6 +9,7 @@ class TweetVisualization {
     private zoom: d3.ZoomBehavior<Element, {}>;
     private listeners: d3.Dispatch<EventTarget>;
     private colorScale: d3.ScalePower<string, number>;
+    private frozen: boolean;
 
     constructor(svgElement: HTMLElement, feed: FeedController) {
         this.buildTree(svgElement);
@@ -61,6 +62,8 @@ class TweetVisualization {
 
         this.edges = <D3Selector>this.treeGroup.append('g');
         this.nodes = <D3Selector>this.treeGroup.append('g');
+
+        this.container.on('click', () => { this.frozen = false });
 
         // Set up zoom functionality.
         this.zoom = d3.zoom()
@@ -143,10 +146,20 @@ class TweetVisualization {
         nodes.enter()
             .append('g')
             .style('cursor', 'pointer')
-            .on('mouseover', (e: PointNode) => this.listeners.call('hover', null, e))
+            .on('mouseover', (e: PointNode) => {
+                if (!this.frozen) {
+                    this.listeners.call('hover', null, e)
+                }
+            })
+            .on('click', (e: PointNode) => {
+                this.listeners.call('hover', null, e);
+                this.frozen = true;
+                d3.event.stopPropagation();
+            })
             .on('dblclick', (e: PointNode) => {
                 this.listeners.call('dblclick', null, e.data);
                 d3.event.stopPropagation();
+                this.frozen = false;
             })
             .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
                 d.data instanceof TweetNode && (d.data.tweet.replies > (d.children || []).length))
