@@ -2,13 +2,6 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es6",
-        //"outDir": "../../extension/script/",
         "module": "commonjs"
-        /*
-        "types": [
-            "@types/d3",
-            "@types/chrome"
-        ]
-        */
     }
 }

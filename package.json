@@ -1,5 +1,5 @@
 {
-  "name": "tweettree",
+  "name": "treeverse",
   "devDependencies": {
     "@types/chrome": "0.0.35",
     "@types/d3": "^4.2.37",
@@ -10,7 +10,7 @@
     "typescript": "^2.0.6"
   },
   "version": "0.0.1",
-  "description": "TweetTree Chrome Extension",
+  "description": "Treeverse Chrome Extension",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,3 +1,10 @@
+/* Outer page container */
+#page {
+    min-width: 800px;
+    min-height: 600px;
+}
+
+/* Tree containers */
 #tree {
     width: 100%;
     height: 100%;
@@ -12,20 +19,45 @@
     right: 500px;
 }
 
-#feedContainer {
+/* Sidebar and info box styles. */
+
+#sidebar {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     width: 500px;
     background: #eee;
+    overflow-x: hidden;
+    /*overflow-y: scroll;*/
 }
 
-#page {
-    min-width: 800px;
-    min-height: 600px;
+#infoBox {
+    padding: 18px;
+    background-color: #fff;
+    box-shadow: 0 1px 10px #ccc;
+    height: 100px;
+    
+    /*position: absolute;*/
 }
 
+/* Feed-related elements */
+#feedContainer {
+    overflow-y: scroll;
+    position: absolute;
+    bottom: 0;
+    top: 100px;
+    /*position:*/ 
+}
+
+#feedInner {
+    padding: 18px;
+    /* position: absolute; */
+    /* bottom: 0; */
+    
+}
+
+/* Tweet content styles */
 .text {
     white-space: pre-wrap;
 }

@@ -7,6 +7,8 @@ class VisualizationController {
 
     fetchTweets(tweet: Tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
+            document.getElementsByTagName('title')[0].innerText =
+                `${context.tweet.name} - "${context.tweet.bodyElement.textContent}" in Treeverse`;
             this.tweetTree = TweetNode.createFromContext(context);
             this.vis.setTreeData(this.tweetTree);
         });
@@ -38,7 +40,7 @@ class VisualizationController {
     }
 
     constructor(container: HTMLElement) {
-        this.feed = new FeedController(document.getElementById('feed'));
+        this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         this.vis.on('dblclick', this.expandNode.bind(this));

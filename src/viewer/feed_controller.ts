@@ -12,7 +12,7 @@ class FeedController {
         let duration = 100;
 
         let comments = d3
-            .select(this.container)
+            .select(this.container.getElementsByClassName('comments')[0])
             .selectAll('div.comment')
             .data(ancestors, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
@@ -24,7 +24,7 @@ class FeedController {
             .enter()
             .append('div')
             .classed('comment', true)
-            .each(function (this: Element, datum: PointNode) {
+            .each(function(this: Element, datum: PointNode) {
                 if (datum.data instanceof TweetNode) {
                     let tweet = datum.data.tweet;
                     let div = d3.select(this);
@@ -60,9 +60,11 @@ class FeedController {
             })
             .style('opacity', 0)
             .style('display', 'none')
-            .transition().delay(duration + 100)
+            //.transition().delay(duration + 100)
             .style('display', 'block')
             .style('opacity', 1);
-        ;
+
+        this.container.scrollTop = this.container.scrollHeight;
+
     }
 }
