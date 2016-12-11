@@ -32,7 +32,7 @@ Installation
 Developing
 ----------
 
-See ![DEVELOPING.md](DEVELOPING.md)
+See [DEVELOPING.md](DEVELOPING.md)
 
 Bugs & Contact
 --------------
