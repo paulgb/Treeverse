@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>TweetTree</title>
+	<title>Treeverse</title>
 	<link rel="stylesheet" type="text/css" href="/resources/ext/semantic/semantic.min.css">
 	<link rel="stylesheet" type="text/css" href="/resources/style.css">
 	<script src="/script/lib.js"></script>
@@ -34,11 +34,19 @@
 				</defs>
 			</svg>
 		</div>
-		<div id="feedContainer" style="position: absolute; height: 100%; overflow-y: hidden;">
-			<div style="padding: 18px; position: absolute; bottom: 0;">
-				<div class="ui comments" id="feed">
+		<div id="sidebar">
+			<div id="infoBox">
+				<p>Created by <a href="https://twitter.com/paulgb">@paulgb</a>. Confused? <a href="https://github.com/paulgb/Treeverse/blob/master/README.md">Read this</a>.
+					Bugs? Tweet me or <a href="https://github.com/paulgb/Treeverse/issues">report on GitHub</a>. <a href="https://github.com/paulgb/Treeverse">Source code</a>.
+				</p>
+			</div>
+			<div id="feedContainer">
+				<div id="feedInner">
+					<div class="ui comments" id="feed">
+					</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 </body>
