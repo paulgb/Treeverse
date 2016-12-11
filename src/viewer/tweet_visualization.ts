@@ -141,7 +141,7 @@ class TweetVisualization {
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
 
         nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
-            d.data instanceof TweetNode && (d.data.tweet.replies > (d.children || []).length));
+            d.data instanceof TweetNode && d.data.hasMore());
 
         nodes.enter()
             .append('g')
@@ -162,9 +162,9 @@ class TweetVisualization {
                 this.frozen = false;
             })
             .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
-                d.data instanceof TweetNode && (d.data.tweet.replies > (d.children || []).length))
+                d.data instanceof TweetNode && d.data.hasMore())
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`)
-            .each(function (this: Element, datum: PointNode) {
+            .each(function(this: Element, datum: PointNode) {
                 let group = d3.select(this);
                 if (datum.data instanceof TweetNode) {
                     let tweet = datum.data.tweet;

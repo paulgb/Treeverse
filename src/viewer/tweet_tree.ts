@@ -1,80 +1,76 @@
+/**
+ * Base class for all tree nodes.
+ */
 class AbstractTreeNode {
+    /**
+     * Children of this node, represented as a map from ids to
+     * AbstractTreeNodes.
+     */
     children: Map<String, AbstractTreeNode>;
 
     constructor() {
         this.children = new Map<String, AbstractTreeNode>();
     }
 
+    /** Returns a unique ID for this node. */
     getId(): string {
         throw new Error('Not implemented');
     }
 
+    /** Returns a d3 hierarchy for the tree rooted at this node. */
     toHierarchy() {
         return d3.hierarchy(this, (d: AbstractTreeNode) => Array.from(d.children.values()));
     }
 }
 
+/**
+ * A tree node representing the existance of more nodes not yet loaded.
+ */
 class HasMoreNode extends AbstractTreeNode {
     parent: TweetNode;
-    continuation: string;
 
-    getId() {
-        return `${this.parent.getId()}_${this.continuation}`;
-    }
-
-    constructor(parent: TweetNode, continuation?: string) {
+    constructor(parent: TweetNode) {
         super();
         this.parent = parent;
-        this.continuation = continuation;
+    }
+
+    getId() {
+        // Parent continuation string is used so that d3 sees this as a new
+        // HasMoreNode when another HasMoreNode has exited on the same parent.
+        return `${this.parent.getId()}_${this.parent.continuation}`;
     }
 }
 
 class TweetNode extends AbstractTreeNode {
     tweet: Tweet;
     hasMoreNodeId: string;
-
-    getId() {
-        return this.tweet.id;
-    }
+    continuation: string;
+    fullyLoaded: boolean;
 
     constructor(tweet: Tweet) {
         super();
         this.tweet = tweet;
     }
 
-    private static addParent(parent: AbstractTreeNode, child: AbstractTreeNode): TweetNode {
-        if (!parent || !child) {
-            return <TweetNode>child;
-        }
-        if (parent.children.has(child.getId())) {
-            return <TweetNode>parent.children.get(child.getId());
-        }
-        parent.children.set(child.getId(), child);
-        return <TweetNode>child;
+    getId() {
+        return this.tweet.id;
     }
 
-    static addHasMoreNode(parent: TweetNode, continuation?: string) {
-        let hasMoreNode = new HasMoreNode(parent, continuation);
-        TweetNode.addParent(parent, hasMoreNode);
-        parent.hasMoreNodeId = hasMoreNode.getId();
+    /**
+     * Return false iff this tweet has more replies that we know about.
+     */
+    hasMore(): boolean {
+        // The fully loaded flag takes precedence because sometimes the
+        // reply count from twitter is greater than the number of tweets
+        // we actually get back from the API. This is probably because of
+        // replies from private accounts.
+        if (this.fullyLoaded) return false;
+        if (this.continuation) return true;
+        return this.children.size < this.tweet.replies;
     }
 
-    addChildrenFromContext(tweetContext: TweetContext) {
-        for (let descentantGroup of tweetContext.descentants) {
-            let parent: TweetNode = this;
-            for (let descendant of descentantGroup) {
-                var descendantNode = new TweetNode(descendant);
-                TweetNode.addParent(parent, descendantNode);
-                parent = descendantNode;
-            }
-        }
-
-        this.children.delete(this.hasMoreNodeId);
-        if (tweetContext.continuation) {
-            TweetNode.addHasMoreNode(this, tweetContext.continuation);
-        }
-    }
-
+    /** Creates a tree from the given TweetContext and returns the root,
+     *  which is the first ancestor in the context. */
     static createFromContext(tweetContext: TweetContext): TweetNode {
         let root = null;
         let parent = null;
@@ -95,5 +91,41 @@ class TweetNode extends AbstractTreeNode {
             root = contextTweetNode;
         }
         return root;
+    }
+
+    addChildrenFromContext(tweetContext: TweetContext) {
+        for (let descentantGroup of tweetContext.descentants) {
+            let parent: TweetNode = this;
+            for (let descendant of descentantGroup) {
+                var descendantNode = new TweetNode(descendant);
+                TweetNode.addParent(parent, descendantNode);
+                parent = descendantNode;
+            }
+        }
+
+        this.children.delete(this.hasMoreNodeId);
+        this.continuation = tweetContext.continuation;
+        if (tweetContext.continuation) {
+            this.addHasMoreNode();
+        } else {
+            this.fullyLoaded = true;
+        }
+    }
+
+    private static addParent(parent: AbstractTreeNode, child: AbstractTreeNode): TweetNode {
+        if (!parent || !child) {
+            return <TweetNode>child;
+        }
+        if (parent.children.has(child.getId())) {
+            return <TweetNode>parent.children.get(child.getId());
+        }
+        parent.children.set(child.getId(), child);
+        return <TweetNode>child;
+    }
+
+    private addHasMoreNode() {
+        let hasMoreNode = new HasMoreNode(this);
+        TweetNode.addParent(this, hasMoreNode);
+        this.hasMoreNodeId = hasMoreNode.getId();
     }
 }

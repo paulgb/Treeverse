@@ -1,75 +1,80 @@
+/**
+ * Contains information about an individual tweet.
+ */
 class Tweet {
-    username: string;
-    name: string;
-    bodyElement: HTMLElement;
-    body: string;
+    /** Unique identifier of the tweet. */
     id: string;
+    /** Handle of user who posted tweet. */
+    username: string;
+    /** Screen name of user who posted tweet. */
+    name: string;
+    /** HTML body of the tweet content. */
+    bodyElement: HTMLElement;
+    /** URL of the avatar image for the user who posted the tweet.  */
     avatar: string;
+    /** Time of the tweet in milliseconds since epoch. */
     time: number;
+    /** Number of replies (public and private) to the tweet. */
     replies: number;
 
+    /**
+     * Returns a URL to this tweet on Twitter.
+     */
     getUrl() {
         return `https://twitter.com/${this.username}/status/${this.id}`;
     }
 
+    /**
+     * Returns a URL to the profile that posted this tweet on Twitter.
+     */
     getUserUrl() {
         return `https://twitter.com/${this.username}`;
     }
 }
 
+/**
+ * Represents the context of a conversation around a particular tweet. this
+ * consists of the tweet itself, (some of) the tweets before it in its
+ * reply-chain, and (some of) the reply chains that come after it.
+ */
 class TweetContext {
+    /** Tweets before this.tweet in the reply-chain. */
     ancestors: Tweet[] = [];
+    /** The tweet that this TweetContext relates to. */
     tweet: Tweet;
+    /** Chains of replies in response to this.tweet. */
     descentants: Tweet[][] = [];
+    /** If present, an API token used to loading more descendants. If absent,
+     *  indicates no further replies. */
     continuation: string;
 }
 
-class TweetParser {
-    private static extractDocFromResponse(response: string): Document {
+/**
+ * Functions for parsing a response from the twitter API into Tweet and
+ * TweetContext objects.
+ */
+namespace TweetParser {
+    /**
+     * Given an API response with a conversation continuation, parse and return 
+     * the TweetContext.
+     */
+    export function parseTweetsFromConversationHTML(response: string): TweetContext {
         let obj = JSON.parse(response);
-        let responseHtml = obj.page;
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(responseHtml, 'text/html');
-
-        return doc;
-    }
-
-    private static extractDocFromConversationResponse(response: string): Document {
-        let obj = JSON.parse(response);
-        let responseHtml = obj.descendants.items_html;
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(responseHtml, 'text/html');
-
-        return doc;
-    }
-
-    public static parseTweetsFromConversationHTML(response: string): TweetContext {
-        let obj = JSON.parse(response);
-        let doc = TweetParser.extractDocFromConversationResponse(response);
+        let doc = extractDocFromConversationResponse(response);
 
         let context = new TweetContext();
-        context.descentants = this
-            .parseDescendants(doc.getElementsByTagName('body')[0]);
+        context.descentants = parseDescendants(doc.getElementsByTagName('body')[0]);
         context.continuation = obj.descendants.min_position;
 
         return context;
     }
 
-    private static parseDescendants(container: HTMLElement): Tweet[][] {
-        let descendants = container
-            .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
-        let result = <Tweet[][]>[];
-
-        for (let i = 0; i < descendants.length; i++) {
-            let child = <HTMLElement>descendants[i];
-            result.push(this.parseTweetsFromStream(child));
-        }
-
-        return result;
-    }
-
-    static parseTweetsFromHtml(response: string): TweetContext {
-        let doc = TweetParser.extractDocFromResponse(response);
+    /**
+     * Given an API response about a particular tweet, parse and return the 
+     * TweetContext.
+     */
+    export function parseTweetsFromHtml(response: string): TweetContext {
+        let doc = extractDocFromResponse(response);
         let tweetContext = new TweetContext();
 
         tweetContext.continuation = doc
@@ -84,19 +89,50 @@ class TweetParser {
             .getElementsByClassName('replies-to')[0];
 
         if (ancestorContainer) {
-            tweetContext.ancestors = this.parseTweetsFromStream(ancestorContainer);
+            tweetContext.ancestors = parseTweetsFromStream(ancestorContainer);
         }
 
         if (mainTweetContainer) {
-            tweetContext.tweet = this.parseTweetsFromStream(mainTweetContainer)[0];
+            tweetContext.tweet = parseTweetsFromStream(mainTweetContainer)[0];
         }
 
-        tweetContext.descentants = this.parseDescendants(descendentsContainer);
+        tweetContext.descentants = parseDescendants(descendentsContainer);
 
         return tweetContext;
     }
 
-    private static parseTweetsFromStream(streamContainer: HTMLElement): Tweet[] {
+    function parseDescendants(container: HTMLElement): Tweet[][] {
+        let descendants = container
+            .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
+        let result = <Tweet[][]>[];
+
+        for (let i = 0; i < descendants.length; i++) {
+            let child = <HTMLElement>descendants[i];
+            result.push(parseTweetsFromStream(child));
+        }
+
+        return result;
+    }
+
+    function extractDocFromResponse(response: string): Document {
+        let obj = JSON.parse(response);
+        let responseHtml = obj.page;
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(responseHtml, 'text/html');
+
+        return doc;
+    }
+
+    function extractDocFromConversationResponse(response: string): Document {
+        let obj = JSON.parse(response);
+        let responseHtml = obj.descendants.items_html;
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(responseHtml, 'text/html');
+
+        return doc;
+    }
+
+    function parseTweetsFromStream(streamContainer: HTMLElement): Tweet[] {
         let tweetStream = [];
         let tweetElements = streamContainer.getElementsByClassName('tweet');
 
@@ -110,8 +146,6 @@ class TweetParser {
                 .getElementsByClassName('fullname')[0].firstChild.textContent;
             tweet.bodyElement = <HTMLElement>tweetElement
                 .getElementsByClassName('tweet-text')[0];
-            tweet.body = tweetElement
-                .getElementsByClassName('tweet-text')[0].textContent;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
             tweet.avatar = tweetElement
                 .getElementsByClassName('avatar')[0].getAttribute('src');

@@ -1,5 +1,27 @@
-class TweetServer {
-    private static async asyncGet(url: string) {
+/**
+ * Interfaces with Twitter API server.
+ */
+namespace TweetServer {
+    /**
+     * Requests the TweetContext for a given tweet and returns a promise. 
+     */
+    export async function requestTweets(tweet): Promise<TweetContext> {
+        let url = getUrlForTweet(tweet);
+        let response = await asyncGet(url);
+        return TweetParser.parseTweetsFromHtml(response);
+    }
+
+    /**
+     * Requests the continued conversation for a given tweet and continuation
+     * token, and returns a promise.
+     */
+    export async function requestContinuation(tweet, continuation): Promise<TweetContext> {
+        let url = getUrlForConversation(tweet, continuation);
+        let response = await asyncGet(url);
+        return TweetParser.parseTweetsFromConversationHTML(response);
+    }
+
+    async function asyncGet(url: string) {
         return new Promise<string>((resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.onload = () => {
@@ -12,23 +34,11 @@ class TweetServer {
         });
     }
 
-    static async requestTweets(tweet): Promise<TweetContext> {
-        let url = TweetServer.getUrlForTweet(tweet.username, tweet.id);
-        let response = await TweetServer.asyncGet(url);
-        return TweetParser.parseTweetsFromHtml(response);
+    function getUrlForTweet(tweet: Tweet): string {
+        return `https://twitter.com/${tweet.username}/status/${tweet.id}`;
     }
 
-    static async requestContinuation(tweet, continuation): Promise<TweetContext> {
-        let url = TweetServer.getUrlForConversation(tweet.username, tweet.id, continuation);
-        let response = await TweetServer.asyncGet(url);
-        return TweetParser.parseTweetsFromConversationHTML(response);
-    }
-
-    static getUrlForTweet(handle: string, tweetId: string): string {
-        return `https://twitter.com/${handle}/status/${tweetId}`;
-    }
-
-    static getUrlForConversation(handle: string, tweetId: string, continuation: string): string {
-        return `https://twitter.com/i/${handle}/conversation/${tweetId}?max_position=${continuation}`;
+    function getUrlForConversation(tweet: Tweet, continuation: string): string {
+        return `https://twitter.com/i/${tweet.username}/conversation/${tweet.id}?max_position=${continuation}`;
     }
 }

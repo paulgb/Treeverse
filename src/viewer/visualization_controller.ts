@@ -15,19 +15,25 @@ class VisualizationController {
     private expandNode(node: AbstractTreeNode) {
         console.log('node: ', node);
         if (node instanceof HasMoreNode) {
-            TweetServer
-                .requestContinuation(node.parent.tweet, node.continuation)
-                .then((context) => {
-                    node.parent.addChildrenFromContext(context);
-                    this.vis.setTreeData(this.tweetTree);
-                });
+            this.expandNode(node.parent);
+
         } else if (node instanceof TweetNode) {
-            TweetServer
-                .requestTweets(node.tweet)
-                .then((context) => {
-                    node.addChildrenFromContext(context);
-                    this.vis.setTreeData(this.tweetTree);
-                });
+            if (node.continuation) {
+                TweetServer
+                    .requestContinuation(node.tweet, node.continuation)
+                    .then((context) => {
+                        node.addChildrenFromContext(context);
+                        this.vis.setTreeData(this.tweetTree);
+                    });
+            } else {
+                TweetServer
+                    .requestTweets(node.tweet)
+                    .then((context) => {
+                        node.addChildrenFromContext(context);
+                        this.vis.setTreeData(this.tweetTree);
+                    });
+            }
+
         }
     }
 
