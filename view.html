@@ -2,19 +2,37 @@
 
 <head>
 	<title>TweetTree</title>
-
 	<link rel="stylesheet" type="text/css" href="/resources/ext/semantic/semantic.min.css">
 	<link rel="stylesheet" type="text/css" href="/resources/style.css">
 	<script src="/script/lib.js"></script>
 	<script src="/script/viewer.js"></script>
 	<base href="https://www.twitter.com/" target="_blank">
-
 </head>
 
 <body>
 	<div id="page">
 		<div id="treeContainer">
-			<svg id="tree"></svg>
+			<svg id="tree">
+				<style>
+					.has_more_icon {
+						visibility: hidden;
+					}
+					
+					.has_more .has_more_icon {
+						visibility: visible;
+					}
+				</style>
+				<defs>
+					<symbol id="has_more">
+						<g transform="translate(20 20)">
+							<circle r="18" fill="#800" stroke-width="2px" stroke="#fff" stroke-location="inside" />
+							<circle r="3" cx="-9" fill="#fff" />
+							<circle r="3" cx="0" fill="#fff" />
+							<circle r="3" cx="9" fill="#fff" />
+						</g>
+					</symbol>
+				</defs>
+			</svg>
 		</div>
 		<div id="feedContainer" style="position: absolute; height: 100%; overflow-y: hidden;">
 			<div style="padding: 18px; position: absolute; bottom: 0;">
