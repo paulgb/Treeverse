@@ -19,10 +19,10 @@ class HasMoreNode extends AbstractTreeNode {
     continuation: string;
 
     getId() {
-        return this.continuation;
+        return `${this.parent.getId()}_${this.continuation}`;
     }
 
-    constructor(parent: TweetNode, continuation: string) {
+    constructor(parent: TweetNode, continuation?: string) {
         super();
         this.parent = parent;
         this.continuation = continuation;
@@ -53,6 +53,12 @@ class TweetNode extends AbstractTreeNode {
         return <TweetNode>child;
     }
 
+    static addHasMoreNode(parent: TweetNode, continuation?: string) {
+        let hasMoreNode = new HasMoreNode(parent, continuation);
+        TweetNode.addParent(parent, hasMoreNode);
+        parent.hasMoreNodeId = hasMoreNode.getId();
+    }
+
     addChildrenFromContext(tweetContext: TweetContext) {
         for (let descentantGroup of tweetContext.descentants) {
             let parent: TweetNode = this;
@@ -64,10 +70,8 @@ class TweetNode extends AbstractTreeNode {
         }
 
         this.children.delete(this.hasMoreNodeId);
-        if (tweetContext.has_more) {
-            let hasMoreNode = new HasMoreNode(this, tweetContext.continuation);
-            TweetNode.addParent(this, hasMoreNode);
-            this.hasMoreNodeId = hasMoreNode.getId();
+        if (tweetContext.continuation) {
+            TweetNode.addHasMoreNode(this, tweetContext.continuation);
         }
     }
 

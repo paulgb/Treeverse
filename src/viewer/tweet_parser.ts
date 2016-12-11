@@ -1,3 +1,21 @@
+class Tweet {
+    username: string;
+    name: string;
+    bodyElement: HTMLElement;
+    body: string;
+    id: string;
+    avatar: string;
+    time: number;
+    replies: number;
+}
+
+class TweetContext {
+    ancestors: Tweet[] = [];
+    tweet: Tweet;
+    descentants: Tweet[][] = [];
+    continuation: string;
+}
+
 class TweetParser {
     private static extractDocFromResponse(response: string): Document {
         let obj = JSON.parse(response);
@@ -18,14 +36,13 @@ class TweetParser {
     }
 
     public static parseTweetsFromConversationHTML(response: string): TweetContext {
-        let obj = JSON.parse(response); // TODO: clean up
+        let obj = JSON.parse(response);
         let doc = TweetParser.extractDocFromConversationResponse(response);
 
         let context = new TweetContext();
         context.descentants = this
             .parseDescendants(doc.getElementsByTagName('body')[0]);
         context.continuation = obj.descendants.min_position;
-        context.has_more = obj.descendants.has_more_items;
 
         return context;
     }
@@ -50,9 +67,6 @@ class TweetParser {
         tweetContext.continuation = doc
             .querySelector('.replies-to .stream-container')
             .getAttribute('data-min-position');
-        if (tweetContext.continuation) {
-            tweetContext.has_more = true;
-        }
 
         let ancestorContainer = <HTMLElement>doc
             .getElementsByClassName('in-reply-to')[0];
@@ -75,7 +89,7 @@ class TweetParser {
     }
 
     private static parseTweetsFromStream(streamContainer: HTMLElement): Tweet[] {
-        let tweets = [];
+        let tweetStream = [];
         let tweetElements = streamContainer.getElementsByClassName('tweet');
 
         let nextChildren = [];
@@ -96,10 +110,15 @@ class TweetParser {
             tweet.time = Number(tweetElement
                 .getElementsByClassName('_timestamp')[0]
                 .getAttribute('data-time-ms'));
+            tweet.replies = Number(tweetElement
+                .getElementsByClassName('js-actionReply')[0]
+                .getElementsByClassName('ProfileTweet-actionCountForPresentation')[0]
+                .textContent);
 
-            tweets.push(tweet);
+            tweetStream.push(tweet);
             nextChildren = [tweet.id];
         }
-        return tweets;
+
+        return tweetStream;
     }
 }

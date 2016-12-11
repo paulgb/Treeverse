@@ -40,7 +40,6 @@ class TweetVisualization {
         let data = edgeTarget.data;
         if (data instanceof TweetNode) {
             let timeDelta = (data.tweet.time - (<TweetNode>edgeTarget.parent.data).tweet.time) / 1000;
-            console.log(timeDelta);
             return this.colorScale(timeDelta).toString();
         } else {
             return '#fff';
@@ -88,7 +87,7 @@ class TweetVisualization {
     }
 
     setTreeData(tree: TweetNode) {
-        console.log('here1', tree);
+        console.log(tree);
         let hierarchy = tree.toHierarchy();
         let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy);
 
@@ -116,7 +115,6 @@ class TweetVisualization {
             .data(layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
         paths.exit().remove();
-        console.log(paths);
         paths.transition().duration(duration).attr('d', edgeToPath);
 
         paths
@@ -139,6 +137,9 @@ class TweetVisualization {
             .duration(duration)
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
 
+        nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
+            d.data instanceof TweetNode && (d.data.tweet.replies > (d.children || []).length));
+
         nodes.enter()
             .append('g')
             .style('cursor', 'pointer')
@@ -147,6 +148,8 @@ class TweetVisualization {
                 this.listeners.call('dblclick', null, e.data);
                 d3.event.stopPropagation();
             })
+            .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
+                d.data instanceof TweetNode && (d.data.tweet.replies > (d.children || []).length))
             .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`)
             .each(function (this: Element, datum: PointNode) {
                 let group = d3.select(this);
@@ -167,23 +170,20 @@ class TweetVisualization {
                         .attr('rx', "4px")
                         .attr('fill', 'none');
 
-                } else if (datum.data instanceof HasMoreNode) {
-                    group.append('circle')
-                        .attr('fill', '#800')
-                        .attr('cx', 20)
-                        .attr('cy', 20)
-                        .attr('r', 20)
-                        .attr('stroke-width', '2px')
-                        .attr('stroke', 'white');
+                    group.append('use')
+                        .classed('has_more_icon', true)
+                        .attr('xlink:href', '#has_more')
+                        .attr('transform', 'scale(0.5) translate(55 55)');
 
-                    group.append('text')
-                        .text('...')
-                        .attr('x', 20)
-                        .attr('y', 22)
-                        .attr('text-anchor', 'middle')
-                        .attr('font-size', '32pt')
-                        .attr('alignment-baseline', 'baseline')
-                        .attr('fill', '#fff');
+                } else if (datum.data instanceof HasMoreNode) {
+                    group.append('use')
+                        .attr('xlink:href', '#has_more');
+
+                    group.append('rect')
+                        .attr('width', 40)
+                        .attr('height', 40)
+                        .attr('opacity', 0);
+
                 }
             })
             .attr('opacity', 0)

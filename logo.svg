@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8.5205479"
-     inkscape:cx="485.5"
-     inkscape:cy="515.5"
+     inkscape:zoom="6.9111111"
+     inkscape:cx="488.5"
+     inkscape:cy="505"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -456,7 +456,8 @@
        height="48"
        width="48"
        id="rect4365"
-       style="opacity:1;fill:#0066ff;stroke:none" />
+       style="opacity:1;fill:#0066ff;stroke:none"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -464,21 +465,24 @@
        id="path4367"
        d="m 485.76606,538.49161 c -18.38343,0 -16.14672,17.72187 -16.14672,17.72187"
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
        inkscape:connector-curvature="0"
        id="path4369"
        d="m 487.5,526.30417 c 0,12.91218 0,13.05807 0,13.05807"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 487.5,541.30417 c 0,12.91218 0,13.05807 0,13.05807"
        id="path4371"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <path
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -486,7 +490,8 @@
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 486.03064,538.49161 c 18.38344,0 16.14672,17.72187 16.14672,17.72187"
        id="path4377"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <rect
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -495,7 +500,10 @@
        width="7.9256358"
        height="7.9256358"
        x="483.53717"
-       y="518.89941" />
+       y="518.89941"
+       rx="2"
+       ry="2"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <rect
        y="534.89941"
        x="483.53717"
@@ -504,7 +512,10 @@
        id="rect4385"
        style="opacity:1;fill:#ff0066;fill-opacity:1;stroke:#ffffff;stroke-width:1.07436407;stroke-miterlimit:4;stroke-dasharray:none"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       rx="2"
+       ry="2"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <rect
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -513,7 +524,10 @@
        width="7.9256358"
        height="7.9256358"
        x="483.53717"
-       y="552.89941" />
+       y="552.89941"
+       rx="2"
+       ry="2"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <rect
        y="552.89941"
        x="499.53717"
@@ -522,7 +536,10 @@
        id="rect4389"
        style="opacity:1;fill:#ff0066;fill-opacity:1;stroke:#ffffff;stroke-width:1.07436407;stroke-miterlimit:4;stroke-dasharray:none"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       rx="2"
+       ry="2"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
     <rect
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
@@ -531,6 +548,9 @@
        width="7.9256358"
        height="7.9256358"
        x="465.53717"
-       y="552.89941" />
+       y="552.89941"
+       rx="2"
+       ry="2"
+       inkscape:export-filename="/Users/paul/Documents/Projects/TweetTree/extension/icons/icon48.png" />
   </g>
 </svg>

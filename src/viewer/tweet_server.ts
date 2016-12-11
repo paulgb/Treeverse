@@ -1,21 +1,3 @@
-class Tweet {
-    username: string;
-    name: string;
-    bodyElement: HTMLElement;
-    body: string;
-    id: string;
-    avatar: string;
-    time: number;
-}
-
-class TweetContext {
-    ancestors: Tweet[] = [];
-    tweet: Tweet;
-    descentants: Tweet[][] = [];
-    continuation: string;
-    has_more: boolean;
-}
-
 class TweetServer {
     private static async asyncGet(url: string) {
         return new Promise<string>((resolve, reject) => {

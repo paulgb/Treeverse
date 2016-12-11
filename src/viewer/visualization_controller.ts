@@ -13,6 +13,7 @@ class VisualizationController {
     }
 
     private expandNode(node: AbstractTreeNode) {
+        console.log('node: ', node);
         if (node instanceof HasMoreNode) {
             TweetServer
                 .requestContinuation(node.parent.tweet, node.continuation)
