@@ -3,7 +3,7 @@ Treeverse
 
 Treeverse is a browser extension for navigating burgeoning Twitter conversations.
 
-![Screenshot of Tweetverse.](screenshot.png)
+![Screenshot of Treeverse.](screenshot.png)
 
 Conversations are visualized as a tree. Each node (square) is an individual tweet, and
 an edge (line) between two tweets indicates that the lower one is a reply to the upper
@@ -28,6 +28,11 @@ Installation
 ------------
 
 (Placeholder for Chrome app store instructions)
+
+Developing
+----------
+
+See ![DEVELOPING.md](DEVELOPING.md)
 
 Bugs & Contact
 --------------
