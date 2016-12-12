@@ -5,18 +5,6 @@ var newer = require("gulp-newer");
 var download = require("gulp-download");
 var fs = require('fs');
 
-gulp.task("deps", () => {
-    if (!fs.existsSync("src/lib/d3.v4.min.js")) {
-        download("https://d3js.org/d3.v4.min.js")
-            .pipe(gulp.dest("src/lib/"));
-    }
-
-    gulp.src("src/lib/*.js")
-        .pipe(newer("extension/script/lib.js"))
-        .pipe(concat("lib.js"))
-        .pipe(gulp.dest("extension/script/"));
-});
-
 var backgroundProject = ts.createProject("src/background/tsconfig.json");
 
 gulp.task("background", () => {
