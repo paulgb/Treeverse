@@ -10,6 +10,8 @@ class TweetVisualization {
     private listeners: d3.Dispatch<EventTarget>;
     private colorScale: d3.ScalePower<string, number>;
     private frozen: boolean;
+    private xscale: number;
+    private yscale: number;
 
     constructor(svgElement: HTMLElement, feed: FeedController) {
         this.buildTree(svgElement);
@@ -79,31 +81,29 @@ class TweetVisualization {
     }
 
     zoomToFit() {
-        let bbox = (<SVGGElement><any>this.nodes.node()).getBBox();
         let clientRect = this.container.node().getBoundingClientRect();
-        let zoomLevel = Math.min(clientRect.height / (bbox.height + 40), clientRect.width / (bbox.width + 40));
+        let zoomLevel = Math.min(clientRect.height / this.yscale, clientRect.width / this.xscale, 1);
 
         this.container.transition().call(this.zoom.transform, d3.zoomIdentity.translate(
-            Math.max(0, (clientRect.width - bbox.width) / 2) / zoomLevel,
-            Math.max(20, (clientRect.height - bbox.height) / 2) / zoomLevel
+            Math.max(0, (clientRect.width - this.xscale * zoomLevel) / 2),
+            Math.max(20, (clientRect.height - this.yscale * zoomLevel) / 2)
         ).scale(zoomLevel));
     }
 
     setTreeData(tree: TweetNode) {
-        console.log(tree);
         let hierarchy = tree.toHierarchy();
         let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy);
 
         let maxWidth = TweetVisualization.treeWidth(hierarchy);
 
-        let xscale = maxWidth * 120;
-        let yscale = hierarchy.height * 120;
+        this.xscale = maxWidth * 120;
+        this.yscale = hierarchy.height * 120;
 
         let edgeToPath = (d: d3.HierarchyPointNode<Tweet>) => {
-            let startX = xscale * d.parent.x;
-            let startY = yscale * d.parent.y;
-            let endY = yscale * d.y;
-            let endX = xscale * d.x;
+            let startX = this.xscale * d.parent.x;
+            let startY = this.yscale * d.parent.y;
+            let endY = this.yscale * d.y;
+            let endX = this.xscale * d.x;
             return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
         }
 
@@ -134,7 +134,7 @@ class TweetVisualization {
 
         nodes.transition()
             .duration(duration)
-            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`);
+            .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`);
 
         nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
             d.data instanceof TweetNode && d.data.hasMore());
@@ -159,7 +159,7 @@ class TweetVisualization {
             })
             .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
                 d.data instanceof TweetNode && d.data.hasMore())
-            .attr('transform', d => `translate(${(xscale * d.x) - 20} ${(yscale * d.y) - 20})`)
+            .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`)
             .each(function(this: Element, datum: PointNode) {
                 let group = d3.select(this);
                 if (datum.data instanceof TweetNode) {
