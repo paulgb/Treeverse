@@ -4,6 +4,10 @@
     min-height: 600px;
 }
 
+a {
+    cursor: pointer;
+}
+
 /* Tree containers */
 #tree {
     width: 100%;
