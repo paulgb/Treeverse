@@ -103,12 +103,8 @@ class TweetVisualization {
             let startX = xscale * d.parent.x;
             let startY = yscale * d.parent.y;
             let endY = yscale * d.y;
-            if (d.parent.x == d.x) {
-                return `M${startX},${startY} ${startX},${endY}`;
-            } else {
-                let endX = xscale * d.x;
-                return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
-            }
+            let endX = xscale * d.x;
+            return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
         }
 
         let duration = 1000;
@@ -201,7 +197,8 @@ class TweetVisualization {
             })
             .attr('opacity', 0)
             .transition().delay(duration)
-            .attr('opacity', 1);;
+            .attr('opacity', 1)
+            .on('end', () => (() => console.log('ok')));
 
     }
 }

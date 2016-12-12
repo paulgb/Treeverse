@@ -17,7 +17,7 @@ class FeedController {
             .data(ancestors, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
         comments.exit().style('opacity', 1)
-            .transition().duration(duration)
+            .transition().duration(100)
             .style('opacity', 0).remove();
 
         comments
@@ -60,11 +60,17 @@ class FeedController {
             })
             .style('opacity', 0)
             .style('display', 'none')
-            //.transition().delay(duration + 100)
+            .transition()
+            .delay(200)
             .style('display', 'block')
-            .style('opacity', 1);
+            .style('opacity', 1)
 
-        this.container.scrollTop = this.container.scrollHeight;
+        d3.transition(null).delay(200).tween("scroll",
+            () => {
+                let interp = d3.interpolateNumber(this.container.scrollTop, this.container.scrollHeight);
+                return (t) => this.container.scrollTop = interp(t);
+            }
+        );
 
     }
 }
