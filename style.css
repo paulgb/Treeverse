@@ -1,9 +1,4 @@
 /* Outer page container */
-#page {
-    min-width: 800px;
-    min-height: 600px;
-}
-
 a {
     cursor: pointer;
 }
