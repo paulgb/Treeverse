@@ -28,16 +28,13 @@ a {
     width: 500px;
     background: #eee;
     overflow-x: hidden;
-    /*overflow-y: scroll;*/
 }
 
 #infoBox {
     padding: 18px;
     background-color: #fff;
     box-shadow: 0 1px 10px #ccc;
-    height: 100px;
-    
-    /*position: absolute;*/
+    height: 76px;
 }
 
 /* Feed-related elements */
@@ -45,15 +42,11 @@ a {
     overflow-y: scroll;
     position: absolute;
     bottom: 0;
-    top: 100px;
-    /*position:*/ 
+    top: 76px;
 }
 
 #feedInner {
     padding: 18px;
-    /* position: absolute; */
-    /* bottom: 0; */
-    
 }
 
 /* Tweet content styles */

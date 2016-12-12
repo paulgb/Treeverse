@@ -11,6 +11,7 @@ class VisualizationController {
                 `${context.tweet.name} - "${context.tweet.bodyElement.textContent}" in Treeverse`;
             this.tweetTree = TweetNode.createFromContext(context);
             this.vis.setTreeData(this.tweetTree);
+            this.vis.zoomToFit();
         });
     }
 
@@ -26,6 +27,11 @@ class VisualizationController {
                     .then((context) => {
                         node.addChildrenFromContext(context);
                         this.vis.setTreeData(this.tweetTree);
+                        if (node.tweet.id == this.tweetTree.tweet.id) {
+                            // Only adjust zoom if this is loading more replies to
+                            // the root tweet.
+                            this.vis.zoomToFit();
+                        }
                     });
             } else {
                 TweetServer

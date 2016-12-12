@@ -78,14 +78,14 @@ class TweetVisualization {
         this.container.call(this.zoom);
     }
 
-    private zoomToFit() {
-        let bbox = (<SVGSVGElement><any>this.container.node()).getBBox();
+    zoomToFit() {
+        let bbox = (<SVGGElement><any>this.nodes.node()).getBBox();
         let clientRect = this.container.node().getBoundingClientRect();
         let zoomLevel = Math.min(clientRect.height / (bbox.height + 40), clientRect.width / (bbox.width + 40));
 
-        this.container.call(this.zoom.transform, d3.zoomIdentity.translate(
-            Math.max(0, (clientRect.width - bbox.width) / 2),
-            Math.max(20, (clientRect.height - bbox.height) / 2)
+        this.container.transition().call(this.zoom.transform, d3.zoomIdentity.translate(
+            Math.max(0, (clientRect.width - bbox.width) / 2) / zoomLevel,
+            Math.max(20, (clientRect.height - bbox.height) / 2) / zoomLevel
         ).scale(zoomLevel));
     }
 
@@ -197,8 +197,6 @@ class TweetVisualization {
             })
             .attr('opacity', 0)
             .transition().delay(duration)
-            .attr('opacity', 1)
-            .on('end', () => (() => console.log('ok')));
-
+            .attr('opacity', 1);
     }
 }

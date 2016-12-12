@@ -28,16 +28,18 @@ class AbstractTreeNode {
  */
 class HasMoreNode extends AbstractTreeNode {
     parent: TweetNode;
+    continuation: string;
 
-    constructor(parent: TweetNode) {
+    constructor(parent: TweetNode, continuation: string) {
         super();
         this.parent = parent;
+        this.continuation = continuation;
     }
 
     getId() {
         // Parent continuation string is used so that d3 sees this as a new
         // HasMoreNode when another HasMoreNode has exited on the same parent.
-        return `${this.parent.getId()}_${this.parent.continuation}`;
+        return `${this.parent.getId()}_${this.continuation}`;
     }
 }
 
@@ -106,7 +108,7 @@ class TweetNode extends AbstractTreeNode {
         this.children.delete(this.hasMoreNodeId);
         this.continuation = tweetContext.continuation;
         if (tweetContext.continuation) {
-            this.addHasMoreNode();
+            this.addHasMoreNode(tweetContext.continuation);
         } else {
             this.fullyLoaded = true;
         }
@@ -123,8 +125,8 @@ class TweetNode extends AbstractTreeNode {
         return <TweetNode>child;
     }
 
-    private addHasMoreNode() {
-        let hasMoreNode = new HasMoreNode(this);
+    private addHasMoreNode(continuation: string) {
+        let hasMoreNode = new HasMoreNode(this, continuation);
         TweetNode.addParent(this, hasMoreNode);
         this.hasMoreNodeId = hasMoreNode.getId();
     }
