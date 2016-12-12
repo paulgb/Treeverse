@@ -70,3 +70,7 @@ a {
 .text b {
     font-weight: normal;
 }
+
+.u-hiddenVisually {
+    display: none;
+}

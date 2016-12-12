@@ -7,7 +7,7 @@ class Tweet {
     /** Handle of user who posted tweet. */
     username: string;
     /** Screen name of user who posted tweet. */
-    name: string;
+    name: HTMLElement;
     /** HTML body of the tweet content. */
     bodyElement: HTMLElement;
     /** URL of the avatar image for the user who posted the tweet.  */
@@ -142,8 +142,8 @@ namespace TweetParser {
             let tweet = new Tweet();
 
             tweet.username = tweetElement.getAttribute('data-screen-name');
-            tweet.name = tweetElement
-                .getElementsByClassName('fullname')[0].firstChild.textContent;
+            tweet.name = <HTMLElement>tweetElement
+                .getElementsByClassName('fullname')[0];
             tweet.bodyElement = <HTMLElement>tweetElement
                 .getElementsByClassName('tweet-text')[0];
             tweet.id = tweetElement.getAttribute('data-tweet-id');

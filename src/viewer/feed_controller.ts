@@ -46,7 +46,7 @@ class FeedController {
                     content
                         .append('span')
                         .classed('author', true)
-                        .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
+                        .html(`${tweet.name.innerHTML} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
 
                     let body = content
                         .append('div')
