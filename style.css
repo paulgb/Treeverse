@@ -18,6 +18,11 @@ a {
     right: 500px;
 }
 
+.selected rect {
+    stroke: #f55;
+    stroke-width: 4px;
+}
+
 /* Sidebar and info box styles. */
 
 #sidebar {
