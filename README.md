@@ -27,7 +27,7 @@ load additional replies to that tweet.
 Installation
 ------------
 
-(Placeholder for Chrome app store instructions)
+Install from the [Chrome App Store](https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila).
 
 Developing
 ----------
