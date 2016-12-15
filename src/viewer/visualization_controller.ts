@@ -8,15 +8,30 @@ class VisualizationController {
     fetchTweets(tweet: Tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
             document.getElementsByTagName('title')[0].innerText =
-                `${context.tweet.name} - "${context.tweet.bodyElement.textContent}" in Treeverse`;
-            this.tweetTree = TweetNode.createFromContext(context);
-            this.vis.setTreeData(this.tweetTree);
-            this.vis.zoomToFit();
+                `${context.tweet.username} - "${context.tweet.bodyText}" in Treeverse`;
+
+            this.setInitialTweetData(TweetNode.createFromContext(context));
         });
     }
 
+    setInitialTweetData(root: TweetNode) {
+        this.tweetTree = root;
+        this.vis.setTreeData(root);
+        this.vis.zoomToFit();
+    }
+
+    downloadPage() {
+        Offline.createOfflineHTML(this.tweetTree).then((data) => {
+            let blob = new Blob([data], { type: 'text/html' });
+            let downloadLink = document.createElement('a');
+            downloadLink.setAttribute('download', 'treeverse.html');
+            downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
+            downloadLink.click();
+        });
+
+    }
+
     private expandNode(node: AbstractTreeNode) {
-        console.log('node: ', node);
         if (node instanceof HasMoreNode) {
             this.expandNode(node.parent);
 
@@ -45,10 +60,13 @@ class VisualizationController {
         }
     }
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, offline: boolean = false) {
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
-        this.vis.on('dblclick', this.expandNode.bind(this));
+        if (!offline) {
+            this.vis.on('dblclick', this.expandNode.bind(this));
+            document.getElementById('downloadLink').addEventListener('click', this.downloadPage.bind(this));
+        }
     }
 }

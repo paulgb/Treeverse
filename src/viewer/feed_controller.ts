@@ -9,8 +9,6 @@ class FeedController {
         let ancestors = node.ancestors();
         ancestors.reverse();
 
-        let duration = 100;
-
         let comments = d3
             .select(this.container.getElementsByClassName('comments')[0])
             .selectAll('div.comment')
@@ -24,7 +22,7 @@ class FeedController {
             .enter()
             .append('div')
             .classed('comment', true)
-            .each(function(this: Element, datum: PointNode) {
+            .each(function (this: Element, datum: PointNode) {
                 if (datum.data instanceof TweetNode) {
                     let tweet = datum.data.tweet;
                     let div = d3.select(this);
@@ -46,12 +44,12 @@ class FeedController {
                     content
                         .append('span')
                         .classed('author', true)
-                        .html(`${tweet.name.innerHTML} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
+                        .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
 
                     let body = content
                         .append('div')
                         .classed('text', true)
-                        .html(tweet.bodyElement.innerHTML);
+                        .html(tweet.bodyHtml);
 
                     body.append('a')
                         .html(' &rarr;')
@@ -61,11 +59,11 @@ class FeedController {
             .style('opacity', 0)
             .style('display', 'none')
             .transition()
-            .delay(200)
+            .delay(150)
             .style('display', 'block')
             .style('opacity', 1)
 
-        d3.transition(null).delay(200).tween("scroll",
+        d3.transition(null).delay(150).tween("scroll",
             () => {
                 let interp = d3.interpolateNumber(this.container.scrollTop, this.container.scrollHeight);
                 return (t) => this.container.scrollTop = interp(t);

@@ -9,9 +9,10 @@ class TweetVisualization {
     private zoom: d3.ZoomBehavior<Element, {}>;
     private listeners: d3.Dispatch<EventTarget>;
     private colorScale: d3.ScalePower<string, number>;
-    private frozen: boolean;
+    private selected: Tweet;
     private xscale: number;
     private yscale: number;
+    private layout: d3.HierarchyPointNode<AbstractTreeNode>;
 
     constructor(svgElement: HTMLElement, feed: FeedController) {
         this.buildTree(svgElement);
@@ -65,7 +66,7 @@ class TweetVisualization {
         this.edges = <D3Selector>this.treeGroup.append('g');
         this.nodes = <D3Selector>this.treeGroup.append('g');
 
-        this.container.on('click', () => { this.frozen = false });
+        this.container.on('click', () => { this.selected = null; this.redraw(); });
 
         // Set up zoom functionality.
         this.zoom = d3.zoom()
@@ -93,13 +94,22 @@ class TweetVisualization {
     setTreeData(tree: TweetNode) {
         let hierarchy = tree.toHierarchy();
         let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy);
+        this.layout = <d3.HierarchyPointNode<AbstractTreeNode>>layout;
 
         let maxWidth = TweetVisualization.treeWidth(hierarchy);
 
         this.xscale = maxWidth * 120;
         this.yscale = hierarchy.height * 120;
 
-        let edgeToPath = (d: d3.HierarchyPointNode<Tweet>) => {
+        this.redraw();
+    }
+
+    redraw() {
+        if (!this.layout) {
+            return;
+        }
+
+        let edgeToPath = (d: d3.HierarchyPointNode<any>) => {
             let startX = this.xscale * d.parent.x;
             let startY = this.yscale * d.parent.y;
             let endY = this.yscale * d.y;
@@ -107,14 +117,14 @@ class TweetVisualization {
             return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
         }
 
-        let duration = 1000;
+        let duration = 200;
 
         let paths = this.edges
             .selectAll('path')
-            .data(layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+            .data(this.layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
         paths.exit().remove();
-        paths.transition().duration(duration).attr('d', edgeToPath);
+        paths.attr('opacity', 1).transition().duration(duration).attr('d', edgeToPath);
 
         paths
             .enter()
@@ -128,7 +138,7 @@ class TweetVisualization {
             .attr('opacity', 1);
 
         let nodes = this.nodes.selectAll('g')
-            .data(layout.descendants(), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+            .data(this.layout.descendants(), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
         nodes.exit().remove();
 
@@ -137,30 +147,35 @@ class TweetVisualization {
             .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`);
 
         nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
-            d.data instanceof TweetNode && d.data.hasMore());
+            d.data instanceof TweetNode && d.data.hasMore())
+            .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d.data.tweet == this.selected)
+            .attr('opacity', 1);
 
         nodes.enter()
             .append('g')
             .style('cursor', 'pointer')
             .on('mouseover', (e: PointNode) => {
-                if (!this.frozen) {
+                if (!this.selected) {
                     this.listeners.call('hover', null, e)
                 }
             })
             .on('click', (e: PointNode) => {
-                this.listeners.call('hover', null, e);
-                this.frozen = true;
+                if (e.data instanceof TweetNode) {
+                    this.listeners.call('hover', null, e);
+                    this.selected = e.data.tweet;
+                    this.redraw();
+                }
                 d3.event.stopPropagation();
             })
             .on('dblclick', (e: PointNode) => {
                 this.listeners.call('dblclick', null, e.data);
                 d3.event.stopPropagation();
-                this.frozen = false;
+                this.selected = null;
             })
             .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
                 d.data instanceof TweetNode && d.data.hasMore())
             .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`)
-            .each(function(this: Element, datum: PointNode) {
+            .each(function (this: Element, datum: PointNode) {
                 let group = d3.select(this);
                 if (datum.data instanceof TweetNode) {
                     let tweet = datum.data.tweet;

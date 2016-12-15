@@ -1,12 +1,27 @@
 
+namespace Treeverse {
+    export let offlineData: SerializedTweetNode = undefined;
+
+    export function setOfflineData(data: SerializedTweetNode) {
+        offlineData = data;
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    let [_, username, tweetId] = document.location.hash.match(/#(.+),(.+)/);
+    if (Treeverse.offlineData) {
+        let root = SerializedTweetNode.toTweetNode(Treeverse.offlineData);
 
-    let controller = new VisualizationController(document.getElementById('container'));
+        let controller = new VisualizationController(document.getElementById('container'), true);
+        controller.setInitialTweetData(root);
+    } else {
+        let [_, username, tweetId] = document.location.hash.match(/#(.+),(.+)/);
 
-    let rootTweet = new Tweet();
-    rootTweet.username = username;
-    rootTweet.id = tweetId;
+        let controller = new VisualizationController(document.getElementById('container'));
 
-    controller.fetchTweets(rootTweet);
+        let rootTweet = new Tweet();
+        rootTweet.username = username;
+        rootTweet.id = tweetId;
+
+        controller.fetchTweets(rootTweet);
+    }
 });
