@@ -41,6 +41,7 @@ namespace Offline {
 
         let parser = new DOMParser();
         let doc = parser.parseFromString(htmlBody, 'text/html');
+        doc.getElementById('downloadLink').remove();
 
         doc = await inlineResources(doc);
 
