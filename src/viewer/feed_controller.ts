@@ -54,6 +54,20 @@ class FeedController {
                     body.append('a')
                         .html(' &rarr;')
                         .attr('href', tweet.getUrl());
+
+                    if (tweet.images) {
+                        let imgWidth = 100 / tweet.images.length;
+                        content.append('div')
+                            .classed('extra images', true)
+                            .selectAll('img')
+                            .data(tweet.images)
+                            .enter()
+                            .append('img')
+                            .attr('width', (d) => `${imgWidth}%`)
+                            .attr('src', (d) => d);
+
+                    }
+
                 }
             })
             .style('opacity', 0)

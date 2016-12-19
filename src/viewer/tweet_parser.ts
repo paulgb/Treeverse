@@ -18,6 +18,8 @@ class Tweet {
     /** Number of replies (public and private) to the tweet. */
     replies: number;
 
+    images: string[] = [];
+
     /**
      * Returns a URL to this tweet on Twitter.
      */
@@ -159,6 +161,10 @@ namespace TweetParser {
                 .getElementsByClassName('js-actionReply')[0]
                 .getElementsByClassName('ProfileTweet-actionCountForPresentation')[0]
                 .textContent);
+
+            for (let img of tweetElement.querySelectorAll('.AdaptiveMedia-photoContainer img')) {
+                tweet.images.push(img.getAttribute('src'));
+            }
 
             tweetStream.push(tweet);
             nextChildren = [tweet.id];
