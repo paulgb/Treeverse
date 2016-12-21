@@ -63,7 +63,7 @@ a {
     text-decoration: none;
 }
 
-.text .Emoji {
+.text .Emoji, .text .twitter-hashflag-container img {
     height: 1.25em;
     vertical-align: -0.3em;
 }
