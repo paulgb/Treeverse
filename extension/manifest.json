@@ -7,7 +7,7 @@
     "128": "icons/icon128.png"
   },
   "description": "",
-  "version": "0.3",
+  "version": "0.4",
   "background": {
     "scripts": [
       "script/background.js"
