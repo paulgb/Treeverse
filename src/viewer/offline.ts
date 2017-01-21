@@ -1,4 +1,3 @@
-
 namespace Offline {
     async function getExtensionFile(filename: string): Promise<string> {
         return new Promise<string>((resolve) => {
@@ -57,8 +56,6 @@ namespace Offline {
 class SerializedTweetNode {
     tweet: Tweet;
     children: SerializedTweetNode[] = [];
-
-    private constructor() { }
 
     static fromTweetNode(tn: TweetNode) {
         let stn = new SerializedTweetNode();
