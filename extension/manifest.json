@@ -28,6 +28,5 @@
   ],
   "web_accessible_resources": [
     "resources/*",
-    "script/*.js"
   ]
 }

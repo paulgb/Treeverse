@@ -4,6 +4,7 @@ class VisualizationController {
     private tweetTree: TweetNode;
     private vis: TweetVisualization;
     private feed: FeedController;
+    private resourceGetter: ResourceGetter;
 
     fetchTweets(tweet: Tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
@@ -20,15 +21,22 @@ class VisualizationController {
         this.vis.zoomToFit();
     }
 
+    setResourceGetter(resourceGetter: ResourceGetter) {
+        this.resourceGetter = resourceGetter;
+
+        // add download button.
+        //document.getElementById('downloadLink').addEventListener('click', this.downloadPage.bind(this));
+    }
+
     downloadPage() {
-        Offline.createOfflineHTML(this.tweetTree).then((data) => {
+        var offliner = new Offline(this.resourceGetter);
+        offliner.createOfflineHTML(this.tweetTree).then((data) => {
             let blob = new Blob([data], { type: 'text/html' });
             let downloadLink = document.createElement('a');
             downloadLink.setAttribute('download', 'treeverse.html');
             downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
             downloadLink.click();
         });
-
     }
 
     private expandNode(node: AbstractTreeNode) {
@@ -66,7 +74,7 @@ class VisualizationController {
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
-            document.getElementById('downloadLink').addEventListener('click', this.downloadPage.bind(this));
         }
+
     }
 }

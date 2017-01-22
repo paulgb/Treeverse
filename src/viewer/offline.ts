@@ -1,5 +1,9 @@
-namespace Offline {
-    async function getExtensionFile(filename: string): Promise<string> {
+interface ResourceGetter {
+    getResource(filename: string): Promise<string>;
+}
+
+class ExtensionResourceGetter implements ResourceGetter {
+    async getResource(filename: string) {
         return new Promise<string>((resolve) => {
             let url = chrome.extension.getURL(filename);
             var xhr = new XMLHttpRequest();
@@ -12,18 +16,34 @@ namespace Offline {
             xhr.send();
         });
     }
+}
 
-    async function inlineResources(doc: Document): Promise<Document> {
+class HTTPResourceGetter implements ResourceGetter {
+    async getResource(filename: string) {
+        return new Promise<string>((resolve) => {
+            resolve('not yet implemented');
+        });
+    }
+}
+
+class Offline {
+    resourceGetter: ResourceGetter;
+
+    constructor(resourceGetter: ResourceGetter) {
+        this.resourceGetter = resourceGetter;
+    }
+
+    async inlineResources(doc: Document): Promise<Document> {
         for (let scriptElement of doc.getElementsByTagName('script')) {
             let url = scriptElement.getAttribute('src');
-            let content = await getExtensionFile(url);
+            let content = await this.resourceGetter.getResource(url);
             scriptElement.removeAttribute('src');
             scriptElement.innerHTML = content;
         }
         let linkElements = Array.from(doc.getElementsByTagName('link'));
         for (let linkElement of linkElements) {
             let url = linkElement.getAttribute('href');
-            let content = await getExtensionFile(url);
+            let content = await this.resourceGetter.getResource(url);
             let styleElement = document.createElement('style');
             styleElement.setAttribute('type', linkElement.getAttribute('type'));
             styleElement.innerHTML = content;
@@ -33,16 +53,16 @@ namespace Offline {
         return doc;
     }
 
-    export async function createOfflineHTML(tree: TweetNode): Promise<string> {
+    async createOfflineHTML(tree: TweetNode): Promise<string> {
         let treeJson = JSON.stringify(SerializedTweetNode.fromTweetNode(tree));
 
-        let htmlBody: string = await getExtensionFile("resources/view.html");
+        let htmlBody: string = await this.resourceGetter.getResource("resources/view.html");
 
         let parser = new DOMParser();
         let doc = parser.parseFromString(htmlBody, 'text/html');
         doc.getElementById('downloadLink').remove();
 
-        doc = await inlineResources(doc);
+        doc = await this.inlineResources(doc);
 
         let offlineScript = document.createElement('script');
         offlineScript.innerText = `Treeverse.setOfflineData(${treeJson});`;

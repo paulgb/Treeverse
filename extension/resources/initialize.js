@@ -1,0 +1,1 @@
+Treeverse.initializeForExtension(document.getElementById('tweetContainer'), document.location);

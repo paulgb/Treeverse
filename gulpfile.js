@@ -9,20 +9,20 @@ var backgroundProject = ts.createProject("src/background/tsconfig.json");
 
 gulp.task("background", () => {
     return backgroundProject.src()
-        .pipe(newer('extension/script/background.js'))
+        .pipe(newer('extension/resources/script/background.js'))
         .pipe(backgroundProject())
         .js.pipe(concat('background.js'))
-        .pipe(gulp.dest("extension/script/"));
+        .pipe(gulp.dest("extension/resources/script/"));
 });
 
 var viewerProject = ts.createProject("src/viewer/tsconfig.json");
 
 gulp.task("viewer", () => {
     return viewerProject.src()
-        .pipe(newer('extension/script/viewer.js'))
+        .pipe(newer('extension/resources/script/viewer.js'))
         .pipe(viewerProject())
         .js.pipe(concat('viewer.js'))
-        .pipe(gulp.dest("extension/script/"));
+        .pipe(gulp.dest("extension/resources/script/"));
 });
 
 gulp.task("scripts", ["viewer", "background"]);
