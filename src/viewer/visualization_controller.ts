@@ -5,6 +5,7 @@ class VisualizationController {
     private vis: TweetVisualization;
     private feed: FeedController;
     private resourceGetter: ResourceGetter;
+    private infoBox: InfoBox;
 
     fetchTweets(tweet: Tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
@@ -23,9 +24,7 @@ class VisualizationController {
 
     setResourceGetter(resourceGetter: ResourceGetter) {
         this.resourceGetter = resourceGetter;
-
-        // add download button.
-        //document.getElementById('downloadLink').addEventListener('click', this.downloadPage.bind(this));
+        this.infoBox.addDownloadButton(this.downloadPage.bind(this));
     }
 
     downloadPage() {
@@ -69,8 +68,10 @@ class VisualizationController {
     }
 
     constructor(container: HTMLElement, offline: boolean = false) {
+        // TODO: container isn't used.
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
+        this.infoBox = new InfoBox(document.getElementById('infoBox'));
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
