@@ -39,7 +39,7 @@ a {
     padding: 18px;
     background-color: #fff;
     box-shadow: 0 1px 10px #ccc;
-    height: 76px;
+    position: absolute;
 }
 
 /* Feed-related elements */
@@ -47,7 +47,8 @@ a {
     overflow-y: scroll;
     position: absolute;
     bottom: 0;
-    top: 76px;
+    top: 0;
+    padding-top: 120px;
 }
 
 #feedInner {
