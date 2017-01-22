@@ -80,3 +80,11 @@ a {
 .u-hiddenVisually {
     display: none;
 }
+
+.dropzone {
+    padding: 10px;
+    border: 1px dashed #aaf;
+    background-color: #f4f4f4;
+    text-align: center;
+    color: #888;
+}
