@@ -16,6 +16,10 @@ class VisualizationController {
         });
     }
 
+    enableArchiveUpload() {
+        this.infoBox.addUploadBox(this.setInitialTweetData.bind(this));
+    }
+
     setInitialTweetData(root: TweetNode) {
         this.tweetTree = root;
         this.vis.setTreeData(root);

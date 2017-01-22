@@ -5,7 +5,7 @@ interface ResourceGetter {
 class ExtensionResourceGetter implements ResourceGetter {
     async getResource(filename: string) {
         return new Promise<string>((resolve) => {
-            let url = chrome.extension.getURL(filename);
+            let url = chrome.extension.getURL(`resources/${filename}`);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.onreadystatechange = () => {
@@ -56,18 +56,16 @@ class Offline {
     async createOfflineHTML(tree: TweetNode): Promise<string> {
         let treeJson = JSON.stringify(SerializedTweetNode.fromTweetNode(tree));
 
-        let htmlBody: string = await this.resourceGetter.getResource("resources/view.html");
+        let htmlBody: string = await this.resourceGetter.getResource("view.html");
 
         let parser = new DOMParser();
         let doc = parser.parseFromString(htmlBody, 'text/html');
-        doc.getElementById('downloadLink').remove();
 
         doc = await this.inlineResources(doc);
 
-        let offlineScript = document.createElement('script');
-        offlineScript.innerText = `Treeverse.setOfflineData(${treeJson});`;
-
-        doc.getElementsByTagName('head')[0].appendChild(offlineScript);
+        let offlineScript = doc.getElementById('initialization');
+        offlineScript.innerText =
+            `Treeverse.initializeForStaticData(document.getElementById('tweetContainer'), ${treeJson});`;
 
         return doc.documentElement.innerHTML;
     }

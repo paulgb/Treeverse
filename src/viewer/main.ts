@@ -14,12 +14,12 @@ namespace Treeverse {
 
     export function initializeForStaticData(container: HTMLElement, staticData: SerializedTweetNode) {
         let controller = new VisualizationController(document.getElementById('container'), true);
-        controller.setResourceGetter(new HTTPResourceGetter());
         let root = SerializedTweetNode.toTweetNode(staticData);
         controller.setInitialTweetData(root);
     }
 
     export function initializeForArchiveReader(container: HTMLElement) {
-        // TODO: write this
+        let controller = new VisualizationController(document.getElementById('container'), true);
+        controller.enableArchiveUpload();
     }
 }
