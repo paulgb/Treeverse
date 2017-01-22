@@ -8,7 +8,6 @@ namespace Treeverse {
         let rootTweet = new Tweet();
         rootTweet.username = username;
         rootTweet.id = tweetId;
-        console.log(rootTweet);
 
         controller.fetchTweets(rootTweet);
     }
