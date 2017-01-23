@@ -1,31 +1,3 @@
-interface ResourceGetter {
-    getResource(filename: string): Promise<string>;
-}
-
-class ExtensionResourceGetter implements ResourceGetter {
-    async getResource(filename: string) {
-        return new Promise<string>((resolve) => {
-            let url = chrome.extension.getURL(`resources/${filename}`);
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    resolve(<string>xhr.responseText);
-                }
-            };
-            xhr.send();
-        });
-    }
-}
-
-class HTTPResourceGetter implements ResourceGetter {
-    async getResource(filename: string) {
-        return new Promise<string>((resolve) => {
-            resolve('not yet implemented');
-        });
-    }
-}
-
 class Offline {
     resourceGetter: ResourceGetter;
 

@@ -1,3 +1,8 @@
+/**
+ * Controller for the box with information about Treeverse, as well
+ * as some mode-dependent controls such as a download link and
+ * upload dropbox.
+ */
 class InfoBox {
     private container: HTMLElement;
 

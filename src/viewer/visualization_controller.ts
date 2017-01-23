@@ -1,5 +1,8 @@
 type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
 
+/**
+ * The controller for the main tree visualization.
+ */
 class VisualizationController {
     private tweetTree: TweetNode;
     private vis: TweetVisualization;

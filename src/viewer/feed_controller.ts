@@ -1,3 +1,7 @@
+/**
+ * Controller for the "feed" display that shows the conversation
+ * leading up to the selected tweet.
+ */
 class FeedController {
     private container: HTMLElement;
 

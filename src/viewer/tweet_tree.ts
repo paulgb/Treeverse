@@ -43,6 +43,9 @@ class HasMoreNode extends AbstractTreeNode {
     }
 }
 
+/**
+ * A tree node representing an individual tweet.
+ */
 class TweetNode extends AbstractTreeNode {
     tweet: Tweet;
     hasMoreNodeId: string;

@@ -1,5 +1,8 @@
 type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 
+/**
+ * Renders the main tree visualization.
+ */
 class TweetVisualization {
     private container: D3Selector;
     private treeGroup: D3Selector;

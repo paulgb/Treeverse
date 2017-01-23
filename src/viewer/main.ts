@@ -1,3 +1,7 @@
+/**
+ * Contains entry points for bootstrapping the visualization for
+ * different modes.
+ */
 namespace Treeverse {
     export function initializeForExtension(container: HTMLElement, location: Location) {
         let [_, username, tweetId] = location.hash.match(/#(.+),(.+)/);
