@@ -4,6 +4,7 @@ var concat = require("gulp-concat");
 var newer = require("gulp-newer");
 var download = require("gulp-download");
 var fs = require('fs');
+var ghPages = require('gulp-gh-pages');
 
 var backgroundProject = ts.createProject("src/background/tsconfig.json");
 
@@ -33,3 +34,9 @@ gulp.task("watch", ["scripts"], () => {
 });
 
 gulp.task("default", ["scripts"]);
+
+gulp.task("deploy", ["scripts"], function() {
+  return gulp.src('./extension/resources/**')
+    .pipe(ghPages());
+});
+
