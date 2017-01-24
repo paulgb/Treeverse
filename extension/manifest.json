@@ -24,7 +24,8 @@
   },
   "permissions": [
     "activeTab",
-    "declarativeContent"
+    "declarativeContent",
+    "contextMenus"
   ],
   "web_accessible_resources": [
     "resources/*"
