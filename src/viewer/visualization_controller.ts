@@ -79,7 +79,11 @@ class VisualizationController {
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.infoBox = new InfoBox(document.getElementById('infoBox'));
-        this.vis.on('hover', this.feed.setFeed.bind(this.feed));
+        //this.vis.on('hover', this.feed.setFeed.bind(this.feed));
+        this.vis.on('hover', (d) => {
+            console.log('hover');
+            this.feed.setFeed(d);
+        });
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
         }
