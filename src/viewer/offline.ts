@@ -28,7 +28,7 @@ class Offline {
     async createOfflineHTML(tree: TweetNode): Promise<string> {
         let treeJson = JSON.stringify(SerializedTweetNode.fromTweetNode(tree));
 
-        let htmlBody: string = await this.resourceGetter.getResource("view.html");
+        let htmlBody: string = await this.resourceGetter.getResource("index.html");
 
         let parser = new DOMParser();
         let doc = parser.parseFromString(htmlBody, 'text/html');

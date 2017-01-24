@@ -17,7 +17,7 @@ namespace background {
             }
             let [username, tweetId] = userTweetPair;
 
-            let url = `resources/view.html#${username},${tweetId}`;
+            let url = `resources/index.html#${username},${tweetId}`;
             chrome.tabs.create({ 'url': chrome.extension.getURL(url) });
         });
 

@@ -19,8 +19,8 @@ Overview
 
 `src/background/browser_action.ts` is hooked up as the action when the Treeverse
 action button is pressed in (the actual wiring is in `manifest.json`). When it is clicked,
-it parses the current tweet ID out of the url and opens `view.html` in a new tab. The tweet
-id is passed in the URL hash of the new tab. `view.html` includes the `viewer.js` script which
+it parses the current tweet ID out of the url and opens `index.html` in a new tab. The tweet
+id is passed in the URL hash of the new tab. `index.html` includes the `viewer.js` script which
 invokes the interactive UI.
 
 `viewer.js` is built from the contents of `src/viewer`, which consists of the following:
