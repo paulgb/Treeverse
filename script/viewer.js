@@ -37,6 +37,9 @@ var Archive;
         let [rootTweet, _] = parseTweet(archive.shift());
         let rootNode = new TweetNode(rootTweet);
         nodes.set(rootTweet.id, rootNode);
+        archive.sort((o1, o2) => {
+            return parseInt(o1.id) - parseInt(o2.id);
+        });
         for (let arcTweet of archive) {
             let [tweet, parent] = parseTweet(arcTweet);
             if (!nodes.has(parent)) {
@@ -53,6 +56,14 @@ var Archive;
     Archive.parseTweetsFromArchive = parseTweetsFromArchive;
 })(Archive || (Archive = {}));
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
 /**
  * Controller for the "feed" display that shows the conversation
  * leading up to the selected tweet.
@@ -61,69 +72,96 @@ class FeedController {
     constructor(container) {
         this.container = container;
     }
-    setFeed(node) {
-        let ancestors = node.ancestors();
-        ancestors.reverse();
-        let comments = d3
-            .select(this.container.getElementsByClassName('comments')[0])
-            .selectAll('div.comment')
-            .data(ancestors, (d) => d.data.getId());
-        comments.exit().style('opacity', 1)
-            .transition().duration(100)
-            .style('opacity', 0).remove();
-        comments
-            .enter()
-            .append('div')
-            .classed('comment', true)
-            .each(function (datum) {
-            if (datum.data instanceof TweetNode) {
-                let tweet = datum.data.tweet;
-                let div = d3.select(this);
-                div
-                    .append('a')
-                    .classed('avatar', true)
-                    .append('img')
-                    .attr('src', tweet.avatar)
-                    .style('height', 'auto')
-                    .style('max-width', 35)
-                    .style('width', 'auto')
-                    .style('max-height', 35);
-                let content = div
-                    .append('div')
-                    .classed('content', true);
-                content
-                    .append('span')
-                    .classed('author', true)
-                    .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
-                let body = content
-                    .append('div')
-                    .classed('text', true)
-                    .html(tweet.bodyHtml);
-                body.append('a')
-                    .html(' &rarr;')
-                    .attr('href', tweet.getUrl());
-                if (tweet.images) {
-                    let imgWidth = 100 / tweet.images.length;
-                    content.append('div')
-                        .classed('extra images', true)
-                        .selectAll('img')
-                        .data(tweet.images)
-                        .enter()
-                        .append('img')
-                        .attr('width', (d) => `${imgWidth}%`)
-                        .attr('src', (d) => d);
+    exitComments(comments) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => {
+                if (comments.exit().size() == 0) {
+                    resolve();
+                    return;
                 }
-            }
-        })
-            .style('opacity', 0)
-            .style('display', 'none')
-            .transition()
-            .delay(150)
-            .style('display', 'block')
-            .style('opacity', 1);
-        d3.transition(null).delay(150).tween("scroll", () => {
-            let interp = d3.interpolateNumber(this.container.scrollTop, this.container.scrollHeight);
-            return (t) => this.container.scrollTop = interp(t);
+                comments
+                    .exit()
+                    .transition().duration(100)
+                    .on('end', () => resolve())
+                    .style('opacity', 0)
+                    .remove();
+            });
+        });
+    }
+    enterComments(comments) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => {
+                if (comments.enter().size() == 0) {
+                    resolve();
+                    return;
+                }
+                comments
+                    .enter()
+                    .append('div')
+                    .classed('comment', true)
+                    .each(function (datum) {
+                    if (datum.data instanceof TweetNode) {
+                        let tweet = datum.data.tweet;
+                        let div = d3.select(this);
+                        div
+                            .append('a')
+                            .classed('avatar', true)
+                            .append('img')
+                            .attr('src', tweet.avatar)
+                            .style('height', 'auto')
+                            .style('max-width', 35)
+                            .style('width', 'auto')
+                            .style('max-height', 35);
+                        let content = div
+                            .append('div')
+                            .classed('content', true);
+                        content
+                            .append('span')
+                            .classed('author', true)
+                            .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`);
+                        let body = content
+                            .append('div')
+                            .classed('text', true)
+                            .html(tweet.bodyHtml);
+                        body.append('a')
+                            .html(' &rarr;')
+                            .attr('href', tweet.getUrl());
+                        if (tweet.images) {
+                            let imgWidth = 100 / tweet.images.length;
+                            content.append('div')
+                                .classed('extra images', true)
+                                .selectAll('img')
+                                .data(tweet.images)
+                                .enter()
+                                .append('img')
+                                .attr('width', (d) => `${imgWidth}%`)
+                                .attr('src', (d) => d);
+                        }
+                    }
+                })
+                    .style('opacity', 0)
+                    .style('display', 'none')
+                    .transition().duration(100)
+                    .style('display', 'block')
+                    .style('opacity', 1)
+                    .on('start', () => resolve());
+            });
+        });
+    }
+    setFeed(node) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ancestors = node.ancestors();
+            ancestors.reverse();
+            let comments = d3
+                .select(this.container.getElementsByClassName('comments')[0])
+                .selectAll('div.comment')
+                .data(ancestors, (d) => d.data.getId());
+            yield this.exitComments(comments);
+            yield this.enterComments(comments);
+            d3.transition(null).tween("scroll", () => {
+                let interp = d3.interpolateNumber(this.container.scrollTop, this.container.scrollHeight);
+                return (t) => this.container.scrollTop = interp(t);
+            });
         });
     }
 }
@@ -159,7 +197,6 @@ class InfoBox {
                 let lines = result.split(/\r?\n/);
                 lines.pop();
                 let archiveData = lines.map(JSON.parse);
-                console.log(archiveData);
                 let newRoot = Archive.parseTweetsFromArchive(archiveData);
                 if (newRoot) {
                     callback(newRoot);
@@ -799,7 +836,10 @@ class VisualizationController {
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.infoBox = new InfoBox(document.getElementById('infoBox'));
-        this.vis.on('hover', this.feed.setFeed.bind(this.feed));
+        //this.vis.on('hover', this.feed.setFeed.bind(this.feed));
+        this.vis.on('hover', (d) => {
+            this.feed.setFeed(d);
+        });
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
         }
