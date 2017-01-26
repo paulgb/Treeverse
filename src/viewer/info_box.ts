@@ -33,7 +33,6 @@ class InfoBox {
                     let lines = result.split(/\r?\n/);
                     lines.pop();
                     let archiveData = lines.map(JSON.parse);
-                    console.log(archiveData);
                     let newRoot = Archive.parseTweetsFromArchive(archiveData);
                     if (newRoot) {
                         callback(newRoot);
