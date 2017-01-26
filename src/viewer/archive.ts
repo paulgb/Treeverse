@@ -40,6 +40,9 @@ namespace Archive {
         let [rootTweet, _] = parseTweet(archive.shift());
         let rootNode = new TweetNode(rootTweet);
         nodes.set(rootTweet.id, rootNode);
+        archive.sort((o1, o2) => {
+            return parseInt(o1.id) - parseInt(o2.id);
+        });
 
         for (let arcTweet of archive) {
             let [tweet, parent] = parseTweet(arcTweet);
@@ -50,6 +53,7 @@ namespace Archive {
             let parentNode = nodes.get(parent);
             let tweetNode = new TweetNode(tweet);
             parentNode.children.set(tweet.id, tweetNode);
+            console.log(tweet.id);
             nodes.set(tweet.id, tweetNode);
         }
         return rootNode;
