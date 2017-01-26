@@ -102,7 +102,6 @@ class FeedController {
             .selectAll('div.comment')
             .data(ancestors, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
-        console.log('herex');
         await this.exitComments(comments);
         await this.enterComments(comments);
 

@@ -81,7 +81,6 @@ class VisualizationController {
         this.infoBox = new InfoBox(document.getElementById('infoBox'));
         //this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         this.vis.on('hover', (d) => {
-            console.log('hover');
             this.feed.setFeed(d);
         });
         if (!offline) {

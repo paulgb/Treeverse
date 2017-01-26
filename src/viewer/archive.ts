@@ -53,7 +53,6 @@ namespace Archive {
             let parentNode = nodes.get(parent);
             let tweetNode = new TweetNode(tweet);
             parentNode.children.set(tweet.id, tweetNode);
-            console.log(tweet.id);
             nodes.set(tweet.id, tweetNode);
         }
         return rootNode;
