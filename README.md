@@ -42,5 +42,7 @@ Tweet [@paulgb](https://twitter.com/paulgb) or report on GitHub.
 Credits
 -------
 
+Icon created by [Eli Schiff](http://www.elischiff.com/).
+
 Treeverse would not be possible without the excellent [d3.js](https://d3js.org/).
 Styling is powered by [Semantic UI](http://semantic-ui.com/). 
