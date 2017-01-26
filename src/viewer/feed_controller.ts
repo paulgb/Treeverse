@@ -17,7 +17,7 @@ class FeedController {
             }
             comments
                 .exit()
-                .transition()
+                .transition().duration(100)
                 .on('end', () => resolve())
                 .style('opacity', 0)
                 .remove()
@@ -84,7 +84,7 @@ class FeedController {
                 })
                 .style('opacity', 0)
                 .style('display', 'none')
-                .transition()
+                .transition().duration(100)
                 .style('display', 'block')
                 .style('opacity', 1)
                 .on('start', () => resolve())
