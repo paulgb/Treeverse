@@ -30,8 +30,6 @@ class InfoBox {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     let result = e.target['result'];
-                    
-
                     let newRoot = Archive.parseTweetsFromFile(e.target['result']);
                     if (newRoot) {
                         callback(newRoot);

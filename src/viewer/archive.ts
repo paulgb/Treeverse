@@ -19,7 +19,6 @@ namespace Archive {
         let tweet = new Tweet();
         let reply_to_id = tweetObject['in_reply_to_status_id_str'];
 
-        // Catch null values.
         tweet.avatar = tweetObject['user']['profile_image_url_https'];
         tweet.bodyHtml = escapeHTML(tweetObject['text']);
         tweet.bodyText = tweetObject['text'];
@@ -27,7 +26,6 @@ namespace Archive {
         tweet.name = tweetObject['user']['name'];
         tweet.replies = 0; // Not available in archive data.
         tweet.username = tweetObject['user']['screen_name'];
-        // TODO: catch date not parsing.
         tweet.time = new Date(tweetObject['created_at']).getTime();
         return [tweet, reply_to_id];
     }
@@ -44,14 +42,16 @@ namespace Archive {
             return parseInt(o1.id) - parseInt(o2.id);
         });
 
+        let parsedTweets = [];
+
         for (let i = 0; i < archive.length; i++) {
             let arcTweet = archive[i];
             let parseResult;
             try {
                 parseResult = parseTweet(arcTweet);
             } catch (err) {
-                let message = `Tweet at line ${i + 1} parses but missing field (see console)`;
-                alert(message);
+                let message = `Tweet with id ${arcTweet['id']} parses but missing field.`;
+                alert(message + ' (see console)');
                 console.log(message);
                 console.log(err);
                 console.log(arcTweet);
@@ -78,7 +78,20 @@ namespace Archive {
     export function parseTweetsFromFile(contents) {
         let lines = contents.split(/\r?\n/);
         lines.pop();
-        // TODO: check parse
+
+        let objects = [];
+        for (let i = 0; i < lines.length; i++) {
+            try {
+                objects.push(JSON.parse(lines[i]));
+            } catch (err) {
+                let message = `Couldn't parse JSON on line ${i + 1}.`;
+                alert(message + ' (see console)');
+                console.log(message);
+                console.log(err);
+                console.log(lines[i]);
+                return;
+            }
+        }
         let archiveData = lines.map(JSON.parse);
         let newRoot = Archive.parseTweetsFromArchive(archiveData);
         return newRoot;
