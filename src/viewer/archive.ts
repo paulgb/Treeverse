@@ -19,6 +19,7 @@ namespace Archive {
         let tweet = new Tweet();
         let reply_to_id = tweetObject['in_reply_to_status_id_str'];
 
+        // Catch null values.
         tweet.avatar = tweetObject['user']['profile_image_url_https'];
         tweet.bodyHtml = escapeHTML(tweetObject['text']);
         tweet.bodyText = tweetObject['text'];
@@ -26,6 +27,7 @@ namespace Archive {
         tweet.name = tweetObject['user']['name'];
         tweet.replies = 0; // Not available in archive data.
         tweet.username = tweetObject['user']['screen_name'];
+        // TODO: catch date not parsing.
         tweet.time = new Date(tweetObject['created_at']).getTime();
         return [tweet, reply_to_id];
     }
@@ -36,25 +38,49 @@ namespace Archive {
      */
     export function parseTweetsFromArchive(archive: any[]) {
         let nodes = new Map<String, TweetNode>();
+        let rootNode;
 
-        let [rootTweet, _] = parseTweet(archive.shift());
-        let rootNode = new TweetNode(rootTweet);
-        nodes.set(rootTweet.id, rootNode);
         archive.sort((o1, o2) => {
             return parseInt(o1.id) - parseInt(o2.id);
         });
 
-        for (let arcTweet of archive) {
-            let [tweet, parent] = parseTweet(arcTweet);
-            if (!nodes.has(parent)) {
-                alert('Orphaned tweet detected! See the readme for format details. Aborting.');
+        for (let i = 0; i < archive.length; i++) {
+            let arcTweet = archive[i];
+            let parseResult;
+            try {
+                parseResult = parseTweet(arcTweet);
+            } catch (err) {
+                let message = `Tweet at line ${i + 1} parses but missing field (see console)`;
+                alert(message);
+                console.log(message);
+                console.log(err);
+                console.log(arcTweet);
                 return;
             }
-            let parentNode = nodes.get(parent);
+            let [tweet, parent] = parseResult;
             let tweetNode = new TweetNode(tweet);
-            parentNode.children.set(tweet.id, tweetNode);
             nodes.set(tweet.id, tweetNode);
+
+            if (i == 0) {
+                rootNode = tweetNode;
+            } else if (!nodes.has(parent)) {
+                alert('Orphaned tweet detected! See the readme for format details. Aborting.');
+                console.log('Orphaned tweet: ', arcTweet);
+                return;
+            } else {
+                let parentNode = nodes.get(parent);
+                parentNode.children.set(tweet.id, tweetNode);
+            }
         }
         return rootNode;
+    }
+
+    export function parseTweetsFromFile(contents) {
+        let lines = contents.split(/\r?\n/);
+        lines.pop();
+        // TODO: check parse
+        let archiveData = lines.map(JSON.parse);
+        let newRoot = Archive.parseTweetsFromArchive(archiveData);
+        return newRoot;
     }
 }

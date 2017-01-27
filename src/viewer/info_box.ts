@@ -30,10 +30,9 @@ class InfoBox {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     let result = e.target['result'];
-                    let lines = result.split(/\r?\n/);
-                    lines.pop();
-                    let archiveData = lines.map(JSON.parse);
-                    let newRoot = Archive.parseTweetsFromArchive(archiveData);
+                    
+
+                    let newRoot = Archive.parseTweetsFromFile(e.target['result']);
                     if (newRoot) {
                         callback(newRoot);
                     }
