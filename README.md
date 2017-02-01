@@ -29,6 +29,23 @@ Installation
 
 Install from the [Chrome App Store](https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila).
 
+Archive Mode
+------------
+
+In addition to visualizing conversations directly from Twitter, Treeverse supports loading
+[twarc](https://github.com/DocNow/twarc) conversation archive files. First open Treeverse
+in Archive Mode by right-clicking the Treeverse icon and selecting Archive Mode in the
+drop-down.
+
+![Treeverse context menu showing Archive Mode](images/archive_mode.png)
+
+In Archive Mode, Treeverse has a "drop zone" for dragging twarc .json ouput files to.
+Simply drag the file into the drop zone to load the conversation.
+
+Treeverse only supports output from the `twarc replies --recursive` command. For example:
+
+    twarc replies 824077910927691778 --recursive > replies.json
+
 Developing
 ----------
 
