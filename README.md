@@ -3,6 +3,19 @@ Treeverse
 
 Treeverse is a browser extension for navigating burgeoning Twitter conversations.
 
+Introduction
+------------
+
+First, download Treeverse from the
+[Chrome App Store](https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila).
+
+Then, visit Twitter and click on the tweet that you would like to visualize the conversation of.
+The icon for Treeverse should turn from grey to blue in your browser. Click it to open a Treeverse
+visualization of the tweet you are looking at.
+
+Exploring the Conversation
+--------------------------
+
 ![Screenshot of Treeverse.](images/treeverse640.gif)
 
 Conversations are visualized as a tree. Each node (square) is an individual tweet, and
@@ -23,11 +36,6 @@ there are more replies to that tweet that haven't been loaded. Double-clicking a
 load additional replies to that tweet.
 
 ![More tweets indicator.](images/red_circles.png)
-
-Installation
-------------
-
-Install from the [Chrome App Store](https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila).
 
 Archive Mode
 ------------
