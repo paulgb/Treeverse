@@ -46,6 +46,9 @@ Treeverse only supports output from the `twarc replies --recursive` command. For
 
     twarc replies 824077910927691778 --recursive > replies.json
 
+Archive mode is available even if you don't have the extension, using
+[this link](https://paulgb.github.io/Treeverse/).
+
 Developing
 ----------
 
