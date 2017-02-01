@@ -1,42 +1,48 @@
-var gulp = require("gulp");
-var ts = require("gulp-typescript");
-var concat = require("gulp-concat");
-var newer = require("gulp-newer");
-var download = require("gulp-download");
-var fs = require('fs');
-var ghPages = require('gulp-gh-pages');
+const gulp = require('gulp');
+const ts = require('gulp-typescript');
+const concat = require('gulp-concat');
+const newer = require('gulp-newer');
+const download = require('gulp-download');
+const fs = require('fs');
+const ghPages = require('gulp-gh-pages');
+const zip = require('gulp-zip');
 
-var backgroundProject = ts.createProject("src/background/tsconfig.json");
+var backgroundProject = ts.createProject('src/background/tsconfig.json');
 
-gulp.task("background", () => {
+gulp.task('background', () => {
     return backgroundProject.src()
         .pipe(newer('extension/resources/script/background.js'))
         .pipe(backgroundProject())
         .js.pipe(concat('background.js'))
-        .pipe(gulp.dest("extension/resources/script/"));
+        .pipe(gulp.dest('extension/resources/script/'));
 });
 
-var viewerProject = ts.createProject("src/viewer/tsconfig.json");
+var viewerProject = ts.createProject('src/viewer/tsconfig.json');
 
-gulp.task("viewer", () => {
+gulp.task('viewer', () => {
     return viewerProject.src()
         .pipe(newer('extension/resources/script/viewer.js'))
         .pipe(viewerProject())
         .js.pipe(concat('viewer.js'))
-        .pipe(gulp.dest("extension/resources/script/"));
+        .pipe(gulp.dest('extension/resources/script/'));
 });
 
-gulp.task("scripts", ["viewer", "background"]);
+gulp.task('scripts', ['viewer', 'background']);
 
-gulp.task("watch", ["scripts"], () => {
-    gulp.watch('src/viewer/*.ts', ["viewer"]);
-    gulp.watch('src/background/*.ts', ["background"]);
+gulp.task('watch', ['scripts'], () => {
+    gulp.watch('src/viewer/*.ts', ['viewer']);
+    gulp.watch('src/background/*.ts', ['background']);
 });
 
-gulp.task("default", ["scripts"]);
+gulp.task('default', ['scripts']);
 
-gulp.task("deploy", ["scripts"], function() {
-  return gulp.src('./extension/resources/**')
-    .pipe(ghPages());
+gulp.task('deploy', ['scripts'], () => {
+    return gulp.src('./extension/resources/**')
+        .pipe(ghPages());
 });
 
+gulp.task('package', ['scripts'], () => {
+    return gulp.src('./extension/**')
+        .pipe(zip('extension.zip'))
+        .pipe(gulp.dest('./'))
+});

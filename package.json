@@ -45,6 +45,7 @@
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.11",
+    "gulp-zip": "^4.0.0",
     "map-stream": "0.0.6",
     "require-dot-file": "^0.4.0",
     "run-sequence": "^1.2.2",
