@@ -36,10 +36,19 @@ class VisualizationController {
 
     downloadPage() {
         var offliner = new Offline(this.resourceGetter);
+
+        var filename = prompt("What would you like to call the snapshot?", "treeverse.html");
+        if (filename == null) {
+            return;
+        }
+        if (!filename.endsWith('.html')) {
+            filename += '.html';
+        }
+
         offliner.createOfflineHTML(this.tweetTree).then((data) => {
             let blob = new Blob([data], { type: 'text/html' });
             let downloadLink = document.createElement('a');
-            downloadLink.setAttribute('download', 'treeverse.html');
+            downloadLink.setAttribute('download', filename);
             downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
             downloadLink.click();
         });
