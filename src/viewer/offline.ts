@@ -31,7 +31,7 @@ class Offline {
         let htmlBody: string = await this.resourceGetter.getResource("index.html");
 
         let parser = new DOMParser();
-        let doc = parser.parseFromString(htmlBody, 'text/html');
+        let doc = parser.parseFromString("<!doctype html><html>"+htmlBody+"</html>", 'text/html');
 
         doc = await this.inlineResources(doc);
 

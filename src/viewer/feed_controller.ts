@@ -45,9 +45,9 @@ class FeedController {
                             .append('img')
                             .attr('src', tweet.avatar)
                             .style('height', 'auto')
-                            .style('max-width', 35)
+                            .style('max-width', '35px')
                             .style('width', 'auto')
-                            .style('max-height', 35);
+                            .style('max-height', '35px');
 
                         let content = div
                             .append('div')
