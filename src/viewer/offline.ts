@@ -31,7 +31,7 @@ class Offline {
         let htmlBody: string = await this.resourceGetter.getResource("index.html");
 
         let parser = new DOMParser();
-        let doc = parser.parseFromString("<!doctype html><html>"+htmlBody+"</html>", 'text/html');
+        let doc = parser.parseFromString(htmlBody, 'text/html');
 
         doc = await this.inlineResources(doc);
 
@@ -39,7 +39,7 @@ class Offline {
         offlineScript.innerText =
             `Treeverse.initializeForStaticData(document.getElementById('tweetContainer'), ${treeJson});`;
 
-        return doc.documentElement.innerHTML;
+        return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
     }
 }
 
