@@ -34,26 +34,74 @@ var Archive;
      */
     function parseTweetsFromArchive(archive) {
         let nodes = new Map();
-        let [rootTweet, _] = parseTweet(archive.shift());
-        let rootNode = new TweetNode(rootTweet);
-        nodes.set(rootTweet.id, rootNode);
+        let rootNode;
         archive.sort((o1, o2) => {
             return parseInt(o1.id) - parseInt(o2.id);
         });
-        for (let arcTweet of archive) {
-            let [tweet, parent] = parseTweet(arcTweet);
-            if (!nodes.has(parent)) {
-                alert('Orphaned tweet detected! See the readme for format details. Aborting.');
+        let parsedTweets = [];
+        let orphanedTweetCount = 0;
+        for (let i = 0; i < archive.length; i++) {
+            let arcTweet = archive[i];
+            let parseResult;
+            try {
+                parseResult = parseTweet(arcTweet);
+            }
+            catch (err) {
+                let message = `Tweet with id ${arcTweet['id']} parses but missing field.`;
+                alert(message + ' (see console)');
+                console.log(message);
+                console.log(err);
+                console.log(arcTweet);
                 return;
             }
-            let parentNode = nodes.get(parent);
+            let [tweet, parent] = parseResult;
             let tweetNode = new TweetNode(tweet);
-            parentNode.children.set(tweet.id, tweetNode);
             nodes.set(tweet.id, tweetNode);
+            if (i == 0) {
+                rootNode = tweetNode;
+            }
+            else if (!nodes.has(parent)) {
+                console.log('Orphaned tweet: ', arcTweet);
+                orphanedTweetCount += 1;
+            }
+            else {
+                let parentNode = nodes.get(parent);
+                parentNode.children.set(tweet.id, tweetNode);
+            }
+        }
+        if (orphanedTweetCount == 1) {
+            alert('A tweet from the file could not be shown because it is not connected to the root tweet. This can ' +
+                'happen when a tweet in its reply chain has been deleted or made private.');
+        }
+        else if (orphanedTweetCount > 1) {
+            alert(`${orphanedTweetCount} tweets from the file could not be shown because they are not connected to the root tweet. This can ` +
+                'happen when tweets in their reply chain have been deleted or made private.');
         }
         return rootNode;
     }
     Archive.parseTweetsFromArchive = parseTweetsFromArchive;
+    function parseTweetsFromFile(contents) {
+        let lines = contents.split(/\r?\n/);
+        lines.pop();
+        let objects = [];
+        for (let i = 0; i < lines.length; i++) {
+            try {
+                objects.push(JSON.parse(lines[i]));
+            }
+            catch (err) {
+                let message = `Couldn't parse JSON on line ${i + 1}.`;
+                alert(message + ' (see console)');
+                console.log(message);
+                console.log(err);
+                console.log(lines[i]);
+                return;
+            }
+        }
+        let archiveData = lines.map(JSON.parse);
+        let newRoot = Archive.parseTweetsFromArchive(archiveData);
+        return newRoot;
+    }
+    Archive.parseTweetsFromFile = parseTweetsFromFile;
 })(Archive || (Archive = {}));
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -109,9 +157,9 @@ class FeedController {
                             .append('img')
                             .attr('src', tweet.avatar)
                             .style('height', 'auto')
-                            .style('max-width', 35)
+                            .style('max-width', '35px')
                             .style('width', 'auto')
-                            .style('max-height', 35);
+                            .style('max-height', '35px');
                         let content = div
                             .append('div')
                             .classed('content', true);
@@ -194,10 +242,7 @@ class InfoBox {
             var reader = new FileReader();
             reader.onload = function (e) {
                 let result = e.target['result'];
-                let lines = result.split(/\r?\n/);
-                lines.pop();
-                let archiveData = lines.map(JSON.parse);
-                let newRoot = Archive.parseTweetsFromArchive(archiveData);
+                let newRoot = Archive.parseTweetsFromFile(e.target['result']);
                 if (newRoot) {
                     callback(newRoot);
                 }
@@ -279,7 +324,7 @@ class Offline {
             let offlineScript = doc.getElementById('initialization');
             offlineScript.innerText =
                 `Treeverse.initializeForStaticData(document.getElementById('tweetContainer'), ${treeJson});`;
-            return doc.documentElement.innerHTML;
+            return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
         });
     }
 }
@@ -836,10 +881,7 @@ class VisualizationController {
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.infoBox = new InfoBox(document.getElementById('infoBox'));
-        //this.vis.on('hover', this.feed.setFeed.bind(this.feed));
-        this.vis.on('hover', (d) => {
-            this.feed.setFeed(d);
-        });
+        this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
         }
@@ -865,10 +907,17 @@ class VisualizationController {
     }
     downloadPage() {
         var offliner = new Offline(this.resourceGetter);
+        var filename = prompt("What would you like to call the snapshot?", "treeverse.html");
+        if (filename == null) {
+            return;
+        }
+        if (!filename.endsWith('.html')) {
+            filename += '.html';
+        }
         offliner.createOfflineHTML(this.tweetTree).then((data) => {
             let blob = new Blob([data], { type: 'text/html' });
             let downloadLink = document.createElement('a');
-            downloadLink.setAttribute('download', 'treeverse.html');
+            downloadLink.setAttribute('download', filename);
             downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
             downloadLink.click();
         });
