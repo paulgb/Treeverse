@@ -43,6 +43,7 @@ namespace Archive {
         });
 
         let parsedTweets = [];
+        let orphanedTweetCount = 0;
 
         for (let i = 0; i < archive.length; i++) {
             let arcTweet = archive[i];
@@ -64,14 +65,22 @@ namespace Archive {
             if (i == 0) {
                 rootNode = tweetNode;
             } else if (!nodes.has(parent)) {
-                alert('Orphaned tweet detected! See the readme for format details. Aborting.');
                 console.log('Orphaned tweet: ', arcTweet);
-                return;
+                orphanedTweetCount += 1;
             } else {
                 let parentNode = nodes.get(parent);
                 parentNode.children.set(tweet.id, tweetNode);
             }
         }
+
+        if (orphanedTweetCount == 1) {
+            alert('A tweet from the file could not be shown because it is not connected to the root tweet. This can ' +
+                'happen when a tweet in its reply chain has been deleted or made private.');
+        } else if (orphanedTweetCount > 1) {
+            alert(`${orphanedTweetCount} tweets from the file could not be shown because they are not connected to the root tweet. This can ` +
+                'happen when tweets in their reply chain have been deleted or made private.');
+        }
+
         return rootNode;
     }
 
