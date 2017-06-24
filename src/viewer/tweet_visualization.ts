@@ -118,10 +118,8 @@ class TweetVisualization {
                     this.listeners.call('dblclick', null, this.selected.data);
                     break;
                 default:
-                    console.log(d3.event);
                     return;
             }
-            console.log(this.selected);
             this.redraw();
             this.listeners.call('hover', null, this.selected);
         });
