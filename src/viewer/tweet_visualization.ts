@@ -12,7 +12,7 @@ class TweetVisualization {
     private zoom: d3.ZoomBehavior<Element, {}>;
     private listeners: d3.Dispatch<EventTarget>;
     private colorScale: d3.ScalePower<string, number>;
-    private selected: Tweet;
+    private selected: d3.HierarchyPointNode<AbstractTreeNode>;
     private xscale: number;
     private yscale: number;
     private layout: d3.HierarchyPointNode<AbstractTreeNode>;
@@ -82,6 +82,49 @@ class TweetVisualization {
                 this.treeGroup.attr('transform', `translate(${x} ${y}) scale(${scale})`);
             });
         this.container.call(this.zoom);
+
+        d3.select('body').on('keydown', () => {
+            if (!this.selected) {
+                return;
+            }
+            switch (d3.event.code) {
+                case 'ArrowDown':
+                    if (this.selected.children && this.selected.children.length > 0) {
+                        this.selected = this.selected.children[0];
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (this.selected.parent) {
+                        this.selected = this.selected.parent;
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (this.selected.parent) {
+                        let i = this.selected.parent.children.indexOf(this.selected);
+                        if (i > 0) {
+                            this.selected = this.selected.parent.children[i - 1];
+                        }
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (this.selected.parent) {
+                        let i = this.selected.parent.children.indexOf(this.selected);
+                        if (i >= 0 && i < this.selected.parent.children.length - 1) {
+                            this.selected = this.selected.parent.children[i + 1];
+                        }
+                    }
+                    break;
+                case 'Space':
+                    this.listeners.call('dblclick', null, this.selected.data);
+                    break;
+                default:
+                    console.log(d3.event);
+                    return;
+            }
+            console.log(this.selected);
+            this.redraw();
+            this.listeners.call('hover', null, this.selected);
+        });
     }
 
     zoomToFit() {
@@ -140,8 +183,16 @@ class TweetVisualization {
             .transition().delay(duration)
             .attr('opacity', 1);
 
+        let descendents = this.layout.descendants();
+
+        if (this.selected) {
+            // If a node is selected, find the node in the new tree with the same ID and select it.
+            this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId());
+        }
+
+
         let nodes = this.nodes.selectAll('g')
-            .data(this.layout.descendants(), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+            .data(descendents, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
         nodes.exit().remove();
 
@@ -151,7 +202,8 @@ class TweetVisualization {
 
         nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
             d.data instanceof TweetNode && d.data.hasMore())
-            .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d.data.tweet == this.selected)
+            //.classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d.data.getId() == this.selected.data.getId())
+            .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d == this.selected)
             .attr('opacity', 1);
 
         nodes.enter()
@@ -165,7 +217,7 @@ class TweetVisualization {
             .on('click', (e: PointNode) => {
                 if (e.data instanceof TweetNode) {
                     this.listeners.call('hover', null, e);
-                    this.selected = e.data.tweet;
+                    this.selected = e;
                     this.redraw();
                 }
                 d3.event.stopPropagation();
