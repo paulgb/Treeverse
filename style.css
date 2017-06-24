@@ -48,7 +48,7 @@ a {
     position: absolute;
     bottom: 0;
     top: 0;
-    padding-top: 120px;
+    padding-top: 140px;
 }
 
 #feedInner {
@@ -87,4 +87,10 @@ a {
     background-color: #f4f4f4;
     text-align: center;
     color: #888;
+}
+
+.rtl {
+    text-align: right;
+    direction: rtl;
+    unicode-bidi: embed;
 }

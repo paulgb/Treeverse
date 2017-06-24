@@ -107,9 +107,9 @@ var Archive;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 /**
@@ -170,6 +170,7 @@ class FeedController {
                         let body = content
                             .append('div')
                             .classed('text', true)
+                            .classed('rtl', tweet.rtl)
                             .html(tweet.bodyHtml);
                         body.append('a')
                             .html(' &rarr;')
@@ -284,9 +285,9 @@ var Treeverse;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 class Offline {
@@ -357,9 +358,9 @@ class SerializedTweetNode {
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 /**
@@ -509,6 +510,7 @@ var TweetParser;
                 .getElementsByClassName('fullname')[0].innerHTML;
             tweet.bodyText = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
+            tweet.rtl = tweetElement.getElementsByClassName('tweet-text-rtl').length > 0;
             tweet.bodyHtml = tweetElement
                 .getElementsByClassName('tweet-text')[0].innerHTML;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
@@ -534,9 +536,9 @@ var TweetParser;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 /**
@@ -761,6 +763,46 @@ class TweetVisualization {
             this.treeGroup.attr('transform', `translate(${x} ${y}) scale(${scale})`);
         });
         this.container.call(this.zoom);
+        d3.select('body').on('keydown', () => {
+            if (!this.selected) {
+                return;
+            }
+            switch (d3.event.code) {
+                case 'ArrowDown':
+                    if (this.selected.children && this.selected.children.length > 0) {
+                        this.selected = this.selected.children[0];
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (this.selected.parent) {
+                        this.selected = this.selected.parent;
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (this.selected.parent) {
+                        let i = this.selected.parent.children.indexOf(this.selected);
+                        if (i > 0) {
+                            this.selected = this.selected.parent.children[i - 1];
+                        }
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (this.selected.parent) {
+                        let i = this.selected.parent.children.indexOf(this.selected);
+                        if (i >= 0 && i < this.selected.parent.children.length - 1) {
+                            this.selected = this.selected.parent.children[i + 1];
+                        }
+                    }
+                    break;
+                case 'Space':
+                    this.listeners.call('dblclick', null, this.selected.data);
+                    break;
+                default:
+                    return;
+            }
+            this.redraw();
+            this.listeners.call('hover', null, this.selected);
+        });
     }
     zoomToFit() {
         let clientRect = this.container.node().getBoundingClientRect();
@@ -803,14 +845,19 @@ class TweetVisualization {
             .attr('opacity', 0)
             .transition().delay(duration)
             .attr('opacity', 1);
+        let descendents = this.layout.descendants();
+        if (this.selected) {
+            // If a node is selected, find the node in the new tree with the same ID and select it.
+            this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId());
+        }
         let nodes = this.nodes.selectAll('g')
-            .data(this.layout.descendants(), (d) => d.data.getId());
+            .data(descendents, (d) => d.data.getId());
         nodes.exit().remove();
         nodes.transition()
             .duration(duration)
             .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`);
         nodes.classed('has_more', (d) => d.data instanceof TweetNode && d.data.hasMore())
-            .classed('selected', (d) => d.data.tweet == this.selected)
+            .classed('selected', (d) => d == this.selected)
             .attr('opacity', 1);
         nodes.enter()
             .append('g')
@@ -823,7 +870,7 @@ class TweetVisualization {
             .on('click', (e) => {
             if (e.data instanceof TweetNode) {
                 this.listeners.call('hover', null, e);
-                this.selected = e.data.tweet;
+                this.selected = e;
                 this.redraw();
             }
             d3.event.stopPropagation();
@@ -876,16 +923,6 @@ class TweetVisualization {
  * The controller for the main tree visualization.
  */
 class VisualizationController {
-    constructor(container, offline = false) {
-        // TODO: container isn't used.
-        this.feed = new FeedController(document.getElementById('feedContainer'));
-        this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
-        this.infoBox = new InfoBox(document.getElementById('infoBox'));
-        this.vis.on('hover', this.feed.setFeed.bind(this.feed));
-        if (!offline) {
-            this.vis.on('dblclick', this.expandNode.bind(this));
-        }
-    }
     fetchTweets(tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
             document.getElementsByTagName('title')[0].innerText =
@@ -948,6 +985,16 @@ class VisualizationController {
                     this.vis.setTreeData(this.tweetTree);
                 });
             }
+        }
+    }
+    constructor(container, offline = false) {
+        // TODO: container isn't used.
+        this.feed = new FeedController(document.getElementById('feedContainer'));
+        this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
+        this.infoBox = new InfoBox(document.getElementById('infoBox'));
+        this.vis.on('hover', this.feed.setFeed.bind(this.feed));
+        if (!offline) {
+            this.vis.on('dblclick', this.expandNode.bind(this));
         }
     }
 }
