@@ -202,7 +202,6 @@ class TweetVisualization {
 
         nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
             d.data instanceof TweetNode && d.data.hasMore())
-            //.classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d.data.getId() == this.selected.data.getId())
             .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d == this.selected)
             .attr('opacity', 1);
 

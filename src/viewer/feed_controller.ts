@@ -61,6 +61,7 @@ class FeedController {
                         let body = content
                             .append('div')
                             .classed('text', true)
+                            .classed('rtl', tweet.rtl)
                             .html(tweet.bodyHtml);
 
                         body.append('a')

@@ -88,3 +88,9 @@ a {
     text-align: center;
     color: #888;
 }
+
+.rtl {
+    text-align: right;
+    direction: rtl;
+    unicode-bidi: embed;
+}

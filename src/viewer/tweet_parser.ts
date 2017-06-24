@@ -17,6 +17,8 @@ class Tweet {
     time: number;
     /** Number of replies (public and private) to the tweet. */
     replies: number;
+    /** Whether to render the tweet as right-to-left. */
+    rtl: boolean;
 
     images: string[] = [];
 
@@ -149,6 +151,7 @@ namespace TweetParser {
                 .getElementsByClassName('fullname')[0].innerHTML;
             tweet.bodyText = tweetElement
                 .getElementsByClassName('tweet-text')[0].textContent;
+            tweet.rtl = tweetElement.getElementsByClassName('tweet-text-rtl').length > 0;
             tweet.bodyHtml = tweetElement
                 .getElementsByClassName('tweet-text')[0].innerHTML;
             tweet.id = tweetElement.getAttribute('data-tweet-id');
