@@ -82,9 +82,14 @@ namespace TweetParser {
         let doc = extractDocFromResponse(response);
         let tweetContext = new TweetContext();
 
-        tweetContext.continuation = doc
-            .querySelector('.replies-to .stream-container')
-            .getAttribute('data-min-position');
+        let showMoreThreadsButton = doc.getElementsByClassName('ThreadedConversation-showMoreThreadsButton')[0];
+        if (showMoreThreadsButton) {
+            tweetContext.continuation = showMoreThreadsButton.getAttribute('data-cursor');
+        } else {
+            tweetContext.continuation = doc
+                .querySelector('.replies-to .stream-container')
+                .getAttribute('data-min-position');
+        }
 
         let ancestorContainer = <HTMLElement>doc
             .getElementsByClassName('in-reply-to')[0];
@@ -108,7 +113,7 @@ namespace TweetParser {
 
     function parseDescendants(container: HTMLElement): Tweet[][] {
         let descendants = container
-            .querySelectorAll('li.ThreadedConversation,div.ThreadedConversation--loneTweet');
+            .querySelectorAll('li.ThreadedConversation,li.ThreadedConversation--loneTweet');
         let result = <Tweet[][]>[];
 
         for (let i = 0; i < descendants.length; i++) {
