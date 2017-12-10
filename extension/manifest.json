@@ -17,7 +17,7 @@
     "default_title": "Treeverse"
   },
   "description": "",
-  "version": "0.8",
+  "version": "0.9",
   "background": {
     "scripts": [
       "resources/script/background.js"
