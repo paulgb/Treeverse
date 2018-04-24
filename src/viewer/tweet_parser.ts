@@ -69,7 +69,7 @@ namespace TweetParser {
 
         let context = new TweetContext();
         context.descentants = parseDescendants(doc.getElementsByTagName('body')[0]);
-        context.continuation = obj.descendants.min_position;
+        context.continuation = obj.min_position;
 
         return context;
     }
@@ -135,7 +135,7 @@ namespace TweetParser {
 
     function extractDocFromConversationResponse(response: string): Document {
         let obj = JSON.parse(response);
-        let responseHtml = obj.descendants.items_html;
+        let responseHtml = obj.items_html;
         let parser = new DOMParser();
         let doc = parser.parseFromString(responseHtml, 'text/html');
 
