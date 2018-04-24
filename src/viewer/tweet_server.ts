@@ -22,16 +22,12 @@ namespace TweetServer {
     }
 
     async function asyncGet(url: string) {
-        return new Promise<string>((resolve, reject) => {
-            let xhr = new XMLHttpRequest();
-            xhr.onload = () => {
-                let response = xhr.response;
-                resolve(response)
-            };
-            xhr.open('GET', url, true);
-            xhr.setRequestHeader('x-overlay-request', 'true');
-            xhr.send();
-        });
+        console.log(`want to fetch: ${url}`);
+        return fetch(url, {
+            headers: {
+                'x-overlay-request': 'true'
+            }
+        }).then((x) => x.text());
     }
 
     function getUrlForTweet(tweet: Tweet): string {
