@@ -22,7 +22,6 @@ namespace TweetServer {
     }
 
     async function asyncGet(url: string) {
-        console.log(`want to fetch: ${url}`);
         return fetch(url, {
             headers: {
                 'x-overlay-request': 'true'
