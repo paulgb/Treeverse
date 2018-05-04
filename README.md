@@ -1,3 +1,5 @@
+![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/paulgb/Treeverse.svg)
+
 Treeverse
 =========
 
