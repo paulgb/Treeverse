@@ -8,6 +8,10 @@ class InfoBox {
 
     constructor(container: HTMLElement) {
         this.container = container;
+
+        d3.select(this.container).select('#hideButton').on('click', () => {
+            d3.select(this.container).remove();
+        })
     }
 
     addDownloadButton(callback: () => void) {
