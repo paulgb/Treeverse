@@ -31,7 +31,7 @@ class VisualizationController {
 
     setResourceGetter(resourceGetter: ResourceGetter) {
         this.resourceGetter = resourceGetter;
-        this.infoBox.addDownloadButton(this.downloadPage.bind(this));
+        //this.infoBox.addDownloadButton(this.downloadPage.bind(this));
     }
 
     downloadPage() {

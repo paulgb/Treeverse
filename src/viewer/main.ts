@@ -26,4 +26,23 @@ namespace Treeverse {
         let controller = new VisualizationController(document.getElementById('container'), true);
         controller.enableArchiveUpload();
     }
+
+    export function newInit(baseUrl, username, tweetId) {
+        fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
+            html = html.replace(/{base}/g, baseUrl);
+
+            document.open();
+            document.write(html);
+            document.close();
+
+            let controller = new VisualizationController(document.getElementById('container'));
+            controller.setResourceGetter(new ExtensionResourceGetter());
+
+            let rootTweet = new Tweet();
+            rootTweet.username = username;
+            rootTweet.id = tweetId;
+
+            controller.fetchTweets(rootTweet);
+        });
+    }
 }
