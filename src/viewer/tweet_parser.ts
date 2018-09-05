@@ -135,7 +135,7 @@ namespace TweetParser {
 
     function extractDocFromConversationResponse(response: string): Document {
         let obj = JSON.parse(response);
-        let responseHtml = obj.items_html;
+        let responseHtml = obj.descendants.items_html;
         let parser = new DOMParser();
         let doc = parser.parseFromString(responseHtml, 'text/html');
 
