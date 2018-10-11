@@ -14,6 +14,12 @@ body {
 
 a {
     cursor: pointer;
+    color: #449;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #66a;
 }
 
 /* Tree containers */
