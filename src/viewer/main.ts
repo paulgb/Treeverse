@@ -5,11 +5,17 @@
 namespace Treeverse {
     export function initialize(baseUrl, username, tweetId) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
-            html = html.replace(/{base}/g, baseUrl);
+            html = html.replace(/{base}/g, baseUrl);;
 
             document.open();
             document.write(html);
             document.close();
+
+            window.history.pushState('', '', '');
+
+            window.addEventListener("popstate", function (e) {
+                window.location.reload();
+            });
 
             let controller = new VisualizationController(document.getElementById('container'));
 
