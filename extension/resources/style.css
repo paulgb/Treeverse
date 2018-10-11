@@ -1,4 +1,10 @@
 /* Outer page container */
+#page {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
 a {
     cursor: pointer;
 }
@@ -11,11 +17,7 @@ a {
 }
 
 #treeContainer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 500px;
+    flex-grow: 1;
 }
 
 .selected rect {
@@ -26,29 +28,23 @@ a {
 /* Sidebar and info box styles. */
 
 #sidebar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 500px;
     background: #eee;
     overflow-x: hidden;
+    flex-basis: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
 #infoBox {
     padding: 18px;
     background-color: #fff;
     box-shadow: 0 1px 10px #ccc;
-    position: absolute;
 }
 
 /* Feed-related elements */
 #feedContainer {
     overflow-y: scroll;
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    padding-top: 160px;
+    flex-grow: 1;
 }
 
 #feedInner {
