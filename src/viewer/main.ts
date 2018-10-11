@@ -10,9 +10,7 @@ export namespace Treeverse {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             html = html.replace(/{base}/g, baseUrl);;
 
-            document.open();
-            document.write(html);
-            document.close();
+            document.getElementsByTagName('html')[0].innerHTML = html;
 
             window.history.pushState('', '', '');
 
