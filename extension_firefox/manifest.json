@@ -8,11 +8,10 @@
     "128": "icons/128.png"
   },
   "page_action": {
+    "browser_style": true,
     "default_icon": {
-      "16": "icons/16.png",
-      "32": "icons/32.png",
-      "48": "icons/48.png",
-      "128": "icons/128.png"
+      "19": "icons/16.png",
+      "38": "icons/32.png"
     },
     "default_title": "Treeverse"
   },
@@ -25,8 +24,7 @@
     "persistent": false
   },
   "permissions": [
-    "activeTab",
-    "declarativeContent",
+    "tabs",
     "contextMenus",
     "https://*.twitter.com/"
   ],

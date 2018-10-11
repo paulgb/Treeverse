@@ -1,3 +1,7 @@
 node_modules
-extension.zip
-extension
+extension_*.zip
+extension_chrome/icons
+extension_chrome/resources
+extension_firefox/icons
+extension_firefox/resources
+extension_common/resources/script

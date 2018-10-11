@@ -4,8 +4,9 @@ const path = require('path');
 module.exports = {
     context: path.resolve('src'),
     entry: {
-        '/extension/resources/script/background': './background/browser_action.ts',
-        '/extension/resources/script/viewer': './viewer/main.ts',
+        '/extension_chrome/resources/script/background': './background/chrome_action.ts',
+        '/extension_firefox/resources/script/background': './background/firefox_action.ts',
+        '/extension_common/resources/script/viewer': './viewer/main.ts',
     },
     output: {
         filename: '[name].js',
