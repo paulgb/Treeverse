@@ -1,14 +1,6 @@
+import { getUserAndTweetFromUrl, matchTweetURL } from './parse_url';
+
 namespace background {
-    let matchTweetURL = 'https?://twitter.com/(.+)/status/(\\d+)';
-    let matchTweetURLRegex = new RegExp(matchTweetURL);
-
-    function getUserAndTweetFromUrl(url: string): [string, string] {
-        let match = matchTweetURLRegex.exec(url);
-        if (match) {
-            return [match[1], match[2]];
-        }
-    }
-
     chrome.contextMenus.create({
         title: 'Archive Mode',
         contexts: ['page_action'],
@@ -36,7 +28,6 @@ namespace background {
         if (!userTweetPair) {
             return;
         }
-        let [username, tweetId] = userTweetPair;
 
         var indexUrl = chrome.extension.getURL(`resources`);
 
@@ -44,7 +35,7 @@ namespace background {
             file: 'resources/script/viewer.js'
         }, () => {
             chrome.tabs.executeScript(tab.id, {
-                code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+                code: `Treeverse.initialize(${JSON.stringify(tab.url)}, ${JSON.stringify(indexUrl)});`
             });
         });
     });

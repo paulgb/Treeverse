@@ -4,12 +4,13 @@ const path = require('path');
 module.exports = {
     context: path.resolve('src'),
     entry: {
-        background: './background/browser_action.ts',
-        viewer: './viewer/main.ts'
+        '/extension/resources/script/background': './background/browser_action.ts',
+        '/extension/resources/script/viewer': './viewer/main.ts',
+        '/public/bookmarklet': './bookmarklet.ts'
     },
     output: {
         filename: '[name].js',
-        path: __dirname + '/extension/resources/script'
+        path: __dirname
     },
     devtool: "source-map",
     resolve: {
