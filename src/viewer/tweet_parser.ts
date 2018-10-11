@@ -1,7 +1,7 @@
 /**
  * Contains information about an individual tweet.
  */
-class Tweet {
+export class Tweet {
     /** Unique identifier of the tweet. */
     id: string;
     /** Handle of user who posted tweet. */
@@ -42,7 +42,7 @@ class Tweet {
  * consists of the tweet itself, (some of) the tweets before it in its
  * reply-chain, and (some of) the reply chains that come after it.
  */
-class TweetContext {
+export class TweetContext {
     /** Tweets before this.tweet in the reply-chain. */
     ancestors: Tweet[] = [];
     /** The tweet that this TweetContext relates to. */
@@ -58,7 +58,7 @@ class TweetContext {
  * Functions for parsing a response from the twitter API into Tweet and
  * TweetContext objects.
  */
-namespace TweetParser {
+export namespace TweetParser {
     /**
      * Given an API response with a conversation continuation, parse and return 
      * the TweetContext.

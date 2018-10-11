@@ -1,9 +1,15 @@
-type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
+import { FeedController } from './feed_controller';
+import { TweetVisualization } from './tweet_visualization';
+import { Tweet } from './tweet_parser';
+import { TweetNode, AbstractTreeNode, HasMoreNode } from './tweet_tree';
+import { TweetServer } from './tweet_server';
+
+export type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
 
 /**
  * The controller for the main tree visualization.
  */
-class VisualizationController {
+export class VisualizationController {
     private tweetTree: TweetNode;
     private vis: TweetVisualization;
     private feed: FeedController;

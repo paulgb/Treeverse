@@ -1,8 +1,12 @@
+import { PointNode } from './visualization_controller';
+import * as d3 from 'd3';
+import { TweetNode, AbstractTreeNode } from './tweet_tree';
+
 /**
  * Controller for the "feed" display that shows the conversation
  * leading up to the selected tweet.
  */
-class FeedController {
+export class FeedController {
     private container: HTMLElement;
 
     constructor(container: HTMLElement) {

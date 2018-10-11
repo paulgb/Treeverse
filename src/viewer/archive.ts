@@ -1,7 +1,10 @@
+import { Tweet } from './tweet_parser';
+import { TweetNode } from './tweet_tree';
+
 /**
  * Functions for dealing with twarc (https://github.com/DocNow/twarc) archives.
  */
-namespace Archive {
+export namespace Archive {
     /**
      * Escape HTML special characters in the given string.
      */

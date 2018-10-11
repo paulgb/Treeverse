@@ -1,9 +1,14 @@
+import { FeedController } from './feed_controller';
+import * as d3 from 'd3';
+import { PointNode } from './visualization_controller';
+import { AbstractTreeNode, TweetNode, HasMoreNode } from './tweet_tree';
+
 type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 
 /**
  * Renders the main tree visualization.
  */
-class TweetVisualization {
+export class TweetVisualization {
     private container: D3Selector;
     private treeGroup: D3Selector;
     private nodes: D3Selector;

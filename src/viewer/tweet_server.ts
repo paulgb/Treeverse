@@ -1,7 +1,9 @@
+import { TweetParser, TweetContext, Tweet } from './tweet_parser';
+
 /**
  * Interfaces with Twitter API server.
  */
-namespace TweetServer {
+export namespace TweetServer {
     /**
      * Requests the TweetContext for a given tweet and returns a promise. 
      */

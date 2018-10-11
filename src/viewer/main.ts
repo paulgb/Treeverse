@@ -1,8 +1,11 @@
+import { VisualizationController } from './visualization_controller';
+import { Tweet } from './tweet_parser';
+
 /**
  * Contains entry points for bootstrapping the visualization for
  * different modes.
  */
-namespace Treeverse {
+export namespace Treeverse {
     export function initialize(baseUrl, username, tweetId) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             html = html.replace(/{base}/g, baseUrl);;
@@ -27,3 +30,5 @@ namespace Treeverse {
         });
     }
 }
+
+(window as any).Treeverse = Treeverse;
