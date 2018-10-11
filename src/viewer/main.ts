@@ -1,20 +1,12 @@
 import { VisualizationController } from './visualization_controller';
 import { Tweet } from './tweet_parser';
-import { getUserAndTweetFromUrl } from '../background/parse_url';
-
 
 /**
  * Contains entry points for bootstrapping the visualization for
  * different modes.
  */
 export namespace Treeverse {
-    export function initialize(tweetUrl, baseUrl) {
-        let userTweetPair = getUserAndTweetFromUrl(tweetUrl);
-        if (!userTweetPair) {
-            return;
-        }
-        let [username, tweetId] = userTweetPair;
-
+    export function initialize(baseUrl, username, tweetId) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             html = html.replace(/{base}/g, baseUrl);;
 
