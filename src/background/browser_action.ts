@@ -29,13 +29,20 @@ namespace background {
             return;
         }
 
+        let [username, tweetId] = userTweetPair;
+
         var indexUrl = chrome.extension.getURL(`resources`);
 
         chrome.tabs.executeScript(tab.id, {
-            file: 'resources/script/viewer.js'
+            file: 'resources/ext/d3.v4.min.js'
         }, () => {
             chrome.tabs.executeScript(tab.id, {
-                code: `Treeverse.initialize(${JSON.stringify(tab.url)}, ${JSON.stringify(indexUrl)});`
+
+                file: 'resources/script/viewer.js'
+            }, () => {
+                chrome.tabs.executeScript(tab.id, {
+                    code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+                });
             });
         });
     });
