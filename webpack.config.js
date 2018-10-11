@@ -6,7 +6,6 @@ module.exports = {
     entry: {
         '/extension/resources/script/background': './background/browser_action.ts',
         '/extension/resources/script/viewer': './viewer/main.ts',
-        '/public/bookmarklet': './bookmarklet.ts'
     },
     output: {
         filename: '[name].js',
