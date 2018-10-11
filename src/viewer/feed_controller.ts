@@ -80,7 +80,6 @@ class FeedController {
                                 .attr('src', (d) => d);
 
                         }
-
                     }
                 })
                 .style('opacity', 0)
@@ -90,8 +89,6 @@ class FeedController {
                 .style('opacity', 1)
                 .on('start', () => resolve())
         })
-
-
     }
 
     async setFeed(node: PointNode) {
