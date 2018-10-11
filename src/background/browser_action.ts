@@ -37,7 +37,6 @@ namespace background {
             file: 'resources/ext/d3.v4.min.js'
         }, () => {
             chrome.tabs.executeScript(tab.id, {
-
                 file: 'resources/script/viewer.js'
             }, () => {
                 chrome.tabs.executeScript(tab.id, {
