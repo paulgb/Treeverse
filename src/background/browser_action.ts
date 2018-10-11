@@ -31,17 +31,27 @@ namespace background {
 
     })
 
-    chrome.pageAction.onClicked.addListener(
-        function (tab: chrome.tabs.Tab) {
-            let userTweetPair = getUserAndTweetFromUrl(tab.url);
-            if (!userTweetPair) {
-                return;
-            }
-            let [username, tweetId] = userTweetPair;
+    chrome.pageAction.onClicked.addListener(function (tab) {
+        let userTweetPair = getUserAndTweetFromUrl(tab.url);
+        if (!userTweetPair) {
+            return;
+        }
+        let [username, tweetId] = userTweetPair;
 
-            let url = `resources/index.html#${username},${tweetId}`;
-            chrome.tabs.create({ 'url': chrome.extension.getURL(url) });
+        var indexUrl = chrome.extension.getURL(`resources`);
+
+        chrome.tabs.executeScript(tab.id, {
+            file: 'resources/ext/d3.v4.min.js'
+        }, () => {
+            chrome.tabs.executeScript(tab.id, {
+                file: 'resources/script/viewer.js'
+            }, () => {
+                chrome.tabs.executeScript(tab.id, {
+                    code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+                });
+            });
         });
+    });
 
     chrome.runtime.onInstalled.addListener((callback) => {
         (<any>chrome).declarativeContent.onPageChanged.removeRules(undefined, () => {

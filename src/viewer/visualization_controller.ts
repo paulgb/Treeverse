@@ -7,8 +7,6 @@ class VisualizationController {
     private tweetTree: TweetNode;
     private vis: TweetVisualization;
     private feed: FeedController;
-    private resourceGetter: ResourceGetter;
-    private infoBox: InfoBox;
 
     fetchTweets(tweet: Tweet) {
         TweetServer.requestTweets(tweet).then((context) => {
@@ -19,39 +17,10 @@ class VisualizationController {
         });
     }
 
-    enableArchiveUpload() {
-        this.infoBox.addUploadBox(this.setInitialTweetData.bind(this));
-    }
-
     setInitialTweetData(root: TweetNode) {
         this.tweetTree = root;
         this.vis.setTreeData(root);
         this.vis.zoomToFit();
-    }
-
-    setResourceGetter(resourceGetter: ResourceGetter) {
-        this.resourceGetter = resourceGetter;
-        //this.infoBox.addDownloadButton(this.downloadPage.bind(this));
-    }
-
-    downloadPage() {
-        var offliner = new Offline(this.resourceGetter);
-
-        var filename = prompt("What would you like to call the snapshot?", "treeverse.html");
-        if (filename == null) {
-            return;
-        }
-        if (!filename.endsWith('.html')) {
-            filename += '.html';
-        }
-
-        offliner.createOfflineHTML(this.tweetTree).then((data) => {
-            let blob = new Blob([data], { type: 'text/html' });
-            let downloadLink = document.createElement('a');
-            downloadLink.setAttribute('download', filename);
-            downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
-            downloadLink.click();
-        });
     }
 
     private expandNode(node: AbstractTreeNode) {
@@ -87,7 +56,6 @@ class VisualizationController {
         // TODO: container isn't used.
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
-        this.infoBox = new InfoBox(document.getElementById('infoBox'));
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
         if (!offline) {
             this.vis.on('dblclick', this.expandNode.bind(this));
