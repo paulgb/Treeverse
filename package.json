@@ -1,22 +1,18 @@
 {
   "name": "treeverse",
   "devDependencies": {
+    "@types/chrome": "^0.0.74",
+    "@types/d3": "^5.0.0",
+    "ts-loader": "^5.2.1",
+    "typescript": "^3.1.2",
+    "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
   },
   "version": "0.0.1",
   "description": "Treeverse Chrome Extension",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Paul Butler",
   "license": "MIT",
   "dependencies": {
-    "@types/chrome": "^0.0.74",
-    "@types/d3": "^5.0.0",
-    "d3": "^5.7.0",
-    "ts-loader": "^5.2.1",
-    "typescript": "^3.1.2",
-    "webpack": "^4.20.2"
+    "d3": "^5.7.0"
   }
 }
