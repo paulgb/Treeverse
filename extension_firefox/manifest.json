@@ -20,8 +20,7 @@
   "background": {
     "scripts": [
       "resources/script/background.js"
-    ],
-    "persistent": false
+    ]
   },
   "permissions": [
     "tabs",
