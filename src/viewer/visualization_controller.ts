@@ -34,6 +34,7 @@ export class VisualizationController {
             this.expandNode(node.parent);
 
         } else if (node instanceof TweetNode) {
+            console.log('here1', node);
             if (node.continuation) {
                 TweetServer
                     .requestContinuation(node.tweet, node.continuation)
@@ -58,14 +59,11 @@ export class VisualizationController {
         }
     }
 
-    constructor(container: HTMLElement, offline: boolean = false) {
+    constructor(container: HTMLElement) {
         // TODO: container isn't used.
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
-        if (!offline) {
-            this.vis.on('dblclick', this.expandNode.bind(this));
-        }
-
+        this.vis.on('dblclick', this.expandNode.bind(this));
     }
 }

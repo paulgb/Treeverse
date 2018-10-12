@@ -64,13 +64,17 @@ export namespace TweetParser {
      * the TweetContext.
      */
     export function parseTweetsFromConversationHTML(response: string): TweetContext {
+        console.log('here2', response);
         let obj = JSON.parse(response);
+        console.log('here3', obj);
         let doc = extractDocFromConversationResponse(response);
+        console.log('here4', doc);
 
         let context = new TweetContext();
         context.descentants = parseDescendants(doc.getElementsByTagName('body')[0]);
         context.continuation = obj.min_position;
 
+        console.log('ctx', context);
         return context;
     }
 
@@ -134,10 +138,15 @@ export namespace TweetParser {
     }
 
     function extractDocFromConversationResponse(response: string): Document {
+        console.log('here3.1');
         let obj = JSON.parse(response);
-        let responseHtml = obj.descendants.items_html;
+        console.log('here3.2', obj);
+        let responseHtml = obj.items_html || obj.descendants.items_html;
+        console.log('here3.3');
         let parser = new DOMParser();
+        console.log('here3.4');
         let doc = parser.parseFromString(responseHtml, 'text/html');
+        console.log('here3.5');
 
         return doc;
     }

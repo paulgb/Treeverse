@@ -19,7 +19,9 @@ export namespace TweetServer {
      */
     export async function requestContinuation(tweet, continuation): Promise<TweetContext> {
         let url = getUrlForConversation(tweet, continuation);
+        console.log('requesting', url);
         let response = await asyncGet(url);
+        console.log('response', response);
         return TweetParser.parseTweetsFromConversationHTML(response);
     }
 
