@@ -34,7 +34,6 @@ export class VisualizationController {
             this.expandNode(node.parent);
 
         } else if (node instanceof TweetNode) {
-            console.log('here1', node);
             if (node.continuation) {
                 TweetServer
                     .requestContinuation(node.tweet, node.continuation)
