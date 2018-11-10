@@ -8,9 +8,12 @@ import { Tweet } from './tweet_parser';
 export namespace Treeverse {
     export function initialize(baseUrl, username, tweetId) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
-            html = html.replace(/{base}/g, baseUrl);;
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
 
-            document.getElementsByTagName('html')[0].innerHTML = html;
+            let baseEl = doc.createElement('base');
+            baseEl.setAttribute('href', baseUrl + '/resources');
+            doc.head.prepend(baseEl);
 
             window.history.pushState('', '', '');
 
@@ -18,7 +21,10 @@ export namespace Treeverse {
                 window.location.reload();
             });
 
-            let controller = new VisualizationController(document.getElementById('container'));
+            document.getElementsByTagName('head')[0].replaceWith(doc.head);
+            document.getElementsByTagName('body')[0].replaceWith(doc.body);
+
+            let controller = new VisualizationController();
 
             let rootTweet = new Tweet();
             rootTweet.username = username;

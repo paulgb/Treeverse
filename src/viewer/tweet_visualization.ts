@@ -193,7 +193,6 @@ export class TweetVisualization {
             this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId());
         }
 
-
         let nodes = this.nodes.selectAll('g')
             .data(descendents, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 

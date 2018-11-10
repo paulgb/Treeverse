@@ -24,11 +24,14 @@ export namespace TweetServer {
     }
 
     async function asyncGet(url: string) {
-        return fetch(url, {
+        return window.fetch(url, {
             headers: {
                 'x-overlay-request': 'true'
             }
-        }).then((x) => x.text());
+        }).then((x) => x.text()).catch((error) => {
+            console.warn('Fetch failed: ', error);
+            return '';
+        });
     }
 
     function getUrlForTweet(tweet: Tweet): string {
