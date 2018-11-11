@@ -78,7 +78,7 @@ export class VisualizationController {
 
     constructor() {
         this.feed = new FeedController(document.getElementById('feedContainer'));
-        this.vis = new TweetVisualization(document.getElementById('tree'), this.feed);
+        this.vis = new TweetVisualization(document.getElementById('tree'));
 
         this.toolbar = new Toolbar(document.getElementById('toolbar'));
         this.toolbar.addButton('share', this.shareClicked.bind(this));

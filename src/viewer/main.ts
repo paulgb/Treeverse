@@ -1,5 +1,6 @@
 import { VisualizationController } from './visualization_controller';
 import { Tweet } from './tweet_parser';
+import {createPage} from './page';
 
 /**
  * Contains entry points for bootstrapping the visualization for
@@ -24,6 +25,7 @@ export namespace Treeverse {
             document.getElementsByTagName('head')[0].replaceWith(doc.head);
             document.getElementsByTagName('body')[0].replaceWith(doc.body);
 
+            createPage(document.getElementById('root'));
             let controller = new VisualizationController();
 
             let rootTweet = new Tweet();

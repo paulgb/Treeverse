@@ -6,7 +6,7 @@ body {
     color: #333;
 }
 
-#page {
+#root {
     display: flex;
     position: absolute;
     top: 0;
