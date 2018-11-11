@@ -4,7 +4,7 @@ import {SerializedTweetNode} from './serialize';
 
 export function webInitialize() {
     createPage(document.getElementById('root'));
-    let controller = new VisualizationController();
+    let controller = new VisualizationController(true);
 
     let parts = document.location.href.split('/');
     let key = parts[parts.length-1];

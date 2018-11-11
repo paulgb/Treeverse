@@ -31,7 +31,7 @@ module.exports = {
         compress: true,
         port: 9000,
         historyApiFallback: {
-            index: 'index.html'
+            index: 'view/index.html'
         }
     },
     mode: 'development'

@@ -36,7 +36,6 @@ export class VisualizationController {
     private expandNode(node: AbstractTreeNode) {
         if (node instanceof HasMoreNode) {
             this.expandNode(node.parent);
-
         } else if (node instanceof TweetNode) {
             if (node.continuation) {
                 TweetServer
@@ -76,15 +75,18 @@ export class VisualizationController {
         (form.node() as any).submit();
     }
 
-    constructor() {
+    constructor(offline = false) {
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'));
 
         this.toolbar = new Toolbar(document.getElementById('toolbar'));
-        this.toolbar.addButton('share', this.shareClicked.bind(this));
-        this.toolbar.addButton('download', this.shareClicked.bind(this));
+        if (!offline) {
+            this.toolbar.addButton('Create shareable link (beta)', this.shareClicked.bind(this));
+        }
 
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
-        this.vis.on('dblclick', this.expandNode.bind(this));
+        if (!offline) {
+            this.vis.on('dblclick', this.expandNode.bind(this));
+        }
     }
 }
