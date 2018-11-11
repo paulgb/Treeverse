@@ -1,7 +1,10 @@
+import * as d3 from 'd3';
+import { Tweet, TweetContext } from './tweet_parser';
+
 /**
  * Base class for all tree nodes.
  */
-class AbstractTreeNode {
+export class AbstractTreeNode {
     /**
      * Children of this node, represented as a map from ids to
      * AbstractTreeNodes.
@@ -26,7 +29,7 @@ class AbstractTreeNode {
 /**
  * A tree node representing the existance of more nodes not yet loaded.
  */
-class HasMoreNode extends AbstractTreeNode {
+export class HasMoreNode extends AbstractTreeNode {
     parent: TweetNode;
     continuation: string;
 
@@ -46,7 +49,7 @@ class HasMoreNode extends AbstractTreeNode {
 /**
  * A tree node representing an individual tweet.
  */
-class TweetNode extends AbstractTreeNode {
+export class TweetNode extends AbstractTreeNode {
     tweet: Tweet;
     hasMoreNodeId: string;
     continuation: string;

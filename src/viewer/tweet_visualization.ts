@@ -1,14 +1,18 @@
+import { FeedController } from './feed_controller';
+import * as d3 from 'd3';
+import { PointNode } from './visualization_controller';
+import { AbstractTreeNode, TweetNode, HasMoreNode } from './tweet_tree';
+
 type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 
 /**
  * Renders the main tree visualization.
  */
-class TweetVisualization {
+export class TweetVisualization {
     private container: D3Selector;
     private treeGroup: D3Selector;
     private nodes: D3Selector;
     private edges: D3Selector;
-    private feed: FeedController;
     private zoom: d3.ZoomBehavior<Element, {}>;
     private listeners: d3.Dispatch<EventTarget>;
     private colorScale: d3.ScalePower<string, number>;
@@ -17,7 +21,7 @@ class TweetVisualization {
     private yscale: number;
     private layout: d3.HierarchyPointNode<AbstractTreeNode>;
 
-    constructor(svgElement: HTMLElement, feed: FeedController) {
+    constructor(svgElement: HTMLElement) {
         this.buildTree(svgElement);
         this.listeners = d3.dispatch('hover', 'click', 'dblclick');
 
@@ -188,7 +192,6 @@ class TweetVisualization {
             this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId());
         }
 
-
         let nodes = this.nodes.selectAll('g')
             .data(descendents, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
 
@@ -198,8 +201,14 @@ class TweetVisualization {
             .duration(duration)
             .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`);
 
-        nodes.classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
-            d.data instanceof TweetNode && d.data.hasMore())
+        nodes.each((datum, i, selection) => {
+            let data = datum.data;
+            if (data instanceof TweetNode && !data.hasMore()) {
+                d3.select(selection[i]).select('.has_more_icon').remove();
+            }
+        })
+
+        nodes
             .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d == this.selected)
             .attr('opacity', 1);
 
@@ -246,10 +255,15 @@ class TweetVisualization {
                         .attr('rx', "4px")
                         .attr('fill', 'none');
 
-                    group.append('use')
-                        .classed('has_more_icon', true)
-                        .attr('xlink:href', '#has_more')
-                        .attr('transform', 'scale(0.5) translate(55 55)');
+                    group.call((selection) => {
+                        let data = (selection.datum() as any).data;
+                        if (data instanceof TweetNode && data.hasMore()) {
+                            selection.append('use')
+                                .classed('has_more_icon', true)
+                                .attr('xlink:href', '#has_more')
+                                .attr('transform', 'scale(0.5) translate(55 55)');
+                        }
+                    })
 
                 } else if (datum.data instanceof HasMoreNode) {
                     group.append('use')
@@ -259,7 +273,6 @@ class TweetVisualization {
                         .attr('width', 40)
                         .attr('height', 40)
                         .attr('opacity', 0);
-
                 }
             })
             .attr('opacity', 0)

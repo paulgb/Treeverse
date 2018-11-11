@@ -1,0 +1,226 @@
+/* Outer page container */
+body {
+    margin: 0;
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+#root {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+a {
+    cursor: pointer;
+    color: #449;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #66a;
+}
+
+/* Tree containers */
+#tree {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+}
+
+#treeContainer {
+    flex-grow: 1;
+}
+
+.selected rect {
+    stroke: #f55;
+    stroke-width: 4px;
+}
+
+/* Sidebar and info box styles. */
+
+#sidebar {
+    background: #eee;
+    overflow-x: hidden;
+    flex-basis: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+#infoBox {
+    padding: 2px 14px;
+    background-color: #fff;
+    box-shadow: 0 1px 10px #ccc;
+}
+
+/* Feed-related elements */
+#feedContainer {
+    overflow-y: scroll;
+    flex-grow: 1;
+}
+
+#feedInner {
+    padding: 18px;
+}
+
+/* Tweet content styles */
+.text {
+    white-space: pre-wrap;
+}
+
+.text a.twitter-atreply s {
+    text-decoration: none;
+}
+
+.text .Emoji, .text .twitter-hashflag-container img {
+    height: 1.25em;
+    vertical-align: -0.3em;
+}
+
+.text .u-hidden {
+    display: none;
+}
+
+.text b {
+    font-weight: normal;
+}
+
+.u-hiddenVisually {
+    display: none;
+}
+
+.dropzone {
+    padding: 10px;
+    border: 1px dashed #aaf;
+    background-color: #f4f4f4;
+    text-align: center;
+    color: #888;
+}
+
+.rtl {
+    text-align: right;
+    direction: rtl;
+    unicode-bidi: embed;
+}
+
+
+/*******************************
+            Standard
+*******************************/
+
+
+/*--------------
+    Comments
+---------------*/
+
+.ui.comments {
+    margin: 1.5em 0em;
+    max-width: 650px;
+  }
+  .ui.comments:first-child {
+    margin-top: 0em;
+  }
+  .ui.comments:last-child {
+    margin-bottom: 0em;
+  }
+  
+  /*--------------
+       Comment
+  ---------------*/
+  
+  .ui.comments .comment {
+    position: relative;
+    background: none;
+    margin: 0.5em 0em 0em;
+    padding: 0.5em 0em 0em;
+    border: none;
+    border-top: none;
+    line-height: 1.2;
+  }
+  .ui.comments .comment:first-child {
+    margin-top: 0em;
+    padding-top: 0em;
+  }
+  
+  /*--------------
+       Avatar
+  ---------------*/
+  
+  .ui.comments .comment .avatar {
+    display: block;
+    width: 2.5em;
+    height: auto;
+    float: left;
+    margin: 0.2em 0em 0em;
+  }
+  .ui.comments .comment img.avatar,
+  .ui.comments .comment .avatar img {
+    display: block;
+    margin: 0em auto;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.25rem;
+  }
+  
+  /*--------------
+       Content
+  ---------------*/
+  
+  .ui.comments .comment > .content {
+    display: block;
+  }
+  
+  /* If there is an avatar move content over */
+  .ui.comments .comment > .avatar ~ .content {
+    margin-left: 3.5em;
+  }
+  
+  /*--------------
+       Author
+  ---------------*/
+  
+  .ui.comments .comment .author {
+    font-size: 1em;
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: bold;
+  }
+  .ui.comments .comment a.author {
+    cursor: pointer;
+  }
+  .ui.comments .comment a.author:hover {
+    color: #1e70bf;
+  }
+  
+  /*--------------
+       Metadata
+  ---------------*/
+  
+  .ui.comments .comment .metadata {
+    display: inline-block;
+    margin-left: 0.5em;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.875em;
+  }
+  .ui.comments .comment .metadata > * {
+    display: inline-block;
+    margin: 0em 0.5em 0em 0em;
+  }
+  .ui.comments .comment .metadata > :last-child {
+    margin-right: 0em;
+  }
+  
+  /*--------------------
+       Comment Text
+  ---------------------*/
+  
+  .ui.comments .comment .text {
+    margin: 0.25em 0em 0.5em;
+    font-size: 1em;
+    word-wrap: break-word;
+    color: rgba(0, 0, 0, 0.87);
+    line-height: 1.3;
+  }
