@@ -1,2 +1,3 @@
+/view/*.json    https://s3.amazonaws.com/treeverse/:splat.json 200
 /view/*    /view/index.html   200
 / https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila?hl=en
