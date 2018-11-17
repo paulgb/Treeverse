@@ -25,7 +25,7 @@ export function createPage(container:HTMLElement) {
         <div id="sidebar">
             <div id="infoBox">
                 <p>Visualized by
-                    <a href="https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila">Treeverse</a>.
+                    <a href="https://treeverse.app">Treeverse</a>.
                     Confused?
                     <a href="https://github.com/paulgb/Treeverse/blob/master/README.md#readme">Read this</a>. Bugs? Tweet me
                     (<a href="https://twitter.com/paulgb">@paulgb</a>) or
