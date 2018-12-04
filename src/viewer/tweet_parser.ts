@@ -146,7 +146,6 @@ export namespace TweetParser {
         let tweetStream = [];
         let tweetElements = streamContainer.getElementsByClassName('tweet');
 
-        let nextChildren = [];
         for (let i = 0; i < tweetElements.length; i++) {
             let tweetElement = <HTMLElement>tweetElements[i];
             let tweet = new Tweet();
@@ -175,7 +174,6 @@ export namespace TweetParser {
             }
 
             tweetStream.push(tweet);
-            nextChildren = [tweet.id];
         }
 
         return tweetStream;

@@ -45,7 +45,6 @@ export namespace Archive {
             return parseInt(o1.id) - parseInt(o2.id);
         });
 
-        let parsedTweets = [];
         let orphanedTweetCount = 0;
 
         for (let i = 0; i < archive.length; i++) {
