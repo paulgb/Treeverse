@@ -31,4 +31,4 @@ invokes the interactive UI.
 - `tweet_server.ts` - Interfaces with the Twitter API to load tweets.
     - `tweet_parser.ts` - Used by `TweetServer` to parse API responses.
 - `tweet_tree.ts` - Builds a hierarchal data structure out of `TweetServer`'s responses.
-- `feed_controller.ts` - Controller for the right-side pane which shows an individual reply-chain. 
+- `feed_controller.ts` - Controller for the right-side pane which shows an individual reply-chain.

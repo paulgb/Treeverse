@@ -3,4 +3,4 @@ extension_*.zip
 extension_common/resources/script
 extension_chrome/resources/script
 extension_firefox/resources/script
-web/treeverse.js*
+public

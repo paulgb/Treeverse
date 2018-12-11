@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     context: path.resolve('src'),
@@ -26,6 +27,15 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new CopyWebpackPlugin([
+            {
+                context: '../',
+                from: 'web',
+                to: 'public'
+            }
+        ]),
+    ],
     devServer: {
         contentBase: path.join(__dirname, 'web'),
         compress: true,

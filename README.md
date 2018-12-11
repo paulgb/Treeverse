@@ -39,26 +39,6 @@ load additional replies to that tweet.
 
 ![More tweets indicator.](images/red_circles.png)
 
-Archive Mode
-------------
-
-In addition to visualizing conversations directly from Twitter, Treeverse supports loading
-[twarc](https://github.com/DocNow/twarc) conversation archive files. First open Treeverse
-in Archive Mode by right-clicking the Treeverse icon and selecting Archive Mode in the
-drop-down.
-
-![Treeverse context menu showing Archive Mode](images/archive_mode.png)
-
-In Archive Mode, Treeverse has a "drop zone" for dragging twarc .json ouput files to.
-Simply drag the file into the drop zone to load the conversation.
-
-Treeverse only supports output from the `twarc replies --recursive` command. For example:
-
-    twarc replies 824077910927691778 --recursive > replies.json
-
-Archive mode is available even if you don't have the extension, using
-[this link](https://paulgb.github.io/Treeverse/).
-
 Developing
 ----------
 

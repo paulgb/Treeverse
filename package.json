@@ -13,6 +13,7 @@
   "author": "Paul Butler",
   "license": "MIT",
   "dependencies": {
+    "copy-webpack-plugin": "^4.6.0",
     "d3": "^5.7.0",
     "webpack-dev-server": "^3.1.10"
   }
