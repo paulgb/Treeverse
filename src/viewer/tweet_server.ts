@@ -29,7 +29,6 @@ export namespace TweetServer {
         let fetch = (typeof content === 'undefined') ? window.fetch : content.fetch;
 
         return fetch(url, {
-            referrerPolicy: 'unsafe-url',
             headers: {
                 'x-overlay-request': 'true'
             }
