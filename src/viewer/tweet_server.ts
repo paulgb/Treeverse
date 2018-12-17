@@ -1,5 +1,7 @@
 import { TweetParser, TweetContext, Tweet } from './tweet_parser';
 
+declare var content: any;
+
 /**
  * Interfaces with Twitter API server.
  */
@@ -24,7 +26,10 @@ export namespace TweetServer {
     }
 
     async function asyncGet(url: string) {
-        return window.fetch(url, {
+        let fetch = (typeof content === 'undefined') ? window.fetch : content.fetch;
+
+        return fetch(url, {
+            referrerPolicy: 'unsafe-url',
             headers: {
                 'x-overlay-request': 'true'
             }
