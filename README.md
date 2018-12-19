@@ -1,6 +1,6 @@
 ![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/paulgb/Treeverse.svg)
 
-![Treeverse Icon](web/images/icon_48.png) Treeverse
+![Treeverse Icon](images/icon_48.png) Treeverse
 =========
 
 Treeverse is a tool for visualizing and navigating Twitter conversation threads.
@@ -29,16 +29,16 @@ After installing Treeverse for your browser, open Twitter and click on the tweet
 
 If you’re using Chrome, the icon for Treeverse should turn from grey to blue in your browser. Click it to enter Treeverse.
 
-<img src="web/images/chrome_treeverse.gif" alt="Opening Treeverse in Chrome" style="width: 320px; height: 180px;" />
+<img src="images/chrome_treeverse.gif" alt="Opening Treeverse in Chrome" style="width: 320px; height: 180px;" />
 
 If you're using Firefox, the icon will be hidden until you open a tweet, and then it will appear in the address bar.
 
-<img src="web/images/chrome_moz.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
+<img src="images/chrome_moz.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
 
 Exploring the Conversation
 --------------------------
 
-![Screenshot of Treeverse.](extension_common/resources/images/treeverse640.gif)
+![Screenshot of Treeverse.](images/treeverse640.gif)
 
 Conversations are visualized as a tree. Each box is an individual tweet, and
 an line between two boxes indicates that the lower one is a reply to the upper
@@ -50,14 +50,14 @@ pane. By clicking a node, you can freeze the UI on that tweet in order to intera
 the right-side pane. By clicking anywhere in the tree window, you can un-freeze the tweet
 and return to the normal hover behavior.
 
-![Right pane in action.](extension_common/resources/images/right_pane.png)
+![Right pane in action.](images/right_pane.png)
 
 Some tweets will appear with a red circle with white ellipses inside them, either overlayed
 on them or as a separate node. This means that
 there are more replies to that tweet that haven't been loaded. Double-clicking a node will
 load additional replies to that tweet.
 
-![More tweets indicator.](extension_common/resources/images/red_circles.png)
+![More tweets indicator.](images/red_circles.png)
 
 Privacy
 -------
