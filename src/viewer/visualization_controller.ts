@@ -66,12 +66,12 @@ export class VisualizationController {
         console.log(value);
         let form = d3.select(this.toolbar.container)
             .append('form')
-            .attr('method','post')
+            .attr('method', 'post')
             .attr('action', 'https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/default/treeverse_post');
         form.append('input')
-            .attr('type','hidden')
-            .attr('name','content')
-            .attr('value',JSON.stringify(value));
+            .attr('type', 'hidden')
+            .attr('name', 'content')
+            .attr('value', JSON.stringify(value));
         (form.node() as any).submit();
     }
 
@@ -81,7 +81,7 @@ export class VisualizationController {
 
         this.toolbar = new Toolbar(document.getElementById('toolbar'));
         if (!offline) {
-            this.toolbar.addButton('Create shareable link (beta)', this.shareClicked.bind(this));
+            this.toolbar.addButton('Create shareable link', this.shareClicked.bind(this));
         }
 
         this.vis.on('hover', this.feed.setFeed.bind(this.feed));
