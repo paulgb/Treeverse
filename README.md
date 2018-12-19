@@ -1,6 +1,6 @@
 ![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/paulgb/Treeverse.svg)
 
-![Treeverse Icon](images/icon_48.png) Treeverse
+![Treeverse Icon](extension_common/icons/48.png) Treeverse
 =========
 
 Treeverse is a tool for visualizing and navigating Twitter conversation threads.
