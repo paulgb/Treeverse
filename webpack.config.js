@@ -41,6 +41,16 @@ module.exports = {
             },
             {
                 context: '../',
+                from: 'images',
+                to: 'public/images'
+            },
+            {
+                context: '../',
+                from: 'extension/common/icons',
+                to: 'public/icons'
+            },
+            {
+                context: '../',
                 from: 'extension/common/resources/style.css',
                 to: 'public/'
             },
