@@ -1,4 +1,4 @@
-export function createPage(container:HTMLElement) {
+export function createPage(container: HTMLElement) {
     let pageHTML = `
         <div id="treeContainer">
             <svg id="tree">
@@ -27,7 +27,7 @@ export function createPage(container:HTMLElement) {
                 <p>Visualized by
                     <a href="https://treeverse.app">Treeverse</a>.
                     Confused?
-                    <a href="https://github.com/paulgb/Treeverse/blob/master/README.md#readme">Read this</a>. Bugs? Tweet me
+                    <a href="https://treeverse.app">Read this</a>. Bugs? Tweet me
                     (<a href="https://twitter.com/paulgb">@paulgb</a>) or
                     <a href="https://github.com/paulgb/Treeverse/issues">report on GitHub</a>.
                 </p>

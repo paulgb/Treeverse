@@ -1,6 +1,6 @@
 ![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/paulgb/Treeverse.svg)
 
-Treeverse
+![Treeverse Icon](web/images/icon_48.png) Treeverse
 =========
 
 Treeverse is a tool for visualizing and navigating Twitter conversation threads.
@@ -25,18 +25,23 @@ Installation
 Introduction
 ------------
 
-After installing Treeverse for your browser, visit Twitter and click on the tweet that you would like to visualize the conversation of.
+After installing Treeverse for your browser, open Twitter and click on the tweet that you would like to visualize the conversation of (or try [this one](https://twitter.com/paulgb/status/977652162137395201).)
 
-The icon for Treeverse should turn from grey to blue in your browser. Click it to open a Treeverse
-visualization of the tweet you are looking at.
+If you’re using Chrome, the icon for Treeverse should turn from grey to blue in your browser. Click it to enter Treeverse.
+
+<img src="web/images/chrome_treeverse.gif" alt="Opening Treeverse in Chrome" style="width: 320px; height: 180px;" />
+
+If you're using Firefox, the icon will be hidden until you open a tweet, and then it will appear in the address bar.
+
+<img src="web/images/chrome_moz.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
 
 Exploring the Conversation
 --------------------------
 
 ![Screenshot of Treeverse.](images/treeverse640.gif)
 
-Conversations are visualized as a tree. Each node (square) is an individual tweet, and
-an edge (line) between two tweets indicates that the lower one is a reply to the upper
+Conversations are visualized as a tree. Each box is an individual tweet, and
+an line between two boxes indicates that the lower one is a reply to the upper
 one. The color of the line indicates the time duration between the two tweets
 (red is faster, blue is slower.)
 
@@ -54,15 +59,19 @@ load additional replies to that tweet.
 
 ![More tweets indicator.](images/red_circles.png)
 
-Developing
-----------
+Privacy
+-------
 
-See [DEVELOPING.md](DEVELOPING.md)
+Treeverse runs entirely in your browser. No data is collected or tracked by Treeverse directly
+when you use or install it. Browser extension installs may be tracked by Google and Mozilla, and the data
+requests made to Twitter may be tracked by Twitter.
+
+Additionally, when Treeverse runs it loads a font hosted by Google Fonts (https://fonts.google.com/). Google may track this download.
 
 Bugs & Contact
 --------------
 
-Tweet [@paulgb](https://twitter.com/paulgb) or report on GitHub.
+Tweet [@paulgb](https://twitter.com/paulgb) or [report on GitHub](https://github.com/paulgb/treeverse/issues).
 
 Credits
 -------
