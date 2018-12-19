@@ -1,1 +1,0 @@
-../../../extension_common/resources/script/viewer.js
