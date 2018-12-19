@@ -240,6 +240,12 @@ export class TweetVisualization {
                 let group = d3.select(this);
                 if (datum.data instanceof TweetNode) {
                     let tweet = datum.data.tweet;
+
+                    group.append('rect')
+                        .attr('height', 40)
+                        .attr('width', 40)
+                        .attr('fill', 'white');
+
                     group.append('image')
                         .attr('xlink:href', tweet.avatar)
                         .attr('height', 40)

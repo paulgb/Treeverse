@@ -3,15 +3,30 @@
 Treeverse
 =========
 
-Treeverse is a browser extension for navigating burgeoning Twitter conversations.
+Treeverse is a tool for visualizing and navigating Twitter conversation threads.
+
+It is available as a browser extension for Chrome and Firefox.
+
+Installation
+------------
+
+### Chrome Users:
+
+<a href="https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila?hl=en">
+    <img src="images/download_chrome.png" alt="Download Treeverse for Chrome" style="width: 206px; height: 58px">
+</a>
+
+### Firefox Users:
+
+<a href="https://addons.mozilla.org/en-US/firefox/addon/treeverse/">
+    <img src="images/download_moz.png" alt="Download Treeverse for Firefox" style="width: 172px; height: 60px">
+</a>
 
 Introduction
 ------------
 
-First, download Treeverse from the
-[Chrome App Store](https://chrome.google.com/webstore/detail/treeverse/aahmjdadniahaicebomlagekkcnlcila).
+After installing Treeverse for your browser, visit Twitter and click on the tweet that you would like to visualize the conversation of.
 
-Then, visit Twitter and click on the tweet that you would like to visualize the conversation of.
 The icon for Treeverse should turn from grey to blue in your browser. Click it to open a Treeverse
 visualization of the tweet you are looking at.
 
