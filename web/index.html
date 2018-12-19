@@ -44,6 +44,56 @@
         <p>If you're using Firefox, the icon will be hidden until you open a tweet, and then it will appear in the address bar.</p>
 
         <img src="/images/moz_treeverse.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
+
+        <h3>Exploring the Conversation</h3>
+        <img alt="Screenshot of Treeverse" src="images/treeverse640.gif" style="width: 640; height: 300px;"/>
+
+        <p>Conversations are visualized as a tree. Each box is an individual tweet, and
+        an line between two boxes indicates that the lower one is a reply to the upper
+        one. The color of the line indicates the time duration between the two tweets
+        (red is faster, blue is slower.)</p>
+        
+        <p>As you hover over nodes, the reply-chain preceeding that tweet appears on the right-side
+        pane. By clicking a node, you can freeze the UI on that tweet in order to interact with
+        the right-side pane. By clicking anywhere in the tree window, you can un-freeze the tweet
+        and return to the normal hover behavior.</p>
+        
+        <img alt="Right pane in action" src="images/right_pane.png" />
+        
+        <p>Some tweets will appear with a red circle with white ellipses inside them, either overlayed
+        on them or as a separate node. This means that
+        there are more replies to that tweet that haven't been loaded. Double-clicking a node will
+        load additional replies to that tweet.</p>
+        
+        <img alt="More tweets indicator" src="images/red_circles.png" />
+        
+        <h3>Privacy</h3>
+        
+        <p>Treeverse runs entirely in your browser. No data is collected or tracked by Treeverse directly
+        when you use or install it. Browser extension installs may be tracked by Google and Mozilla, and the data
+        requests made to Twitter may be tracked by Twitter.</p>
+        
+        <p>When you create a sharable link, the data is sent to a server so that it can be made available to other
+        users. Access to the shared link server may be tracked to prevent abuse.</p>
+        
+        <p>Additionally, when Treeverse runs it loads a font hosted by Google Fonts. Google may track this download.</p>
+        
+        <h3>License</h3>
+
+        <p>Treeverse is distributed under an <a href="https://github.com/paulgb/Treeverse/blob/master/LICENSE">MIT license</a>.
+        The code is <a href="https://github.com/paulgb/Treeverse">available on GitHub</a>.</p>
+
+        <h3>Bugs & Contact</h3>
+        
+        Tweet <a href="https://twitter.com/paulgb">@paulgb</a> or <a href="https://github.com/paulgb/treeverse/issues">report on GitHub</a>.
+        
+        <h3>Credits</h3>
+        
+        <p>Icon created by <a href="http://www.elischiff.com/">Eli Schiff</a>.</p>
+        
+        <p>Treeverse would not be possible without the excellent <a href="https://d3js.org/">d3.js</a>.
+        Styling is powered by <a href="http://semantic-ui.com/">Semantic UI</a>.</p>
+        
     </div>
     <!-- start Mixpanel --><script type="text/javascript">(function(c,a){if(!a.__SV){var b=window;try{var d,m,j,k=b.location,f=k.hash;d=function(a,b){return(m=a.match(RegExp(b+"=([^&]*)")))?m[1]:null};f&&d(f,"state")&&(j=JSON.parse(decodeURIComponent(d(f,"state"))),"mpeditor"===j.action&&(b.sessionStorage.setItem("_mpcehash",f),history.replaceState(j.desiredHash||"",c.title,k.pathname+k.search)))}catch(n){}var l,h;window.mixpanel=a;a._i=[];a.init=function(b,d,g){function c(b,i){var a=i.split(".");2==a.length&&(b=b[a[0]],i=a[1]);b[i]=function(){b.push([i].concat(Array.prototype.slice.call(arguments,
 0)))}}var e=a;"undefined"!==typeof g?e=a[g]=[]:g="mixpanel";e.people=e.people||[];e.toString=function(b){var a="mixpanel";"mixpanel"!==g&&(a+="."+g);b||(a+=" (stub)");return a};e.people.toString=function(){return e.toString(1)+".people (stub)"};l="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
