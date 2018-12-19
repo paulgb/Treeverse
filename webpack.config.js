@@ -1,4 +1,3 @@
-var webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -6,13 +5,13 @@ module.exports = {
     context: path.resolve('src'),
     entry: {
         '/extension_chrome/resources/script/background': './background/chrome_action.ts',
+        '/extension_chrome/resources/script/viewer': './viewer/main.ts',
         '/extension_firefox/resources/script/background': './background/firefox_action.ts',
-        '/extension_common/resources/script/viewer': './viewer/main.ts',
+        '/extension_firefox/resources/script/viewer': './viewer/main.ts',
         '/public/treeverse': './viewer/web_entry.ts',
     },
     output: {
-        filename: '[name].js',
-        path: __dirname
+        filename: '[name].js'
     },
     devtool: "source-map",
     resolve: {
@@ -29,15 +28,38 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
+            // Web site
             {
                 context: '../',
                 from: 'web',
                 to: 'public'
-            }
+            },
+            {
+                context: '../',
+                from: 'extension/common/resources/images',
+                to: 'public/images'
+            },
+            {
+                context: '../',
+                from: 'extension/common/resources/style.css',
+                to: 'public/'
+            },
+            // Chrome extension
+            {
+                context: '../',
+                from: 'extension/common',
+                to: 'extension_chrome'
+            },
+            // Firefox extension
+            {
+                context: '../',
+                from: 'extension/common',
+                to: 'extension_firefox'
+            },
         ]),
     ],
     devServer: {
-        contentBase: path.join(__dirname, 'web'),
+        contentBase: path.join(__dirname, 'dist/public'),
         compress: true,
         port: 9000,
         historyApiFallback: {
