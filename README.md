@@ -33,7 +33,7 @@ If you’re using Chrome, the icon for Treeverse should turn from grey to blue i
 
 If you're using Firefox, the icon will be hidden until you open a tweet, and then it will appear in the address bar.
 
-<img src="images/chrome_moz.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
+<img src="images/moz_treeverse.gif" alt="Opening Treeverse in Firefox" style="width: 320px; height: 180px;" />
 
 Exploring the Conversation
 --------------------------
