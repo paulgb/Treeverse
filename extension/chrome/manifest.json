@@ -17,7 +17,7 @@
         "default_title": "Treeverse"
     },
     "description": "",
-    "version": "2.2",
+    "version": "2.3",
     "background": {
         "scripts": [
             "resources/script/background.js"
@@ -28,7 +28,6 @@
         "activeTab",
         "declarativeContent",
         "contextMenus",
-        "https://*.twitter.com/"
     ],
     "web_accessible_resources": [
         "resources/*"
