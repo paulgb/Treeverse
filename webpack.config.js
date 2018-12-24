@@ -60,11 +60,21 @@ module.exports = {
                 from: 'extension/common',
                 to: 'extension_chrome'
             },
+            {
+                context: '../',
+                from: 'extension/chrome/manifest.json',
+                to: 'extension_chrome'
+            },
             // Firefox extension
             {
                 context: '../',
                 from: 'extension/common',
-                to: 'extension_firefox'
+                to: 'extension_firefox/'
+            },
+            {
+                context: '../',
+                from: 'extension/firefox/manifest.json',
+                to: 'extension_firefox/'
             },
         ]),
     ],

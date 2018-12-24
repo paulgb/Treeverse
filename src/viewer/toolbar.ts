@@ -8,6 +8,11 @@ export class Toolbar {
     }
 
     addButton(label: string, onClicked: () => void) {
-        d3.select(this.container).append('button').text(label).on('click', onClicked);
+        d3.select(this.container)
+            .append('button')
+            .text(label)
+            .classed('ui primary button', true)
+            .style('margin-bottom', '10px')
+            .on('click', onClicked);
     }
 }
