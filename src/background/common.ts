@@ -1,4 +1,4 @@
-export let matchTweetURL = 'https?://twitter.com/(.+)/status/(\\d+)';
+export let matchTweetURL = 'https?://(?:mobile\.)?twitter.com/(.+)/status/(\\d+)';
 export let matchTweetURLRegex = new RegExp(matchTweetURL);
 
 export function getUserAndTweetFromUrl(url: string): [string, string] {
@@ -15,13 +15,20 @@ export function clickAction(tab) {
     }
     let [username, tweetId] = userTweetPair;
 
-    var indexUrl = chrome.extension.getURL(`resources`);
+    if (tab.url.match(/^https?:\/\/mobile\./)) {
+        let newUrl = `https://twitter.com/${username}/status/${tweetId}`
+        if (confirm("Treeverse can't be run from mobile.twitter.com, but we can redirect you to twitter.com.\n(You will have to click the Treeverse icon again there.)")) {
+            chrome.tabs.update(tab.id, { url: newUrl });
+        }
+    } else {
+        var indexUrl = chrome.extension.getURL(`resources`);
 
-    chrome.tabs.executeScript(tab.id, {
-        file: 'resources/script/viewer.js'
-    }, () => {
         chrome.tabs.executeScript(tab.id, {
-            code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+            file: 'resources/script/viewer.js'
+        }, () => {
+            chrome.tabs.executeScript(tab.id, {
+                code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+            });
         });
-    });
+    }
 }
