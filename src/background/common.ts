@@ -17,9 +17,12 @@ export function clickAction(tab) {
 
     if (tab.url.match(/^https?:\/\/mobile\./)) {
         let newUrl = `https://twitter.com/${username}/status/${tweetId}`
-        if (confirm("Treeverse can't be run from mobile.twitter.com, but we can redirect you to twitter.com.\n(You will have to click the Treeverse icon again there.)")) {
-            chrome.tabs.update(tab.id, { url: newUrl });
-        }
+        let code = `
+        if (confirm("Treeverse can't be run from mobile.twitter.com, but we can redirect you to twitter.com.\\n(You will have to click the Treeverse icon again there.)")) {
+            document.location = ${JSON.stringify(newUrl)}
+        }`
+        console.log(code);
+        chrome.tabs.executeScript(tab.id, { code });
     } else {
         var indexUrl = chrome.extension.getURL(`resources`);
 
