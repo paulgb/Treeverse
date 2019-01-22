@@ -46,6 +46,42 @@ export class HasMoreNode extends AbstractTreeNode {
     }
 }
 
+export class TweetTree {
+    root: TweetNode
+    index: Map<string, TweetNode>
+
+    constructor(rootTweetId: string, tweets: Tweet[]) {
+        this.index = new Map()
+
+        for (let tweet of tweets) {
+            if (tweet.id == rootTweetId) {
+                this.root = new TweetNode(tweet)
+                this.index.set(tweet.id, this.root)
+                break
+            }
+        }
+
+        this.addTweets(tweets)
+    }
+
+    addTweets(tweets: Tweet[]) {
+        tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+        for (let tweet of tweets) {
+            if (!this.index.has(tweet.id)) {
+                let node = new TweetNode(tweet)
+                if (tweet.parent && this.index.has(tweet.parent)) {
+                    this.index.get(tweet.parent).children.set(tweet.id, node)
+                } else {
+                    console.log('orphan tweet', tweet, tweet.parent)
+                }
+                console.log('added tweet', tweet.id)
+                this.index.set(tweet.id, node);
+            }
+        }
+    }
+}
+
 /**
  * A tree node representing an individual tweet.
  */

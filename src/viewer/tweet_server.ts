@@ -5,44 +5,57 @@ declare var content: any;
 /**
  * Interfaces with Twitter API server.
  */
-export namespace TweetServer {
+export class TweetServer {
+    csrfToken: string;
+    authorization: string;
+
+    constructor(csrfToken, authorization) {
+        this.csrfToken = csrfToken;
+        this.authorization = authorization;
+    }
+
     /**
      * Requests the TweetContext for a given tweet and returns a promise. 
      */
-    export async function requestTweets(tweet): Promise<TweetContext> {
-        let url = getUrlForTweet(tweet);
-        let response = await asyncGet(url);
-        return TweetParser.parseTweetsFromHtml(response);
+    async requestTweets(tweet): Promise<Tweet[]> {
+        let url = this.getUrlForTweet(tweet);
+        let response = await this.asyncGet(url);
+
+        console.log(response);
+
+        return TweetParser.parseTweets(response);
     }
 
     /**
      * Requests the continued conversation for a given tweet and continuation
      * token, and returns a promise.
      */
-    export async function requestContinuation(tweet, continuation): Promise<TweetContext> {
+    async requestContinuation(tweet, continuation): Promise<TweetContext> {
+        console.log('requestContinuation not implemented yet');
+        return null;
+        /*
         let url = getUrlForConversation(tweet, continuation);
         let response = await asyncGet(url);
         return TweetParser.parseTweetsFromConversationHTML(response);
+        */
     }
 
-    async function asyncGet(url: string) {
+    async asyncGet(url: string) {
         let fetch = (typeof content === 'undefined') ? window.fetch : content.fetch;
 
         return fetch(url, {
+            credentials: "include",
             headers: {
-                'x-overlay-request': 'true'
+                "x-csrf-token": this.csrfToken,
+                "authorization": this.authorization
             }
-        }).then((x) => x.text()).catch((error) => {
+        }).then((x) => x.json()).catch((error) => {
             console.warn('Fetch failed: ', error);
             return '';
         });
     }
 
-    function getUrlForTweet(tweet: Tweet): string {
-        return `https://twitter.com/${tweet.username}/status/${tweet.id}`;
-    }
-
-    function getUrlForConversation(tweet: Tweet, continuation: string): string {
-        return `https://twitter.com/i/${tweet.username}/conversation/${tweet.id}?max_position=${continuation}`;
+    getUrlForTweet(tweet: Tweet): string {
+        return `https://api.twitter.com/2/timeline/conversation/${tweet.id}.json`;
     }
 }

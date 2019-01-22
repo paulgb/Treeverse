@@ -1,3 +1,5 @@
+import { APIResponse } from './api'
+
 /**
  * Contains information about an individual tweet.
  */
@@ -19,6 +21,7 @@ export class Tweet {
     replies: number;
     /** Whether to render the tweet as right-to-left. */
     rtl: boolean;
+    parent: string;
 
     images: string[] = [];
 
@@ -54,6 +57,7 @@ export class TweetContext {
     continuation: string;
 }
 
+
 /**
  * Functions for parsing a response from the twitter API into Tweet and
  * TweetContext objects.
@@ -72,6 +76,40 @@ export namespace TweetParser {
         context.continuation = obj.min_position;
 
         return context;
+    }
+
+    export function parseTweets(response: APIResponse): Tweet[] {
+        let tweets = [];
+        let users = new Map<string, { handle: string, name: string, avatar: string }>();
+
+        for (let userId in response.globalObjects.users) {
+            let user = response.globalObjects.users[userId]
+            users.set(userId, {
+                handle: user.screen_name,
+                name: user.name,
+                avatar: user.profile_image_url_https
+            });
+        }
+
+        for (let tweetId in response.globalObjects.tweets) {
+            let entry = response.globalObjects.tweets[tweetId];
+            let tweet = new Tweet();
+            let user = users.get(entry.user_id_str);
+
+            tweet.id = entry.id_str;
+            tweet.bodyText = entry.text;
+            tweet.bodyHtml = entry.text;
+            tweet.name = user.name;
+            tweet.username = user.handle;
+            tweet.avatar = user.avatar;
+            tweet.parent = entry.in_reply_to_status_id_str;
+            tweet.time = new Date(entry.created_at).getTime();
+
+            tweets.push(tweet);
+        }
+        console.log(tweets);
+
+        return tweets;
     }
 
     /**

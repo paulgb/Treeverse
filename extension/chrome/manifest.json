@@ -21,13 +21,14 @@
     "background": {
         "scripts": [
             "resources/script/background.js"
-        ],
-        "persistent": false
+        ]
     },
     "permissions": [
         "activeTab",
         "declarativeContent",
-        "contextMenus"
+        "contextMenus",
+        "webRequest",
+        "https://api.twitter.com/"
     ],
     "web_accessible_resources": [
         "resources/*"

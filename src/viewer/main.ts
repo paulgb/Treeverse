@@ -1,13 +1,13 @@
 import { VisualizationController } from './visualization_controller';
 import { Tweet } from './tweet_parser';
-import {createPage} from './page';
-
+import { createPage } from './page';
+import { TweetServer } from './tweet_server';
 /**
  * Contains entry points for bootstrapping the visualization for
  * different modes.
  */
 export namespace Treeverse {
-    export function initialize(baseUrl, username, tweetId) {
+    export function initialize(baseUrl, tweetId, auth) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             let parser = new DOMParser();
             let doc = parser.parseFromString(html, 'text/html');
@@ -26,10 +26,14 @@ export namespace Treeverse {
             document.getElementsByTagName('body')[0].replaceWith(doc.body);
 
             createPage(document.getElementById('root'));
-            let controller = new VisualizationController();
+
+            console.log('auth', auth);
+
+            let server = new TweetServer(auth.csrfToken, auth.authorization);
+
+            let controller = new VisualizationController(server);
 
             let rootTweet = new Tweet();
-            rootTweet.username = username;
             rootTweet.id = tweetId;
 
             controller.fetchTweets(rootTweet);

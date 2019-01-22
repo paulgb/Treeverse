@@ -1,6 +1,21 @@
 export let matchTweetURL = 'https?://(?:mobile\.)?twitter.com/(.+)/status/(\\d+)';
 export let matchTweetURLRegex = new RegExp(matchTweetURL);
 
+let auth = {
+    csrfToken: null,
+    authorization: null
+}
+
+export function updateAuth(headers) {
+    for (let header of headers) {
+        if (header.name.toLowerCase() == 'x-csrf-token') {
+            auth.csrfToken = header.value;
+        } else if (header.name.toLowerCase() == 'authorization') {
+            auth.authorization = header.value;
+        }
+    }
+}
+
 export function getUserAndTweetFromUrl(url: string): [string, string] {
     let match = matchTweetURLRegex.exec(url);
     if (match) {
@@ -30,7 +45,7 @@ export function clickAction(tab) {
             file: 'resources/script/viewer.js'
         }, () => {
             chrome.tabs.executeScript(tab.id, {
-                code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(username)}, ${JSON.stringify(tweetId)});`
+                code: `Treeverse.initialize(${JSON.stringify(indexUrl)}, ${JSON.stringify(tweetId)}, ${JSON.stringify(auth)});`
             });
         });
     }

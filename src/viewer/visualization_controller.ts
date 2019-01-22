@@ -1,7 +1,7 @@
 import { FeedController } from './feed_controller';
 import { TweetVisualization } from './tweet_visualization';
 import { Tweet } from './tweet_parser';
-import { TweetNode, AbstractTreeNode, HasMoreNode } from './tweet_tree';
+import { TweetNode, TweetTree, AbstractTreeNode, HasMoreNode } from './tweet_tree';
 import { TweetServer } from './tweet_server';
 import { Toolbar } from './toolbar';
 import { SerializedTweetNode } from './serialize';
@@ -13,23 +13,25 @@ export type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
  * The controller for the main tree visualization.
  */
 export class VisualizationController {
-    private tweetTree: TweetNode;
+    private tweetTree: TweetTree;
     private vis: TweetVisualization;
     private feed: FeedController;
     private toolbar: Toolbar;
+    private server: TweetServer;
 
     fetchTweets(tweet: Tweet) {
-        TweetServer.requestTweets(tweet).then((context) => {
+        this.server.requestTweets(tweet).then((tweets) => {
+            let tweetTree = new TweetTree(tweet.id, tweets);
             document.getElementsByTagName('title')[0].innerText =
-                `${context.tweet.username} - "${context.tweet.bodyText}" in Treeverse`;
+                `${tweetTree.root.tweet.username} - "${tweetTree.root.tweet.bodyText}" in Treeverse`;
 
-            this.setInitialTweetData(TweetNode.createFromContext(context));
+            this.setInitialTweetData(tweetTree);
         });
     }
 
-    setInitialTweetData(root: TweetNode) {
-        this.tweetTree = root;
-        this.vis.setTreeData(root);
+    setInitialTweetData(tree: TweetTree) {
+        this.tweetTree = tree;
+        this.vis.setTreeData(tree.root);
         this.vis.zoomToFit();
     }
 
@@ -38,23 +40,24 @@ export class VisualizationController {
             this.expandNode(node.parent);
         } else if (node instanceof TweetNode) {
             if (node.continuation) {
-                TweetServer
+                this.server
                     .requestContinuation(node.tweet, node.continuation)
                     .then((context) => {
                         node.addChildrenFromContext(context);
-                        this.vis.setTreeData(this.tweetTree);
-                        if (node.tweet.id == this.tweetTree.tweet.id) {
+                        this.vis.setTreeData(this.tweetTree.root);
+                        if (node.tweet.id == this.tweetTree.root.tweet.id) {
                             // Only adjust zoom if this is loading more replies to
                             // the root tweet.
                             this.vis.zoomToFit();
                         }
                     });
             } else {
-                TweetServer
+                this.server
                     .requestTweets(node.tweet)
-                    .then((context) => {
-                        node.addChildrenFromContext(context);
-                        this.vis.setTreeData(this.tweetTree);
+                    .then((tweets) => {
+                        this.tweetTree.addTweets(tweets)
+
+                        this.vis.setTreeData(this.tweetTree.root);
                     });
             }
 
@@ -62,7 +65,7 @@ export class VisualizationController {
     }
 
     shareClicked() {
-        let value = SerializedTweetNode.fromTweetNode(this.tweetTree);
+        let value = SerializedTweetNode.fromTweetNode(this.tweetTree.root);
         console.log(value);
         let form = d3.select(this.toolbar.container)
             .append('form')
@@ -75,7 +78,8 @@ export class VisualizationController {
         (form.node() as any).submit();
     }
 
-    constructor(offline = false) {
+    constructor(server: TweetServer, offline = false) {
+        this.server = server;
         this.feed = new FeedController(document.getElementById('feedContainer'));
         this.vis = new TweetVisualization(document.getElementById('tree'));
 
