@@ -41,43 +41,10 @@ export class Tweet {
 }
 
 /**
- * Represents the context of a conversation around a particular tweet. this
- * consists of the tweet itself, (some of) the tweets before it in its
- * reply-chain, and (some of) the reply chains that come after it.
- */
-export class TweetContext {
-    /** Tweets before this.tweet in the reply-chain. */
-    ancestors: Tweet[] = [];
-    /** The tweet that this TweetContext relates to. */
-    tweet: Tweet;
-    /** Chains of replies in response to this.tweet. */
-    descentants: Tweet[][] = [];
-    /** If present, an API token used to loading more descendants. If absent,
-     *  indicates no further replies. */
-    continuation: string;
-}
-
-
-/**
  * Functions for parsing a response from the twitter API into Tweet and
  * TweetContext objects.
  */
 export namespace TweetParser {
-    /**
-     * Given an API response with a conversation continuation, parse and return 
-     * the TweetContext.
-     */
-    export function parseTweetsFromConversationHTML(response: string): TweetContext {
-        let obj = JSON.parse(response);
-        let doc = extractDocFromConversationResponse(response);
-
-        let context = new TweetContext();
-        context.descentants = parseDescendants(doc.getElementsByTagName('body')[0]);
-        context.continuation = obj.min_position;
-
-        return context;
-    }
-
     export function parseTweets(response: APIResponse): Tweet[] {
         let tweets = [];
         let users = new Map<string, { handle: string, name: string, avatar: string }>();
@@ -107,113 +74,6 @@ export namespace TweetParser {
 
             tweets.push(tweet);
         }
-        console.log(tweets);
-
         return tweets;
-    }
-
-    /**
-     * Given an API response about a particular tweet, parse and return the 
-     * TweetContext.
-     */
-    export function parseTweetsFromHtml(response: string): TweetContext {
-        let doc = extractDocFromResponse(response);
-        let tweetContext = new TweetContext();
-
-        let showMoreThreadsButton = doc.getElementsByClassName('ThreadedConversation-showMoreThreadsButton')[0];
-        if (showMoreThreadsButton) {
-            tweetContext.continuation = showMoreThreadsButton.getAttribute('data-cursor');
-        } else {
-            tweetContext.continuation = doc
-                .querySelector('.replies-to .stream-container')
-                .getAttribute('data-min-position');
-        }
-
-        let ancestorContainer = <HTMLElement>doc
-            .getElementsByClassName('in-reply-to')[0];
-        let mainTweetContainer = <HTMLElement>doc
-            .getElementsByClassName('permalink-tweet-container')[0];
-        let descendentsContainer = <HTMLElement>doc
-            .getElementsByClassName('replies-to')[0];
-
-        if (ancestorContainer) {
-            tweetContext.ancestors = parseTweetsFromStream(ancestorContainer);
-        }
-
-        if (mainTweetContainer) {
-            tweetContext.tweet = parseTweetsFromStream(mainTweetContainer)[0];
-        }
-
-        tweetContext.descentants = parseDescendants(descendentsContainer);
-
-        return tweetContext;
-    }
-
-    function parseDescendants(container: HTMLElement): Tweet[][] {
-        let descendants = container
-            .querySelectorAll('li.ThreadedConversation,li.ThreadedConversation--loneTweet');
-        let result = <Tweet[][]>[];
-
-        for (let i = 0; i < descendants.length; i++) {
-            let child = <HTMLElement>descendants[i];
-            result.push(parseTweetsFromStream(child));
-        }
-
-        return result;
-    }
-
-    function extractDocFromResponse(response: string): Document {
-        let obj = JSON.parse(response);
-        let responseHtml = obj.page;
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(responseHtml, 'text/html');
-
-        return doc;
-    }
-
-    function extractDocFromConversationResponse(response: string): Document {
-        let obj = JSON.parse(response);
-        let responseHtml = obj.items_html || obj.descendants.items_html;
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(responseHtml, 'text/html');
-
-        return doc;
-    }
-
-    function parseTweetsFromStream(streamContainer: HTMLElement): Tweet[] {
-        let tweetStream = [];
-        let tweetElements = streamContainer.getElementsByClassName('tweet');
-
-        for (let i = 0; i < tweetElements.length; i++) {
-            let tweetElement = <HTMLElement>tweetElements[i];
-            let tweet = new Tweet();
-
-            tweet.username = tweetElement.getAttribute('data-screen-name');
-            tweet.name = tweetElement
-                .getElementsByClassName('fullname')[0].innerHTML;
-            tweet.bodyText = tweetElement
-                .getElementsByClassName('tweet-text')[0].textContent;
-            tweet.rtl = tweetElement.getElementsByClassName('tweet-text-rtl').length > 0;
-            tweet.bodyHtml = tweetElement
-                .getElementsByClassName('tweet-text')[0].innerHTML;
-            tweet.id = tweetElement.getAttribute('data-tweet-id');
-            tweet.avatar = tweetElement
-                .getElementsByClassName('avatar')[0].getAttribute('src');
-            tweet.time = Number(tweetElement
-                .getElementsByClassName('_timestamp')[0]
-                .getAttribute('data-time-ms'));
-            tweet.replies = Number(tweetElement
-                .getElementsByClassName('js-actionReply')[0]
-                .getElementsByClassName('ProfileTweet-actionCountForPresentation')[0]
-                .textContent);
-
-            for (let img of tweetElement.querySelectorAll('.AdaptiveMedia-photoContainer img')) {
-                tweet.images.push(img.getAttribute('src'));
-            }
-
-            tweetStream.push(tweet);
-        }
-
-        return tweetStream;
     }
 }

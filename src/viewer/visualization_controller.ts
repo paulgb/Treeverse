@@ -40,27 +40,15 @@ export class VisualizationController {
             this.expandNode(node.parent);
         } else if (node instanceof TweetNode) {
             if (node.continuation) {
-                this.server
-                    .requestContinuation(node.tweet, node.continuation)
-                    .then((context) => {
-                        node.addChildrenFromContext(context);
-                        this.vis.setTreeData(this.tweetTree.root);
-                        if (node.tweet.id == this.tweetTree.root.tweet.id) {
-                            // Only adjust zoom if this is loading more replies to
-                            // the root tweet.
-                            this.vis.zoomToFit();
-                        }
-                    });
+                // not implemented yet
             } else {
                 this.server
                     .requestTweets(node.tweet)
                     .then((tweets) => {
                         this.tweetTree.addTweets(tweets)
-
                         this.vis.setTreeData(this.tweetTree.root);
                     });
             }
-
         }
     }
 

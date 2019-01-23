@@ -1,4 +1,4 @@
-import { TweetParser, TweetContext, Tweet } from './tweet_parser';
+import { TweetParser, Tweet } from './tweet_parser';
 
 declare var content: any;
 
@@ -24,20 +24,6 @@ export class TweetServer {
         console.log(response);
 
         return TweetParser.parseTweets(response);
-    }
-
-    /**
-     * Requests the continued conversation for a given tweet and continuation
-     * token, and returns a promise.
-     */
-    async requestContinuation(tweet, continuation): Promise<TweetContext> {
-        console.log('requestContinuation not implemented yet');
-        return null;
-        /*
-        let url = getUrlForConversation(tweet, continuation);
-        let response = await asyncGet(url);
-        return TweetParser.parseTweetsFromConversationHTML(response);
-        */
     }
 
     async asyncGet(url: string) {

@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { Tweet, TweetContext } from './tweet_parser';
+import { Tweet } from './tweet_parser';
 
 /**
  * Base class for all tree nodes.
@@ -111,65 +111,5 @@ export class TweetNode extends AbstractTreeNode {
         if (this.fullyLoaded) return false;
         if (this.continuation) return true;
         return this.children.size < this.tweet.replies;
-    }
-
-    /** Creates a tree from the given TweetContext and returns the root,
-     *  which is the first ancestor in the context. */
-    static createFromContext(tweetContext: TweetContext): TweetNode {
-        let root = null;
-        let parent = null;
-        for (let ancestor of tweetContext.ancestors) {
-            var ancestorNode = new TweetNode(ancestor);
-            if (!root) {
-                root = ancestorNode;
-            }
-            ancestorNode = this.addParent(parent, ancestorNode);
-            parent = ancestorNode;
-        }
-
-        var contextTweetNode = new TweetNode(tweetContext.tweet);
-        contextTweetNode = this.addParent(parent, contextTweetNode);
-        contextTweetNode.addChildrenFromContext(tweetContext);
-
-        if (!root) {
-            root = contextTweetNode;
-        }
-        return root;
-    }
-
-    addChildrenFromContext(tweetContext: TweetContext) {
-        for (let descentantGroup of tweetContext.descentants) {
-            let parent: TweetNode = this;
-            for (let descendant of descentantGroup) {
-                var descendantNode = new TweetNode(descendant);
-                TweetNode.addParent(parent, descendantNode);
-                parent = descendantNode;
-            }
-        }
-
-        this.children.delete(this.hasMoreNodeId);
-        this.continuation = tweetContext.continuation;
-        if (tweetContext.continuation) {
-            this.addHasMoreNode(tweetContext.continuation);
-        } else {
-            this.fullyLoaded = true;
-        }
-    }
-
-    private static addParent(parent: AbstractTreeNode, child: AbstractTreeNode): TweetNode {
-        if (!parent || !child) {
-            return <TweetNode>child;
-        }
-        if (parent.children.has(child.getId())) {
-            return <TweetNode>parent.children.get(child.getId());
-        }
-        parent.children.set(child.getId(), child);
-        return <TweetNode>child;
-    }
-
-    private addHasMoreNode(continuation: string) {
-        let hasMoreNode = new HasMoreNode(this, continuation);
-        TweetNode.addParent(this, hasMoreNode);
-        this.hasMoreNodeId = hasMoreNode.getId();
     }
 }
