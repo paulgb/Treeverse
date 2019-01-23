@@ -4,7 +4,7 @@
     "@types/chrome": "^0.0.74",
     "@types/d3": "^5.0.0",
     "ts-loader": "^5.2.1",
-    "typescript": "^3.1.2",
+    "typescript": "^3.2.4",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
   },
@@ -13,8 +13,11 @@
   "author": "Paul Butler",
   "license": "MIT",
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.1.0",
+    "@typescript-eslint/parser": "^1.1.0",
     "copy-webpack-plugin": "^4.6.0",
     "d3": "^5.7.0",
+    "eslint": "^5.12.1",
     "webpack-dev-server": "^3.1.10"
   }
 }
