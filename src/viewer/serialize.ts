@@ -1,5 +1,5 @@
 import { Tweet } from './tweet_parser'
-import { TweetNode, AbstractTreeNode } from './tweet_tree'
+import { TweetNode, TweetTree } from './tweet_tree'
 
 export class SerializedTweetNode {
     tweet: Tweet;
@@ -8,10 +8,8 @@ export class SerializedTweetNode {
     static fromTweetNode(tn: TweetNode) {
         let stn = new SerializedTweetNode()
         stn.tweet = tn.tweet
-        tn.children.forEach((v: AbstractTreeNode) => {
-            if (v instanceof TweetNode) {
-                stn.children.push(SerializedTweetNode.fromTweetNode(v))
-            }
+        tn.children.forEach((v: TweetNode) => {
+            stn.children.push(SerializedTweetNode.fromTweetNode(v))
         })
         return stn
     }

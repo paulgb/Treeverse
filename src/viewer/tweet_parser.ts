@@ -85,10 +85,6 @@ export namespace TweetParser {
             tweet.time = new Date(entry.created_at).getTime()
             tweet.replies = entry.reply_count
 
-            if (tweet.id == tweetId) {
-                console.log('root tweet:', tweet) // eslint-disable-line no-console
-            }
-
             tweets.push(tweet)
         }
         return tweets

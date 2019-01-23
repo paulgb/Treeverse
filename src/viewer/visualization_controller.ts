@@ -1,12 +1,12 @@
 import { FeedController } from './feed_controller'
 import { TweetVisualization } from './tweet_visualization'
-import { TweetNode, TweetTree, AbstractTreeNode, HasMoreNode } from './tweet_tree'
+import { TweetNode, TweetTree } from './tweet_tree'
 import { TweetServer } from './tweet_server'
 import { Toolbar } from './toolbar'
 import { SerializedTweetNode } from './serialize'
 import * as d3 from 'd3'
 
-export type PointNode = d3.HierarchyPointNode<AbstractTreeNode>;
+export type PointNode = d3.HierarchyPointNode<TweetNode>;
 
 /**
  * The controller for the main tree visualization.
@@ -30,24 +30,20 @@ export class VisualizationController {
 
     setInitialTweetData(tree: TweetTree) {
         this.tweetTree = tree
-        this.vis.setTreeData(tree.root)
+        this.vis.setTreeData(tree)
         this.vis.zoomToFit()
     }
 
-    private expandNode(node: AbstractTreeNode) {
-        if (node instanceof HasMoreNode) {
-            this.expandNode(node.parent)
-        } else if (node instanceof TweetNode) {
-            if (node.continuation) {
-                // not implemented yet
-            } else {
-                this.server
-                    .requestTweets(node.tweet.id)
-                    .then((tweets) => {
-                        this.tweetTree.addTweets(tweets)
-                        this.vis.setTreeData(this.tweetTree.root)
-                    })
-            }
+    private expandNode(node: TweetNode) {
+        if (node.cursor) {
+            // not implemented yet
+        } else {
+            this.server
+                .requestTweets(node.tweet.id)
+                .then((tweets) => {
+                    this.tweetTree.addTweets(tweets)
+                    this.vis.setTreeData(this.tweetTree)
+                })
         }
     }
 

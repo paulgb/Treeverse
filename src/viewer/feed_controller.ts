@@ -1,6 +1,6 @@
 import { PointNode } from './visualization_controller'
 import * as d3 from 'd3'
-import { TweetNode, AbstractTreeNode } from './tweet_tree'
+import { TweetNode } from './tweet_tree'
 
 /**
  * Controller for the "feed" display that shows the conversation
@@ -39,51 +39,48 @@ export class FeedController {
                 .append('div')
                 .classed('comment', true)
                 .each(function (this: Element, datum: PointNode) {
-                    if (datum.data instanceof TweetNode) {
-                        let tweet = datum.data.tweet
-                        let div = d3.select(this)
+                    let tweet = datum.data.tweet
+                    let div = d3.select(this)
 
-                        div
-                            .append('a')
-                            .classed('avatar', true)
+                    div
+                        .append('a')
+                        .classed('avatar', true)
+                        .append('img')
+                        .attr('src', tweet.avatar)
+                        .style('height', 'auto')
+                        .style('max-width', '35px')
+                        .style('width', 'auto')
+                        .style('max-height', '35px')
+
+                    let content = div
+                        .append('div')
+                        .classed('content', true)
+
+                    content
+                        .append('span')
+                        .classed('author', true)
+                        .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`)
+
+                    let body = content
+                        .append('div')
+                        .classed('text', true)
+                        .classed('rtl', tweet.rtl)
+                        .html(tweet.bodyHtml)
+
+                    body.append('a')
+                        .html(' &rarr;')
+                        .attr('href', tweet.getUrl())
+
+                    if (tweet.images) {
+                        let imgWidth = 100 / tweet.images.length
+                        content.append('div')
+                            .classed('extra images', true)
+                            .selectAll('img')
+                            .data(tweet.images)
+                            .enter()
                             .append('img')
-                            .attr('src', tweet.avatar)
-                            .style('height', 'auto')
-                            .style('max-width', '35px')
-                            .style('width', 'auto')
-                            .style('max-height', '35px')
-
-                        let content = div
-                            .append('div')
-                            .classed('content', true)
-
-                        content
-                            .append('span')
-                            .classed('author', true)
-                            .html(`${tweet.name} (<a href="${tweet.getUserUrl()}">@${tweet.username}</a>)`)
-
-                        let body = content
-                            .append('div')
-                            .classed('text', true)
-                            .classed('rtl', tweet.rtl)
-                            .html(tweet.bodyHtml)
-
-                        body.append('a')
-                            .html(' &rarr;')
-                            .attr('href', tweet.getUrl())
-
-                        if (tweet.images) {
-                            let imgWidth = 100 / tweet.images.length
-                            content.append('div')
-                                .classed('extra images', true)
-                                .selectAll('img')
-                                .data(tweet.images)
-                                .enter()
-                                .append('img')
-                                .attr('width', (d) => `${imgWidth}%`)
-                                .attr('src', (d) => d)
-
-                        }
+                            .attr('width', (d) => `${imgWidth}%`)
+                            .attr('src', (d) => d)
                     }
                 })
                 .style('opacity', 0)
@@ -102,7 +99,7 @@ export class FeedController {
         let comments = d3
             .select(this.container.getElementsByClassName('comments')[0])
             .selectAll('div.comment')
-            .data(ancestors, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId())
+            .data(ancestors, (d: d3.HierarchyPointNode<TweetNode>) => d.data.getId())
 
         await this.exitComments(comments)
         await this.enterComments(comments)
