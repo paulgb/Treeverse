@@ -42,6 +42,6 @@ export class TweetServer {
     }
 
     getUrlForTweet(tweet: Tweet): string {
-        return `https://api.twitter.com/2/timeline/conversation/${tweet.id}.json`;
+        return `https://api.twitter.com/2/timeline/conversation/${tweet.id}.json?include_reply_count=1`;
     }
 }

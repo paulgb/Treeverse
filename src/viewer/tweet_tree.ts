@@ -73,9 +73,7 @@ export class TweetTree {
                 if (tweet.parent && this.index.has(tweet.parent)) {
                     this.index.get(tweet.parent).children.set(tweet.id, node)
                 } else {
-                    console.log('orphan tweet', tweet, tweet.parent)
                 }
-                console.log('added tweet', tweet.id)
                 this.index.set(tweet.id, node);
             }
         }
@@ -104,6 +102,7 @@ export class TweetNode extends AbstractTreeNode {
      * Return false iff this tweet has more replies that we know about.
      */
     hasMore(): boolean {
+        console.log('hasMore?', this.children.size, this.tweet.replies, this.fullyLoaded);
         // The fully loaded flag takes precedence because sometimes the
         // reply count from twitter is greater than the number of tweets
         // we actually get back from the API. This is probably because of

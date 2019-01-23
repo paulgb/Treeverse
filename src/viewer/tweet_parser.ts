@@ -71,6 +71,9 @@ export namespace TweetParser {
             tweet.avatar = user.avatar;
             tweet.parent = entry.in_reply_to_status_id_str;
             tweet.time = new Date(entry.created_at).getTime();
+            tweet.replies = entry.reply_count;
+
+            console.log(entry.text, entry);
 
             tweets.push(tweet);
         }

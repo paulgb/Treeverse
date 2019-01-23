@@ -27,10 +27,7 @@ export namespace Treeverse {
 
             createPage(document.getElementById('root'));
 
-            console.log('auth', auth);
-
             let server = new TweetServer(auth.csrfToken, auth.authorization);
-
             let controller = new VisualizationController(server);
 
             let rootTweet = new Tweet();
