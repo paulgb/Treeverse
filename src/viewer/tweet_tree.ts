@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import { Tweet } from './tweet_parser';
+import * as d3 from 'd3'
+import { Tweet } from './tweet_parser'
 
 /**
  * Base class for all tree nodes.
@@ -12,17 +12,17 @@ export class AbstractTreeNode {
     children: Map<String, AbstractTreeNode>;
 
     constructor() {
-        this.children = new Map<String, AbstractTreeNode>();
+        this.children = new Map<String, AbstractTreeNode>()
     }
 
     /** Returns a unique ID for this node. */
     getId(): string {
-        throw new Error('Not implemented');
+        throw new Error('Not implemented')
     }
 
     /** Returns a d3 hierarchy for the tree rooted at this node. */
     toHierarchy() {
-        return d3.hierarchy(this, (d: AbstractTreeNode) => Array.from(d.children.values()));
+        return d3.hierarchy(this, (d: AbstractTreeNode) => Array.from(d.children.values()))
     }
 }
 
@@ -34,15 +34,15 @@ export class HasMoreNode extends AbstractTreeNode {
     continuation: string;
 
     constructor(parent: TweetNode, continuation: string) {
-        super();
-        this.parent = parent;
-        this.continuation = continuation;
+        super()
+        this.parent = parent
+        this.continuation = continuation
     }
 
     getId() {
         // Parent continuation string is used so that d3 sees this as a new
         // HasMoreNode when another HasMoreNode has exited on the same parent.
-        return `${this.parent.getId()}_${this.continuation}`;
+        return `${this.parent.getId()}_${this.continuation}`
     }
 }
 
@@ -65,16 +65,15 @@ export class TweetTree {
     }
 
     addTweets(tweets: Tweet[]) {
-        tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+        tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id))
 
         for (let tweet of tweets) {
             if (!this.index.has(tweet.id)) {
                 let node = new TweetNode(tweet)
                 if (tweet.parent && this.index.has(tweet.parent)) {
                     this.index.get(tweet.parent).children.set(tweet.id, node)
-                } else {
                 }
-                this.index.set(tweet.id, node);
+                this.index.set(tweet.id, node)
             }
         }
     }
@@ -90,12 +89,12 @@ export class TweetNode extends AbstractTreeNode {
     fullyLoaded: boolean;
 
     constructor(tweet: Tweet) {
-        super();
-        this.tweet = tweet;
+        super()
+        this.tweet = tweet
     }
 
     getId() {
-        return this.tweet.id;
+        return this.tweet.id
     }
 
     /**
@@ -106,8 +105,8 @@ export class TweetNode extends AbstractTreeNode {
         // reply count from twitter is greater than the number of tweets
         // we actually get back from the API. This is probably because of
         // replies from private accounts.
-        if (this.fullyLoaded) return false;
-        if (this.continuation) return true;
-        return this.children.size < this.tweet.replies;
+        if (this.fullyLoaded) return false
+        if (this.continuation) return true
+        return this.children.size < this.tweet.replies
     }
 }

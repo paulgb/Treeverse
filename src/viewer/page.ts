@@ -44,7 +44,7 @@ export function createPage(container: HTMLElement) {
                 </div>
             </div>
         </div>
-    `;
+    `
 
-    container.innerHTML = pageHTML;
+    container.innerHTML = pageHTML
 }

@@ -3,6 +3,9 @@
         "browser": true,
         "es6": true
     },
+    "globals": {
+        "chrome": false
+    },
     "extends": "eslint:recommended",
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -10,6 +13,10 @@
         "sourceType": "module"
     },
     "rules": {
+        "no-unused-vars": "off",
+        "no-inner-declarations": [
+            "off"
+        ],
         "indent": [
             "error",
             4

@@ -1,7 +1,6 @@
-import { FeedController } from './feed_controller';
-import * as d3 from 'd3';
-import { PointNode } from './visualization_controller';
-import { AbstractTreeNode, TweetNode, HasMoreNode } from './tweet_tree';
+import * as d3 from 'd3'
+import { PointNode } from './visualization_controller'
+import { AbstractTreeNode, TweetNode, HasMoreNode } from './tweet_tree'
 
 type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
 
@@ -22,195 +21,195 @@ export class TweetVisualization {
     private layout: d3.HierarchyPointNode<AbstractTreeNode>;
 
     constructor(svgElement: HTMLElement) {
-        this.buildTree(svgElement);
-        this.listeners = d3.dispatch('hover', 'click', 'dblclick');
+        this.buildTree(svgElement)
+        this.listeners = d3.dispatch('hover', 'click', 'dblclick')
 
         let timeIntervals = [
             300,
             600,
             3600,
             10800
-        ];
+        ]
         let timeColors = [
             '#FA5050',
             '#E9FA50',
             '#F5F1D3',
             '#47D8F5'
-        ];
+        ]
 
         this.colorScale = d3.scaleSqrt<string, number>()
             .domain(timeIntervals)
-            .range(timeColors);
+            .range(timeColors)
     }
 
     on(eventType, callback) {
-        this.listeners.on(eventType, callback);
-    };
+        this.listeners.on(eventType, callback)
+    }
 
     private colorEdge(edgeTarget: d3.HierarchyNode<AbstractTreeNode>) {
-        let data = edgeTarget.data;
+        let data = edgeTarget.data
         if (data instanceof TweetNode) {
-            let timeDelta = (data.tweet.time - (<TweetNode>edgeTarget.parent.data).tweet.time) / 1000;
-            return this.colorScale(timeDelta).toString();
+            let timeDelta = (data.tweet.time - (<TweetNode>edgeTarget.parent.data).tweet.time) / 1000
+            return this.colorScale(timeDelta).toString()
         } else {
-            return '#fff';
+            return '#fff'
         }
     }
 
     private static treeWidth<T>(hierarchy: d3.HierarchyNode<T>) {
-        let widths = new Map<number, number>();
+        let widths = new Map<number, number>()
         hierarchy.each((node) => {
-            widths.set(node.depth, (widths.get(node.depth) || 0) + 1);
+            widths.set(node.depth, (widths.get(node.depth) || 0) + 1)
         })
 
-        return Math.max.apply(null, Array.from(widths.values()));
+        return Math.max.apply(null, Array.from(widths.values()))
     }
 
     private buildTree(container: HTMLElement) {
-        this.container = d3.select(container);
-        this.treeGroup = <D3Selector>this.container.append('g');
+        this.container = d3.select(container)
+        this.treeGroup = <D3Selector>this.container.append('g')
 
-        this.edges = <D3Selector>this.treeGroup.append('g');
-        this.nodes = <D3Selector>this.treeGroup.append('g');
+        this.edges = <D3Selector>this.treeGroup.append('g')
+        this.nodes = <D3Selector>this.treeGroup.append('g')
 
-        this.container.on('click', () => { this.selected = null; this.redraw(); });
+        this.container.on('click', () => { this.selected = null; this.redraw() })
 
         // Set up zoom functionality.
         this.zoom = d3.zoom()
             .scaleExtent([0, 2])
-            .on("zoom", () => {
-                let x = d3.event.transform.x;
-                let y = d3.event.transform.y;
-                let scale = d3.event.transform.k;
+            .on('zoom', () => {
+                let x = d3.event.transform.x
+                let y = d3.event.transform.y
+                let scale = d3.event.transform.k
 
-                this.treeGroup.attr('transform', `translate(${x} ${y}) scale(${scale})`);
-            });
-        this.container.call(this.zoom);
+                this.treeGroup.attr('transform', `translate(${x} ${y}) scale(${scale})`)
+            })
+        this.container.call(this.zoom)
 
         d3.select('body').on('keydown', () => {
             if (!this.selected) {
-                return;
+                return
             }
             switch (d3.event.code) {
-                case 'ArrowDown':
-                    if (this.selected.children && this.selected.children.length > 0) {
-                        this.selected = this.selected.children[0];
+            case 'ArrowDown':
+                if (this.selected.children && this.selected.children.length > 0) {
+                    this.selected = this.selected.children[0]
+                }
+                break
+            case 'ArrowUp':
+                if (this.selected.parent) {
+                    this.selected = this.selected.parent
+                }
+                break
+            case 'ArrowLeft':
+                if (this.selected.parent) {
+                    let i = this.selected.parent.children.indexOf(this.selected)
+                    if (i > 0) {
+                        this.selected = this.selected.parent.children[i - 1]
                     }
-                    break;
-                case 'ArrowUp':
-                    if (this.selected.parent) {
-                        this.selected = this.selected.parent;
+                }
+                break
+            case 'ArrowRight':
+                if (this.selected.parent) {
+                    let i = this.selected.parent.children.indexOf(this.selected)
+                    if (i >= 0 && i < this.selected.parent.children.length - 1) {
+                        this.selected = this.selected.parent.children[i + 1]
                     }
-                    break;
-                case 'ArrowLeft':
-                    if (this.selected.parent) {
-                        let i = this.selected.parent.children.indexOf(this.selected);
-                        if (i > 0) {
-                            this.selected = this.selected.parent.children[i - 1];
-                        }
-                    }
-                    break;
-                case 'ArrowRight':
-                    if (this.selected.parent) {
-                        let i = this.selected.parent.children.indexOf(this.selected);
-                        if (i >= 0 && i < this.selected.parent.children.length - 1) {
-                            this.selected = this.selected.parent.children[i + 1];
-                        }
-                    }
-                    break;
-                case 'Space':
-                    this.listeners.call('dblclick', null, this.selected.data);
-                    break;
-                default:
-                    return;
+                }
+                break
+            case 'Space':
+                this.listeners.call('dblclick', null, this.selected.data)
+                break
+            default:
+                return
             }
-            this.redraw();
-            this.listeners.call('hover', null, this.selected);
-        });
+            this.redraw()
+            this.listeners.call('hover', null, this.selected)
+        })
     }
 
     zoomToFit() {
-        let clientRect = this.container.node().getBoundingClientRect();
-        let zoomLevel = Math.min(clientRect.height / this.yscale, clientRect.width / this.xscale, 1);
+        let clientRect = this.container.node().getBoundingClientRect()
+        let zoomLevel = Math.min(clientRect.height / this.yscale, clientRect.width / this.xscale, 1)
 
         this.container.transition().call(this.zoom.transform, d3.zoomIdentity.translate(
             Math.max(0, (clientRect.width - this.xscale * zoomLevel) / 2),
             Math.max(20, (clientRect.height - this.yscale * zoomLevel) / 2)
-        ).scale(zoomLevel));
+        ).scale(zoomLevel))
     }
 
     setTreeData(tree: TweetNode) {
-        let hierarchy = tree.toHierarchy();
-        let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy);
-        this.layout = <d3.HierarchyPointNode<AbstractTreeNode>>layout;
+        let hierarchy = tree.toHierarchy()
+        let layout = d3.tree().separation((a, b) => a.children || b.children ? 3 : 2)(hierarchy)
+        this.layout = <d3.HierarchyPointNode<AbstractTreeNode>>layout
 
-        let maxWidth = TweetVisualization.treeWidth(hierarchy);
+        let maxWidth = TweetVisualization.treeWidth(hierarchy)
 
-        this.xscale = maxWidth * 120;
-        this.yscale = hierarchy.height * 120;
+        this.xscale = maxWidth * 120
+        this.yscale = hierarchy.height * 120
 
-        this.redraw();
+        this.redraw()
     }
 
     redraw() {
         if (!this.layout) {
-            return;
+            return
         }
 
         let edgeToPath = (d: d3.HierarchyPointNode<any>) => {
-            let startX = this.xscale * d.parent.x;
-            let startY = this.yscale * d.parent.y;
-            let endY = this.yscale * d.y;
-            let endX = this.xscale * d.x;
-            return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`;
+            let startX = this.xscale * d.parent.x
+            let startY = this.yscale * d.parent.y
+            let endY = this.yscale * d.y
+            let endX = this.xscale * d.x
+            return `M${startX},${startY} C${startX},${startY} ${endX},${startY} ${endX},${endY}`
         }
 
-        let duration = 200;
+        let duration = 200
 
         let paths = this.edges
             .selectAll('path')
-            .data(this.layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+            .data(this.layout.descendants().slice(1), (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId())
 
-        paths.exit().remove();
-        paths.attr('opacity', 1).transition().duration(duration).attr('d', edgeToPath);
+        paths.exit().remove()
+        paths.attr('opacity', 1).transition().duration(duration).attr('d', edgeToPath)
 
         paths
             .enter()
-            .append("path")
+            .append('path')
             .attr('d', edgeToPath)
             .attr('fill', 'none')
             .attr('stroke-width', 2)
             .attr('stroke', this.colorEdge.bind(this))
             .attr('opacity', 0)
             .transition().delay(duration)
-            .attr('opacity', 1);
+            .attr('opacity', 1)
 
-        let descendents = this.layout.descendants();
+        let descendents = this.layout.descendants()
 
         if (this.selected) {
             // If a node is selected, find the node in the new tree with the same ID and select it.
-            this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId());
+            this.selected = descendents.find((d) => d.data.getId() == this.selected.data.getId())
         }
 
         let nodes = this.nodes.selectAll('g')
-            .data(descendents, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId());
+            .data(descendents, (d: d3.HierarchyPointNode<AbstractTreeNode>) => d.data.getId())
 
-        nodes.exit().remove();
+        nodes.exit().remove()
 
         nodes.transition()
             .duration(duration)
-            .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`);
+            .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`)
 
         nodes.each((datum, i, selection) => {
-            let data = datum.data;
+            let data = datum.data
             if (data instanceof TweetNode && !data.hasMore()) {
-                d3.select(selection[i]).select('.has_more_icon').remove();
+                d3.select(selection[i]).select('.has_more_icon').remove()
             }
         })
 
         nodes
             .classed('selected', (d: d3.HierarchyPointNode<TweetNode>) => d == this.selected)
-            .attr('opacity', 1);
+            .attr('opacity', 1)
 
         nodes.enter()
             .append('g')
@@ -222,29 +221,29 @@ export class TweetVisualization {
             })
             .on('click', (e: PointNode) => {
                 if (e.data instanceof TweetNode) {
-                    this.listeners.call('hover', null, e);
-                    this.selected = e;
-                    this.redraw();
+                    this.listeners.call('hover', null, e)
+                    this.selected = e
+                    this.redraw()
                 }
-                d3.event.stopPropagation();
+                d3.event.stopPropagation()
             })
             .on('dblclick', (e: PointNode) => {
-                this.listeners.call('dblclick', null, e.data);
-                d3.event.stopPropagation();
-                this.selected = null;
+                this.listeners.call('dblclick', null, e.data)
+                d3.event.stopPropagation()
+                this.selected = null
             })
             .classed('has_more', (d: d3.HierarchyPointNode<TweetNode>) =>
                 d.data instanceof TweetNode && d.data.hasMore())
             .attr('transform', d => `translate(${(this.xscale * d.x) - 20} ${(this.yscale * d.y) - 20})`)
             .each(function (this: Element, datum: PointNode) {
-                let group = d3.select(this);
+                let group = d3.select(this)
                 if (datum.data instanceof TweetNode) {
-                    let tweet = datum.data.tweet;
+                    let tweet = datum.data.tweet
 
                     group.append('rect')
                         .attr('height', 40)
                         .attr('width', 40)
-                        .attr('fill', 'white');
+                        .attr('fill', 'white')
 
                     group.append('image')
                         .attr('xlink:href', tweet.avatar)
@@ -258,31 +257,31 @@ export class TweetVisualization {
                         .attr('width', 42)
                         .attr('stroke', '#ddd')
                         .attr('stroke-width', '3px')
-                        .attr('rx', "4px")
-                        .attr('fill', 'none');
+                        .attr('rx', '4px')
+                        .attr('fill', 'none')
 
                     group.call((selection) => {
-                        let data = (selection.datum() as any).data;
+                        let data = (selection.datum() as any).data
                         if (data instanceof TweetNode && data.hasMore()) {
                             selection.append('use')
                                 .classed('has_more_icon', true)
                                 .attr('xlink:href', '#has_more')
-                                .attr('transform', 'scale(0.5) translate(55 55)');
+                                .attr('transform', 'scale(0.5) translate(55 55)')
                         }
                     })
 
                 } else if (datum.data instanceof HasMoreNode) {
                     group.append('use')
-                        .attr('xlink:href', '#has_more');
+                        .attr('xlink:href', '#has_more')
 
                     group.append('rect')
                         .attr('width', 40)
                         .attr('height', 40)
-                        .attr('opacity', 0);
+                        .attr('opacity', 0)
                 }
             })
             .attr('opacity', 0)
             .transition().delay(duration)
-            .attr('opacity', 1);
+            .attr('opacity', 1)
     }
 }

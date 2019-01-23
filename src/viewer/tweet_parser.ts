@@ -29,14 +29,14 @@ export class Tweet {
      * Returns a URL to this tweet on Twitter.
      */
     getUrl() {
-        return `https://twitter.com/${this.username}/status/${this.id}`;
+        return `https://twitter.com/${this.username}/status/${this.id}`
     }
 
     /**
      * Returns a URL to the profile that posted this tweet on Twitter.
      */
     getUserUrl() {
-        return `https://twitter.com/${this.username}`;
+        return `https://twitter.com/${this.username}`
     }
 }
 
@@ -46,20 +46,20 @@ export class Tweet {
  */
 export namespace TweetParser {
     export function parseContinuation(response: APIResponse): string {
-        let cursor = null;
+        let cursor = null
         for (let entry of response.timeline.instructions[0].addEntries.entries) {
             if (entry.content.operation && entry.content.operation.cursor) {
-                if (entry.content.operation.cursor.cursorType === "Bottom") {
+                if (entry.content.operation.cursor.cursorType === 'Bottom') {
                     cursor = entry.content.operation.cursor.value
                 }
             }
         }
-        return cursor;
+        return cursor
     }
 
     export function parseTweets(response: APIResponse): Tweet[] {
-        let tweets = [];
-        let users = new Map<string, { handle: string, name: string, avatar: string }>();
+        let tweets = []
+        let users = new Map<string, { handle: string, name: string, avatar: string }>()
 
         for (let userId in response.globalObjects.users) {
             let user = response.globalObjects.users[userId]
@@ -67,30 +67,30 @@ export namespace TweetParser {
                 handle: user.screen_name,
                 name: user.name,
                 avatar: user.profile_image_url_https
-            });
+            })
         }
 
         for (let tweetId in response.globalObjects.tweets) {
-            let entry = response.globalObjects.tweets[tweetId];
-            let tweet = new Tweet();
-            let user = users.get(entry.user_id_str);
+            let entry = response.globalObjects.tweets[tweetId]
+            let tweet = new Tweet()
+            let user = users.get(entry.user_id_str)
 
-            tweet.id = entry.id_str;
-            tweet.bodyText = entry.text;
-            tweet.bodyHtml = entry.text;
-            tweet.name = user.name;
-            tweet.username = user.handle;
-            tweet.avatar = user.avatar;
-            tweet.parent = entry.in_reply_to_status_id_str;
-            tweet.time = new Date(entry.created_at).getTime();
-            tweet.replies = entry.reply_count;
+            tweet.id = entry.id_str
+            tweet.bodyText = entry.text
+            tweet.bodyHtml = entry.text
+            tweet.name = user.name
+            tweet.username = user.handle
+            tweet.avatar = user.avatar
+            tweet.parent = entry.in_reply_to_status_id_str
+            tweet.time = new Date(entry.created_at).getTime()
+            tweet.replies = entry.reply_count
 
             if (tweet.id == tweetId) {
-                console.log('root tweet:', tweet)
+                console.log('root tweet:', tweet) // eslint-disable-line no-console
             }
 
-            tweets.push(tweet);
+            tweets.push(tweet)
         }
-        return tweets;
+        return tweets
     }
 }

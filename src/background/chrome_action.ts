@@ -1,15 +1,15 @@
-import { matchTweetURL, clickAction, updateAuth } from './common';
+import { matchTweetURL, clickAction, updateAuth } from './common'
 
-chrome.pageAction.onClicked.addListener(clickAction);
+chrome.pageAction.onClicked.addListener(clickAction)
 
 chrome.webRequest.onBeforeSendHeaders.addListener((c) => {
     //console.log('onBeforeSendHeaders', c);
-    updateAuth(c.requestHeaders);
+    updateAuth(c.requestHeaders)
 }, { urls: ['https://api.twitter.com/*'] },
-    ['requestHeaders']);
+['requestHeaders'])
 
 
-chrome.runtime.onInstalled.addListener((callback) => {
+chrome.runtime.onInstalled.addListener(() => {
     (<any>chrome).declarativeContent.onPageChanged.removeRules(undefined, () => {
         (<any>chrome).declarativeContent.onPageChanged.addRules([
             {
@@ -22,6 +22,6 @@ chrome.runtime.onInstalled.addListener((callback) => {
                 ],
                 actions: [new (<any>chrome).declarativeContent.ShowPageAction()]
             }
-        ]);
-    });
-});
+        ])
+    })
+})

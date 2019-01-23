@@ -1,29 +1,29 @@
-import { Tweet } from './tweet_parser';
-import { TweetNode, AbstractTreeNode } from './tweet_tree';
+import { Tweet } from './tweet_parser'
+import { TweetNode, AbstractTreeNode } from './tweet_tree'
 
 export class SerializedTweetNode {
     tweet: Tweet;
     children: SerializedTweetNode[] = [];
 
     static fromTweetNode(tn: TweetNode) {
-        let stn = new SerializedTweetNode();
-        stn.tweet = tn.tweet;
+        let stn = new SerializedTweetNode()
+        stn.tweet = tn.tweet
         tn.children.forEach((v: AbstractTreeNode) => {
             if (v instanceof TweetNode) {
-                stn.children.push(SerializedTweetNode.fromTweetNode(v));
+                stn.children.push(SerializedTweetNode.fromTweetNode(v))
             }
-        });
-        return stn;
+        })
+        return stn
     }
 
     static toTweetNode(obj) {
-        let tweet = new Tweet();
-        Object.assign(tweet, obj.tweet);
+        let tweet = new Tweet()
+        Object.assign(tweet, obj.tweet)
         let tn = new TweetNode(tweet);
         (<SerializedTweetNode[]>obj.children).forEach((child) => {
-            tn.children.set(child.tweet.id, SerializedTweetNode.toTweetNode(child));
-        });
-        tn.fullyLoaded = true;
-        return tn;
+            tn.children.set(child.tweet.id, SerializedTweetNode.toTweetNode(child))
+        })
+        tn.fullyLoaded = true
+        return tn
     }
 }
