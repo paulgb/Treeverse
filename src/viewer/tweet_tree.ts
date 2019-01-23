@@ -1,26 +1,34 @@
 import * as d3 from 'd3'
-import { Tweet } from './tweet_parser'
+import { TweetSet, Tweet } from './tweet_parser'
 
 
 export class TweetTree {
     root: TweetNode
     index: Map<string, TweetNode>
 
-    constructor(rootTweetId: string, tweets: Tweet[]) {
+    constructor(tweetSet: TweetSet) {
         this.index = new Map()
 
+        let { tweets, rootTweet } = tweetSet;
+
         for (let tweet of tweets) {
-            if (tweet.id == rootTweetId) {
+            if (tweet.id == rootTweet) {
                 this.root = new TweetNode(tweet)
                 this.index.set(tweet.id, this.root)
                 break
             }
         }
 
-        this.addTweets(tweets)
+        this.addTweets(tweetSet)
     }
 
-    addTweets(tweets: Tweet[]) {
+    setCursor(tweetId: string, cursor: string) {
+        this.index.get(tweetId).cursor = cursor;
+    }
+
+    addTweets(tweetSet: TweetSet) {
+        let { tweets, rootTweet, cursor } = tweetSet;
+
         tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id))
 
         for (let tweet of tweets) {
@@ -31,6 +39,12 @@ export class TweetTree {
                 }
                 this.index.set(tweet.id, node)
             }
+        }
+
+        if (cursor) {
+            this.index.get(rootTweet).cursor = cursor;
+        } else {
+            this.index.get(rootTweet).fullyLoaded = true;
         }
     }
 

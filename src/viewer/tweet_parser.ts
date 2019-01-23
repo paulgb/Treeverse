@@ -40,12 +40,18 @@ export class Tweet {
     }
 }
 
+export interface TweetSet {
+    rootTweet: string
+    tweets: Tweet[]
+    cursor: string
+}
+
 /**
  * Functions for parsing a response from the twitter API into Tweet and
  * TweetContext objects.
  */
 export namespace TweetParser {
-    export function parseContinuation(response: APIResponse): string {
+    export function parseCursor(response: APIResponse): string {
         let cursor = null
         for (let entry of response.timeline.instructions[0].addEntries.entries) {
             if (entry.content.operation && entry.content.operation.cursor) {
@@ -88,5 +94,11 @@ export namespace TweetParser {
             tweets.push(tweet)
         }
         return tweets
+    }
+
+    export function parseResponse(rootTweet: string, response: APIResponse): TweetSet {
+        const tweets = parseTweets(response);
+        const cursor = parseCursor(response);
+        return { tweets, cursor, rootTweet }
     }
 }

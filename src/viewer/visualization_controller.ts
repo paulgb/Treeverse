@@ -19,8 +19,8 @@ export class VisualizationController {
     private server: TweetServer;
 
     fetchTweets(tweetId: string) {
-        this.server.requestTweets(tweetId).then((tweets) => {
-            let tweetTree = new TweetTree(tweetId, tweets)
+        this.server.requestTweets(tweetId, null).then((tweetSet) => {
+            let tweetTree = new TweetTree(tweetSet)
             document.getElementsByTagName('title')[0].innerText =
                 `${tweetTree.root.tweet.username} - "${tweetTree.root.tweet.bodyText}" in Treeverse`
 
@@ -35,16 +35,15 @@ export class VisualizationController {
     }
 
     private expandNode(node: TweetNode) {
-        if (node.cursor) {
-            // not implemented yet
-        } else {
-            this.server
-                .requestTweets(node.tweet.id)
-                .then((tweets) => {
-                    this.tweetTree.addTweets(tweets)
-                    this.vis.setTreeData(this.tweetTree)
-                })
-        }
+        this.server
+            .requestTweets(node.tweet.id, node.cursor)
+            .then((tweetSet) => {
+                this.tweetTree.addTweets(tweetSet)
+                this.vis.setTreeData(this.tweetTree)
+                if (node === this.tweetTree.root) {
+                    this.vis.zoomToFit()
+                }
+            })
     }
 
     shareClicked() {

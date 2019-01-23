@@ -1,6 +1,7 @@
-import { TweetParser, Tweet } from './tweet_parser'
+import { TweetParser, TweetSet } from './tweet_parser'
 
 declare var content: any
+
 
 /**
  * Interfaces with Twitter API server.
@@ -17,15 +18,16 @@ export class TweetServer {
     /**
      * Requests the TweetContext for a given tweet and returns a promise. 
      */
-    async requestTweets(tweetId: string): Promise<Tweet[]> {
-        let url = this.getUrlForTweetId(tweetId)
+    async requestTweets(tweetId: string, cursor: string): Promise<TweetSet> {
+        let url = this.getUrlForTweetId(tweetId, cursor)
         let response = await this.asyncGet(url)
 
-        return TweetParser.parseTweets(response)
+        return TweetParser.parseResponse(tweetId, response)
     }
 
     async asyncGet(url: string) {
-        let fetch = (typeof content === 'undefined') ? window.fetch : content.fetch
+        let fetch: (input: RequestInfo, init?: RequestInit) =>
+            Promise<Response> = (typeof content === 'undefined') ? window.fetch : content.fetch
 
         return fetch(url, {
             credentials: 'include',
@@ -39,7 +41,13 @@ export class TweetServer {
         })
     }
 
-    getUrlForTweetId(tweetId: string): string {
-        return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?include_reply_count=1`
+    getUrlForTweetId(tweetId: string, cursor: string): string {
+        let params = new URLSearchParams({ include_reply_count: "1" })
+
+        if (cursor !== null && cursor !== undefined) {
+            params.set('cursor', cursor);
+        }
+
+        return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?${params.toString()}`
     }
 }
