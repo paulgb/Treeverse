@@ -39,6 +39,14 @@ export interface APIResponse {
                                         cursorType: string,
                                         value: string
                                     }
+                                },
+                                item: {
+                                    content: {
+                                        tweet: {
+                                            displayType: string,
+                                            id: string
+                                        }
+                                    }
                                 }
                             }
                         }

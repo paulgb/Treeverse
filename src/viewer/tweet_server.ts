@@ -17,11 +17,9 @@ export class TweetServer {
     /**
      * Requests the TweetContext for a given tweet and returns a promise. 
      */
-    async requestTweets(tweet): Promise<Tweet[]> {
-        let url = this.getUrlForTweet(tweet);
+    async requestTweets(tweetId: string): Promise<Tweet[]> {
+        let url = this.getUrlForTweetId(tweetId);
         let response = await this.asyncGet(url);
-
-        console.log(response);
 
         return TweetParser.parseTweets(response);
     }
@@ -41,7 +39,7 @@ export class TweetServer {
         });
     }
 
-    getUrlForTweet(tweet: Tweet): string {
-        return `https://api.twitter.com/2/timeline/conversation/${tweet.id}.json?include_reply_count=1`;
+    getUrlForTweetId(tweetId: string): string {
+        return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?include_reply_count=1`;
     }
 }

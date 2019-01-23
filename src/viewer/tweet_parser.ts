@@ -45,6 +45,18 @@ export class Tweet {
  * TweetContext objects.
  */
 export namespace TweetParser {
+    export function parseContinuation(response: APIResponse): string {
+        let cursor = null;
+        for (let entry of response.timeline.instructions[0].addEntries.entries) {
+            if (entry.content.operation && entry.content.operation.cursor) {
+                if (entry.content.operation.cursor.cursorType === "Bottom") {
+                    cursor = entry.content.operation.cursor.value
+                }
+            }
+        }
+        return cursor;
+    }
+
     export function parseTweets(response: APIResponse): Tweet[] {
         let tweets = [];
         let users = new Map<string, { handle: string, name: string, avatar: string }>();
@@ -73,7 +85,9 @@ export namespace TweetParser {
             tweet.time = new Date(entry.created_at).getTime();
             tweet.replies = entry.reply_count;
 
-            console.log(entry.text, entry);
+            if (tweet.id == tweetId) {
+                console.log('root tweet:', tweet)
+            }
 
             tweets.push(tweet);
         }

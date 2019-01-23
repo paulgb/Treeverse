@@ -19,9 +19,9 @@ export class VisualizationController {
     private toolbar: Toolbar;
     private server: TweetServer;
 
-    fetchTweets(tweet: Tweet) {
-        this.server.requestTweets(tweet).then((tweets) => {
-            let tweetTree = new TweetTree(tweet.id, tweets);
+    fetchTweets(tweetId: string) {
+        this.server.requestTweets(tweetId).then((tweets) => {
+            let tweetTree = new TweetTree(tweetId, tweets);
             document.getElementsByTagName('title')[0].innerText =
                 `${tweetTree.root.tweet.username} - "${tweetTree.root.tweet.bodyText}" in Treeverse`;
 
@@ -43,7 +43,7 @@ export class VisualizationController {
                 // not implemented yet
             } else {
                 this.server
-                    .requestTweets(node.tweet)
+                    .requestTweets(node.tweet.id)
                     .then((tweets) => {
                         this.tweetTree.addTweets(tweets)
                         this.vis.setTreeData(this.tweetTree.root);
@@ -54,7 +54,6 @@ export class VisualizationController {
 
     shareClicked() {
         let value = SerializedTweetNode.fromTweetNode(this.tweetTree.root);
-        console.log(value);
         let form = d3.select(this.toolbar.container)
             .append('form')
             .attr('method', 'post')

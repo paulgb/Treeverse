@@ -102,7 +102,6 @@ export class TweetNode extends AbstractTreeNode {
      * Return false iff this tweet has more replies that we know about.
      */
     hasMore(): boolean {
-        console.log('hasMore?', this.children.size, this.tweet.replies, this.fullyLoaded);
         // The fully loaded flag takes precedence because sometimes the
         // reply count from twitter is greater than the number of tweets
         // we actually get back from the API. This is probably because of

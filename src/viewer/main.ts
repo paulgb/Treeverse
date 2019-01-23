@@ -1,5 +1,4 @@
 import { VisualizationController } from './visualization_controller';
-import { Tweet } from './tweet_parser';
 import { createPage } from './page';
 import { TweetServer } from './tweet_server';
 /**
@@ -7,7 +6,7 @@ import { TweetServer } from './tweet_server';
  * different modes.
  */
 export namespace Treeverse {
-    export function initialize(baseUrl, tweetId, auth) {
+    export function initialize(baseUrl: string, tweetId: string, auth: { csrfToken: string, authorization: string }) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             let parser = new DOMParser();
             let doc = parser.parseFromString(html, 'text/html');
@@ -30,10 +29,7 @@ export namespace Treeverse {
             let server = new TweetServer(auth.csrfToken, auth.authorization);
             let controller = new VisualizationController(server);
 
-            let rootTweet = new Tweet();
-            rootTweet.id = tweetId;
-
-            controller.fetchTweets(rootTweet);
+            controller.fetchTweets(tweetId);
         });
     }
 }
