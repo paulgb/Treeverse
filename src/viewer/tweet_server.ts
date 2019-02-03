@@ -42,7 +42,10 @@ export class TweetServer {
     }
 
     getUrlForTweetId(tweetId: string, cursor: string): string {
-        let params = new URLSearchParams({ include_reply_count: '1' })
+        let params = new URLSearchParams({
+            include_reply_count: '1',
+            tweet_mode: 'extended'
+        })
 
         if (cursor !== null && cursor !== undefined) {
             params.set('cursor', cursor)

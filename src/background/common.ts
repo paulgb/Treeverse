@@ -38,7 +38,7 @@ export function updateAuth(headers) {
         }
     }
 
-    if (waiting.tabId !== null) {
+    if (auth.authorization !== null && waiting.tabId !== null) {
         // If we previously reloaded the page in order to capture the tokens,
         // initiate Treeverse now.
         injectScripts(waiting.tabId, waiting.tweetId)

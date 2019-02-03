@@ -82,8 +82,8 @@ export namespace TweetParser {
             let user = users.get(entry.user_id_str)
 
             tweet.id = entry.id_str
-            tweet.bodyText = entry.text
-            tweet.bodyHtml = entry.text
+            tweet.bodyText = entry.full_text
+            tweet.bodyHtml = entry.full_text
             tweet.name = user.name
             tweet.username = user.handle
             tweet.avatar = user.avatar
