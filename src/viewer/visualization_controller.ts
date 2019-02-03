@@ -20,7 +20,7 @@ export class VisualizationController {
 
     fetchTweets(tweetId: string) {
         this.server.requestTweets(tweetId, null).then((tweetSet) => {
-            let tweetTree = new TweetTree(tweetSet)
+            let tweetTree = TweetTree.fromTweetSet(tweetSet)
             document.getElementsByTagName('title')[0].innerText =
                 `${tweetTree.root.tweet.username} - "${tweetTree.root.tweet.bodyText}" in Treeverse`
 
@@ -48,7 +48,7 @@ export class VisualizationController {
 
     shareClicked() {
         let value = SerializedTweetNode.fromTweetNode(this.tweetTree.root)
-        chrome.runtime.sendMessage({ payload: value, message: 'share' });
+        chrome.runtime.sendMessage({ payload: value, message: 'share' })
     }
 
     constructor(server: TweetServer, offline = false) {

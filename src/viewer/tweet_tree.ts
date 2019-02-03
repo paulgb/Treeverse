@@ -6,28 +6,40 @@ export class TweetTree {
     root: TweetNode
     index: Map<string, TweetNode>
 
-    constructor(tweetSet: TweetSet) {
-        this.index = new Map()
+    private constructor() { }
 
-        let { tweets, rootTweet } = tweetSet;
+    static fromTweetSet(tweetSet: TweetSet): TweetTree {
+        let tree = new TweetTree()
+
+        tree.index = new Map()
+        let { tweets, rootTweet } = tweetSet
 
         for (let tweet of tweets) {
             if (tweet.id == rootTweet) {
-                this.root = new TweetNode(tweet)
-                this.index.set(tweet.id, this.root)
+                tree.root = new TweetNode(tweet)
+                tree.index.set(tweet.id, tree.root)
                 break
             }
         }
 
-        this.addTweets(tweetSet)
+        tree.addTweets(tweetSet)
+
+        return tree
+    }
+
+    static fromRoot(root: TweetNode) {
+        let tree = new TweetTree()
+
+        tree.root = root
+        return tree
     }
 
     setCursor(tweetId: string, cursor: string) {
-        this.index.get(tweetId).cursor = cursor;
+        this.index.get(tweetId).cursor = cursor
     }
 
     addTweets(tweetSet: TweetSet) {
-        let { tweets, rootTweet, cursor } = tweetSet;
+        let { tweets, rootTweet, cursor } = tweetSet
 
         tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id))
 
@@ -42,9 +54,9 @@ export class TweetTree {
         }
 
         if (cursor) {
-            this.index.get(rootTweet).cursor = cursor;
+            this.index.get(rootTweet).cursor = cursor
         } else {
-            this.index.get(rootTweet).fullyLoaded = true;
+            this.index.get(rootTweet).fullyLoaded = true
         }
     }
 

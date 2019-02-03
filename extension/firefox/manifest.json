@@ -16,7 +16,7 @@
     "default_title": "Treeverse"
   },
   "description": "",
-  "version": "2.5",
+  "version": "3.0",
   "background": {
     "scripts": [
       "resources/script/background.js"
@@ -25,7 +25,9 @@
   "permissions": [
     "tabs",
     "contextMenus",
-    "https://*.twitter.com/"
+    "webRequest",
+    "https://*.twitter.com/",
+    "https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/"
   ],
   "web_accessible_resources": [
     "resources/*"
