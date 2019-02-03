@@ -1,10 +1,10 @@
-import * as d3 from 'd3';
+import * as d3 from 'd3'
 
 export class Toolbar {
     container: HTMLElement;
 
     constructor(element: HTMLElement) {
-        this.container = element;
+        this.container = element
     }
 
     addButton(label: string, onClicked: () => void) {
@@ -13,6 +13,6 @@ export class Toolbar {
             .text(label)
             .classed('ui primary button', true)
             .style('margin-bottom', '10px')
-            .on('click', onClicked);
+            .on('click', onClicked)
     }
 }

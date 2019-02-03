@@ -32,9 +32,8 @@ export function createPage(container: HTMLElement) {
                     <a href="https://github.com/paulgb/Treeverse/issues">report on GitHub</a>.
                 </p>
                 <p>Tweets with an ellipsis in the bottom right can be expanded by double clicking.</p>
-                <p style="background: #ffec49; padding: 4px;"><strong>Note:</strong> Treeverse currently doesn’t work with
-                the new Twitter UI. I’m working on a fix. Until then, it still works if you switch back
-                to the old UI. <em>(Jan 21, 2019)</em></p>
+                <p style="background: #ffec49; padding: 4px;"><strong>Note:</strong> Treeverse has been updated for the
+                new Twitter UI! Let me know if you find any bugs.<em>(Feb 3, 2019)</em></p>
                 <div id="toolbar"></div>
             </div>
             <div id="feedContainer">
@@ -44,7 +43,7 @@ export function createPage(container: HTMLElement) {
                 </div>
             </div>
         </div>
-    `;
+    `
 
-    container.innerHTML = pageHTML;
+    container.innerHTML = pageHTML
 }
