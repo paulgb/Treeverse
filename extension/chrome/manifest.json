@@ -28,7 +28,8 @@
         "declarativeContent",
         "contextMenus",
         "webRequest",
-        "https://api.twitter.com/"
+        "https://api.twitter.com/",
+        "https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/"
     ],
     "web_accessible_resources": [
         "resources/*"

@@ -48,15 +48,7 @@ export class VisualizationController {
 
     shareClicked() {
         let value = SerializedTweetNode.fromTweetNode(this.tweetTree.root)
-        let form = d3.select(this.toolbar.container)
-            .append('form')
-            .attr('method', 'post')
-            .attr('action', 'https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/default/treeverse_post')
-        form.append('input')
-            .attr('type', 'hidden')
-            .attr('name', 'content')
-            .attr('value', JSON.stringify(value));
-        (form.node() as any).submit()
+        chrome.runtime.sendMessage({ payload: value, message: 'share' });
     }
 
     constructor(server: TweetServer, offline = false) {
