@@ -91,6 +91,8 @@ export namespace TweetParser {
             tweet.time = new Date(entry.created_at).getTime()
             tweet.replies = entry.reply_count
 
+            console.log(entry, tweet);
+
             tweets.push(tweet)
         }
         return tweets
