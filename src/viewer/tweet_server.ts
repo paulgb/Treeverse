@@ -42,10 +42,10 @@ export class TweetServer {
     }
 
     getUrlForTweetId(tweetId: string, cursor: string): string {
-        let params = new URLSearchParams({ include_reply_count: "1" })
+        let params = new URLSearchParams({ include_reply_count: '1' })
 
         if (cursor !== null && cursor !== undefined) {
-            params.set('cursor', cursor);
+            params.set('cursor', cursor)
         }
 
         return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?${params.toString()}`

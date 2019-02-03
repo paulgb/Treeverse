@@ -1,6 +1,11 @@
-import { matchTweetURL, clickAction } from './common'
+import { matchTweetURL, clickAction, updateAuth, onMessageFromContentScript } from './common'
 
 chrome.pageAction.onClicked.addListener(clickAction)
+
+chrome.webRequest.onBeforeSendHeaders.addListener((c) => {
+    updateAuth(c.requestHeaders)
+}, { urls: ['https://api.twitter.com/*'] },
+['requestHeaders'])
 
 chrome.tabs.onUpdated.addListener((id, changeInfo, tab) => {
     if (!changeInfo.url) {
@@ -11,3 +16,5 @@ chrome.tabs.onUpdated.addListener((id, changeInfo, tab) => {
         chrome.pageAction.hide(tab.id)
     }
 })
+
+chrome.runtime.onMessage.addListener(onMessageFromContentScript)

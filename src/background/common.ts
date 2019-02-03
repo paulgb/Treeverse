@@ -6,6 +6,19 @@ let auth = {
     authorization: null
 }
 
+export function onMessageFromContentScript(request) {
+    if (request.message === 'share') {
+        fetch('https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/default/treeverse_post', {
+            method: 'POST',
+            body: JSON.stringify(request.payload),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then((response) => response.text())
+            .then((response) => chrome.tabs.create({ url: response }))
+    }
+}
+
 export function updateAuth(headers) {
     for (let header of headers) {
         if (header.name.toLowerCase() == 'x-csrf-token') {

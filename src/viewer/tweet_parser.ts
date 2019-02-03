@@ -97,8 +97,8 @@ export namespace TweetParser {
     }
 
     export function parseResponse(rootTweet: string, response: APIResponse): TweetSet {
-        const tweets = parseTweets(response);
-        const cursor = parseCursor(response);
+        const tweets = parseTweets(response)
+        const cursor = parseCursor(response)
         return { tweets, cursor, rootTweet }
     }
 }
