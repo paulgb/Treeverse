@@ -7,12 +7,13 @@ export class Toolbar {
         this.container = element
     }
 
-    addButton(label: string, onClicked: () => void) {
-        d3.select(this.container)
+    addButton(label: string, onClicked: () => void): HTMLButtonElement {
+        return d3.select(this.container)
             .append('button')
             .text(label)
             .classed('ui primary button', true)
             .style('margin-bottom', '10px')
             .on('click', onClicked)
+            .node() as HTMLButtonElement
     }
 }
