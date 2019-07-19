@@ -32,9 +32,10 @@ export function createPage(container: HTMLElement) {
                     <a href="https://github.com/paulgb/Treeverse/issues">report on GitHub</a>.
                 </p>
                 <p>Tweets with an ellipsis in the bottom right can be expanded by double clicking.</p>
-                <p style="background: #ffec49; padding: 4px;"><strong>Note:</strong> Treeverse has been updated for the
-                new Twitter UI! Images and links are not yet captured. Please let me know if you find any other bugs.
-                <em>(Feb 2, 2019)</em></p>
+                <p style="background: #ffec49; padding: 4px;">
+                <em>July 19, 2019 update:</em> Treeverse should be more stable now that the new Twitter UI has
+                been rolled out to everyone. Additionally, expansion of tweets now includes tweets that appear
+                hidden behind a “show more” link on Twitter.</p>
                 <div id="toolbar"></div>
             </div>
             <div id="feedContainer">
