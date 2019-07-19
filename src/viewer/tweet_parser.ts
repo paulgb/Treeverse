@@ -55,7 +55,8 @@ export namespace TweetParser {
         let cursor = null
         for (let entry of response.timeline.instructions[0].addEntries.entries) {
             if (entry.content.operation && entry.content.operation.cursor) {
-                if (entry.content.operation.cursor.cursorType === 'Bottom') {
+                if (entry.content.operation.cursor.cursorType === 'Bottom' ||
+                    entry.content.operation.cursor.cursorType === 'ShowMoreThreads') {
                     cursor = entry.content.operation.cursor.value
                 }
             }
