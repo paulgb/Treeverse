@@ -67,13 +67,13 @@ export function injectScripts(tabId: number, tweetId: string) {
 
 function ensureLoaded() {
     if (waiting.tabId != null) {
-        alert('Sorry, Treeverse couldn’t launch.\n\nIf you are logged out of Twitter or using the older Twitter UI, the way Treeverse accesses tweets may not work.')
+        alert('Treeverse couldn’t find the authentication tokens needed to load your tweets.\n\nSorry :/')
         waiting.tabId = waiting.tweetId = null
     }
 }
 
 export function clickAction(tab: chrome.tabs.Tab) {
-    const [tweetUser, tweetId] = getUserAndTweetFromURL(tab.url)
+    const [_, tweetId] = getUserAndTweetFromURL(tab.url)
     let tabId = tab.id
 
     if (auth.authorization === null) {
@@ -82,13 +82,7 @@ export function clickAction(tab: chrome.tabs.Tab) {
         waiting.tabId = tabId
         waiting.tweetId = tweetId
         
-        const mobileUrl = `https://mobile.twitter.com/${tweetUser}/status/${tweetId}`
-        
-        if (tab.url == mobileUrl) {
-            chrome.tabs.update(tab.id, {url: mobileUrl})
-        } else {
-            chrome.tabs.reload(tab.id)
-        }
+        chrome.tabs.reload(tab.id)
         
         setTimeout(ensureLoaded, 2000)
     } else {
