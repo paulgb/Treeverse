@@ -39,12 +39,14 @@ export class TweetTree {
     }
 
     addTweets(tweetSet: TweetSet) {
+        let count = 0
         let { tweets, rootTweet, cursor } = tweetSet
 
         tweets.sort((a, b) => parseInt(a.id) - parseInt(b.id))
 
         for (let tweet of tweets) {
             if (!this.index.has(tweet.id)) {
+                count += 1
                 let node = new TweetNode(tweet)
                 if (tweet.parent && this.index.has(tweet.parent)) {
                     this.index.get(tweet.parent).children.set(tweet.id, node)
@@ -58,6 +60,7 @@ export class TweetTree {
         } else {
             this.index.get(rootTweet).fullyLoaded = true
         }
+        return count
     }
 
     toHierarchy() {

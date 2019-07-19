@@ -40,14 +40,18 @@ export class VisualizationController {
         this.vis.zoomToFit()
     }
 
-    private expandNode(node: TweetNode) {
+    private expandNode(node: TweetNode, retry: boolean = true) {
         this.server
             .requestTweets(node.tweet.id, node.cursor)
             .then((tweetSet) => {
-                this.tweetTree.addTweets(tweetSet)
-                this.vis.setTreeData(this.tweetTree)
-                if (node === this.tweetTree.root) {
-                    this.vis.zoomToFit()
+                let added = this.tweetTree.addTweets(tweetSet)
+                if (added > 0) {
+                    this.vis.setTreeData(this.tweetTree)
+                    if (node === this.tweetTree.root) {
+                        this.vis.zoomToFit()
+                    }    
+                } else if (retry) {
+                    this.expandNode(node, false)
                 }
             })
     }
@@ -60,7 +64,7 @@ export class VisualizationController {
     expandOne() {
         for (let tweetNode of this.tweetTree.index.values()) {
             if (tweetNode.hasMore()) {
-                this.expandNode(tweetNode)
+                this.expandNode(tweetNode, true)
                 return
             }
         }
