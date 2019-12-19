@@ -68,6 +68,7 @@ export namespace TweetParser {
         let tweets = []
         let users = new Map<string, { handle: string, name: string, avatar: string }>()
 
+        console.log(response);
         for (let userId in response.globalObjects.users) {
             let user = response.globalObjects.users[userId]
             users.set(userId, {

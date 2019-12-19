@@ -14,7 +14,20 @@ let waiting = {
     tweetId: null
 }
 
-export function onMessageFromContentScript(request) {
+function getUrlForTweetId(tweetId: string, cursor: string): string {
+    let params = new URLSearchParams({
+        include_reply_count: '1',
+        tweet_mode: 'extended'
+    })
+
+    if (cursor !== null && cursor !== undefined) {
+        params.set('cursor', cursor)
+    }
+
+    return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?${params.toString()}`
+}
+
+export function onMessageFromContentScript(request, sender, sendResponse) {
     if (request.message === 'share') {
         // Handle share button click. The payload is the tree structure.
 
@@ -26,6 +39,19 @@ export function onMessageFromContentScript(request) {
             },
         }).then((response) => response.text())
             .then((response) => chrome.tabs.create({ url: response }))
+    } else if (request.message == 'read') {
+        let url = getUrlForTweetId(request.tweetId, request.cursor);
+        fetch(url, {
+            credentials: 'include',
+            headers: {
+                'x-csrf-token': auth.csrfToken,
+                'authorization': auth.authorization
+            }
+        }).then((x) => x.json()).then((x) => sendResponse(x)).catch((error) => {
+            console.warn('Fetch failed: ', error) // eslint-disable-line no-console
+            return ''
+        })
+        return true
     }
 }
 
@@ -81,9 +107,9 @@ export function clickAction(tab: chrome.tabs.Tab) {
         // the page to do so.
         waiting.tabId = tabId
         waiting.tweetId = tweetId
-        
+
         chrome.tabs.reload(tab.id)
-        
+
         setTimeout(ensureLoaded, 2000)
     } else {
         injectScripts(tabId, tweetId)

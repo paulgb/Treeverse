@@ -6,7 +6,7 @@ import { TweetServer } from './tweet_server'
  * different modes.
  */
 export namespace Treeverse {
-    export function initialize(baseUrl: string, tweetId: string, auth: { csrfToken: string, authorization: string }) {
+    export function initialize(baseUrl: string, tweetId: string) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             let parser = new DOMParser()
             let doc = parser.parseFromString(html, 'text/html')
@@ -26,7 +26,7 @@ export namespace Treeverse {
 
             createPage(document.getElementById('root'))
 
-            let server = new TweetServer(auth.csrfToken, auth.authorization)
+            let server = new TweetServer()
             let controller = new VisualizationController(server)
 
             controller.fetchTweets(tweetId)
