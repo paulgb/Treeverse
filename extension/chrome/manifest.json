@@ -30,7 +30,7 @@
         "webRequest",
         "https://api.twitter.com/",
         "https://mobile.twitter.com/",
-        "https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/"
+        "https://treeverse.app/"
     ],
     "web_accessible_resources": [
         "resources/*"

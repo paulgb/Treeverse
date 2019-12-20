@@ -30,8 +30,7 @@ function getUrlForTweetId(tweetId: string, cursor: string): string {
 export function onMessageFromContentScript(request, sender, sendResponse) {
     if (request.message === 'share') {
         // Handle share button click. The payload is the tree structure.
-
-        fetch('https://1l8hy2eaaj.execute-api.us-east-1.amazonaws.com/default/treeverse_post', {
+        fetch('https://treeverse.app/share', {
             method: 'POST',
             body: JSON.stringify(request.payload),
             headers: {
