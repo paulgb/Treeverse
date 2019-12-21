@@ -20,7 +20,7 @@ export function fetchTweets(tweetId: string, cursor: string, auth: AuthType) {
 
     let fetch: (input: RequestInfo, init?: RequestInit) =>
         // @ts-ignore missing "content" variable (defined on FireFox)
-        Promise<Response> = (typeof content === 'undefined') ? window.fetch : content.fetch
+        Promise<Response> = (typeof content === 'undefined') ? window.fetch : content.fetch // eslint-disable-line no-undef
 
     return fetch(url, {
         credentials: 'include',
@@ -28,5 +28,6 @@ export function fetchTweets(tweetId: string, cursor: string, auth: AuthType) {
             'x-csrf-token': auth.csrfToken,
             'authorization': auth.authorization
         }
-    }).then((x) => x.json()).catch((e) => console.error('Failed to load tweets', e))
+    }).then((x) => x.json()).catch((e) =>
+        console.error('Failed to load tweets', e)) // eslint-disable-line no-console
 }

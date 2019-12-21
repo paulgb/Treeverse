@@ -52,13 +52,12 @@ export class TweetServer {
             // We are in Chrome; proxy the request through the background context.
             return new Promise<Response>((resolve) => {
                 chrome.runtime.sendMessage(
-                    { message: "read", tweetId, cursor },
-                    resolve);
+                    { message: 'read', tweetId, cursor },
+                    resolve)
             })
         } else {
             // We are in Firefox; make the request from the content context.
             return fetchTweets(tweetId, cursor, this.auth)
         }
-
     }
 }
