@@ -1,8 +1,10 @@
+import { fetchTweets, AuthType } from '../common/util'
+
 export let matchTweetURL = 'https?://(?:mobile\\.)?twitter.com/(.+)/status/(\\d+)'
 export let matchTweetURLRegex = new RegExp(matchTweetURL)
 
 // Stores auth and CSRF tokens once they are captured in the headers.
-let auth = {
+let auth: AuthType = {
     csrfToken: null,
     authorization: null
 }
@@ -12,19 +14,6 @@ let auth = {
 let waiting = {
     tabId: null,
     tweetId: null
-}
-
-function getUrlForTweetId(tweetId: string, cursor: string): string {
-    let params = new URLSearchParams({
-        include_reply_count: '1',
-        tweet_mode: 'extended'
-    })
-
-    if (cursor !== null && cursor !== undefined) {
-        params.set('cursor', cursor)
-    }
-
-    return `https://api.twitter.com/2/timeline/conversation/${tweetId}.json?${params.toString()}`
 }
 
 export function onMessageFromContentScript(request, sender, sendResponse) {
@@ -39,17 +28,7 @@ export function onMessageFromContentScript(request, sender, sendResponse) {
         }).then((response) => response.text())
             .then((response) => chrome.tabs.create({ url: response }))
     } else if (request.message == 'read') {
-        let url = getUrlForTweetId(request.tweetId, request.cursor);
-        fetch(url, {
-            credentials: 'include',
-            headers: {
-                'x-csrf-token': auth.csrfToken,
-                'authorization': auth.authorization
-            }
-        }).then((x) => x.json()).then((x) => sendResponse(x)).catch((error) => {
-            console.warn('Fetch failed: ', error) // eslint-disable-line no-console
-            return ''
-        })
+        fetchTweets(request.tweetId, request.cursor, auth).then((x) => sendResponse(x))
         return true
     }
 }
