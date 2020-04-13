@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import { PointNode } from './visualization_controller'
 import { TweetNode, TweetTree } from './tweet_tree'
 
-type D3Selector = d3.Selection<HTMLElement, {}, null, undefined>;
+type D3Selector = d3.Selection<Element, {}, null, undefined>;
 
 /**
  * Renders the main tree visualization.

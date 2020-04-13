@@ -1,23 +1,20 @@
 {
   "name": "treeverse",
   "devDependencies": {
-    "@types/chrome": "^0.0.74",
-    "@types/d3": "^5.0.0",
-    "ts-loader": "^5.2.1",
-    "typescript": "^3.2.4",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "@types/chrome": "^0.0.104",
+    "@types/d3": "^5.7.2",
+    "copy-webpack-plugin": "^5.1.1",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "version": "0.0.1",
   "description": "Treeverse Chrome Extension",
   "author": "Paul Butler",
   "license": "MIT",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.1.0",
-    "@typescript-eslint/parser": "^1.1.0",
-    "copy-webpack-plugin": "^4.6.0",
-    "d3": "^5.7.0",
-    "eslint": "^5.12.1",
-    "webpack-dev-server": "^3.1.10"
+    "d3": "^5.15.1"
   }
 }

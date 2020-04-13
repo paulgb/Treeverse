@@ -1,6 +1,8 @@
 #!/bin/sh
 
-rm extension_*.zip
+set -e
+
+rm -f extension_*.zip
 
 ./node_modules/.bin/webpack
 
