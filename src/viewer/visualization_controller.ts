@@ -5,7 +5,7 @@ import { TweetServer } from './tweet_server'
 import { Toolbar } from './toolbar'
 import { SerializedTweetNode } from './serialize'
 import * as d3 from 'd3'
-import { tree } from 'd3'
+import { ContentProxy } from './proxy'
 
 export type PointNode = d3.HierarchyPointNode<TweetNode>;
 
@@ -86,8 +86,9 @@ export class VisualizationController {
         }
     }
 
-    constructor(server: TweetServer, offline = false) {
-        this.server = server
+    constructor(proxy: ContentProxy = null) {
+        const offline = proxy === null
+        this.server = offline ? null : new TweetServer(proxy)
         this.feed = new FeedController(document.getElementById('feedContainer'))
         this.vis = new TweetVisualization(document.getElementById('tree'))
         this.expandingTimer = null
@@ -95,7 +96,6 @@ export class VisualizationController {
         this.toolbar = new Toolbar(document.getElementById('toolbar'))
         if (!offline) {
             this.toolbar.addButton('Create shareable link', this.shareClicked.bind(this))
-
             this.expandButton = this.toolbar.addButton('Expand All', this.expandAll.bind(this))
         }
 

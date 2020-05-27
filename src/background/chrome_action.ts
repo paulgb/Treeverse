@@ -1,11 +1,6 @@
-import { matchTweetURL, clickAction, updateAuth, onMessageFromContentScript } from './common'
+import { matchTweetURL, clickAction, onMessageFromContentScript } from './common'
 
 chrome.pageAction.onClicked.addListener(clickAction)
-
-chrome.webRequest.onBeforeSendHeaders.addListener((c) => {
-    updateAuth(c.requestHeaders)
-}, { urls: ['https://api.twitter.com/*'] },
-['requestHeaders'])
 
 chrome.runtime.onInstalled.addListener(() => {
     (<any>chrome).declarativeContent.onPageChanged.removeRules(undefined, () => {

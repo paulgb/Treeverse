@@ -6,8 +6,10 @@ module.exports = {
     entry: {
         '/extension_chrome/resources/script/background': './background/chrome_action.ts',
         '/extension_chrome/resources/script/viewer': './viewer/main.ts',
+        '/extension_chrome/resources/script/content': './content/main.ts',
         '/extension_firefox/resources/script/background': './background/firefox_action.ts',
         '/extension_firefox/resources/script/viewer': './viewer/main.ts',
+        '/extension_firefox/resources/script/content': './content/main.ts',
         '/public/treeverse': './viewer/web_entry.ts',
     },
     output: {

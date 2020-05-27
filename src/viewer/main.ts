@@ -1,13 +1,25 @@
 import { VisualizationController } from './visualization_controller'
 import { createPage } from './page'
-import { TweetServer } from './tweet_server'
-import { AuthType } from '../common/util'
+import {ContentProxy} from './proxy'
+
 /**
  * Contains entry points for bootstrapping the visualization for
  * different modes.
  */
 export namespace Treeverse {
-    export function initialize(baseUrl: string, tweetId: string, auth: AuthType) {
+    export const PROXY = new ContentProxy()
+    PROXY.inject()
+
+    chrome.runtime.onMessage.addListener(
+        function(request, _sender, _sendResponse) {
+            var baseUrl = chrome.extension.getURL('resources')
+
+            if (request.action === 'launch') {
+                Treeverse.initialize(baseUrl, request.tweetId)
+            }
+        })
+
+    export function initialize(baseUrl: string, tweetId: string) {
         fetch(baseUrl + '/index.html').then((response) => response.text()).then((html) => {
             let parser = new DOMParser()
             let doc = parser.parseFromString(html, 'text/html')
@@ -27,9 +39,7 @@ export namespace Treeverse {
 
             createPage(document.getElementById('root'))
 
-            let server = new TweetServer(auth)
-            let controller = new VisualizationController(server)
-
+            let controller = new VisualizationController(Treeverse.PROXY)
             controller.fetchTweets(tweetId)
         })
     }

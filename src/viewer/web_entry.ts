@@ -3,9 +3,9 @@ import { VisualizationController } from './visualization_controller'
 import { SerializedTweetNode } from './serialize'
 import { TweetTree } from './tweet_tree'
 
-export function webInitialize() {
+function webEntry() {
     createPage(document.getElementById('root'))
-    let controller = new VisualizationController(null, true)
+    let controller = new VisualizationController()
 
     let parts = document.location.href.split('/')
     let key = parts[parts.length - 1]
@@ -19,4 +19,4 @@ export function webInitialize() {
         }).catch((c) => alert(c))
 }
 
-webInitialize()
+webEntry()

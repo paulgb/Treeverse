@@ -16,8 +16,14 @@
         },
         "default_title": "Treeverse"
     },
+    "content_scripts": [
+        {
+            "matches": ["https://twitter.com/*"],
+            "js": ["resources/script/viewer.js"]
+        }
+    ],
     "description": "",
-    "version": "3.5",
+    "version": "4.0",
     "background": {
         "scripts": [
             "resources/script/background.js"
@@ -27,7 +33,6 @@
         "activeTab",
         "declarativeContent",
         "contextMenus",
-        "webRequest",
         "https://api.twitter.com/",
         "https://mobile.twitter.com/",
         "https://treeverse.app/"

@@ -1,5 +1,5 @@
 import { Tweet } from './tweet_parser'
-import { TweetNode, TweetTree } from './tweet_tree'
+import { TweetNode } from './tweet_tree'
 
 export class SerializedTweetNode {
     tweet: Tweet;
