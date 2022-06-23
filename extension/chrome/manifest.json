@@ -23,7 +23,7 @@
         }
     ],
     "description": "",
-    "version": "4.0",
+    "version": "4.1",
     "background": {
         "scripts": [
             "resources/script/background.js"
