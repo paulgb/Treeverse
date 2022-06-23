@@ -32,7 +32,6 @@
     "permissions": [
         "activeTab",
         "declarativeContent",
-        "contextMenus",
         "https://api.twitter.com/",
         "https://mobile.twitter.com/",
         "https://treeverse.app/"
