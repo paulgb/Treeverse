@@ -1,3 +1,5 @@
+**NOTE: Post-acquisition, Twitter started making life difficult for applications like Treeverse that access twitter data. Since I don’t have time to play cat-and-mouse games with a hostile platform, I'm retiring Treeverse.** The codebase of Treeverse dates back to a bookmarklet I wrote in 2014. It’s been a pleasure to see something started as a curiosity project picked up by the OSINT and archivist communities. Thanks to everyone who shared their enthusiasm over the years.
+
 ![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/paulgb/Treeverse.svg)
 
 ![Treeverse Icon](extension/common/icons/32.png) Treeverse
